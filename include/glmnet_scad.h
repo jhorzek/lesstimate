@@ -37,7 +37,7 @@ namespace lessSEM
                 else if ((tuningParameters.lambda < absPar) && (absPar <= tuningParameters.lambda * tuningParameters.theta))
                 {
                     // reduces to a smooth penalty
-                    penalty += ((-std::pow(par, 2) +
+                    penalty += ((-std::pow(parameterValues.at(p), 2) +
                                  2.0 * tuningParameters.theta * tuningParameters.lambda * absPar - std::pow(tuningParameters.lambda, 2)) /
                                 (2.0 * (tuningParameters.theta - 1.0)));
                 }
@@ -204,21 +204,16 @@ namespace lessSEM
                 {
                     changed = true;
                 }
-
-                fitValue[i] = getPartialFitValue(
+            
+                fitValue[i] = this->subproblemValue(
                     parameterValue_j,
                     z[i],
                     g_j,
                     d_j,
                     hessianXdirection_j,
                     H_jj,
-                    // penalty
-                    penalty_int,
-                    // tuning parameters:
-                    weight,
                     lambda,
-                    theta,
-                    alpha);
+                    theta);
 
                 if (i > 0)
                 {
