@@ -15,6 +15,8 @@ namespace lessSEM{
 // param gradients_k gradients of current iteration
 // param cautious boolean: should the update be skipped if it would result in a non positive definite Hessian?
 // param hessianEps controls when the update of the Hessian approximation is skipped
+// param verbose if set to true, will print more details
+// return returns a matrix with parameter estimates
 inline arma::mat BFGS(
     const arma::rowvec& parameters_kMinus1, 
     const arma::rowvec& gradients_kMinus1, 
