@@ -1,5 +1,5 @@
-#ifndef LASSO_GLMNET_H
-#define LASSO_GLMNET_H
+#ifndef SCAD_GLMNET_H
+#define SCAD_GLMNET_H
 
 #include "penalty.h"
 
