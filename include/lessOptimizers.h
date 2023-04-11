@@ -1,5 +1,5 @@
-#ifndef lessSEM_H
-#define lessSEM_H
+#ifndef lessOptimizers_H
+#define lessOptimizers_H
 
 #include <RcppArmadillo.h>
 #include "ista_class.h"
