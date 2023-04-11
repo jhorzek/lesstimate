@@ -128,12 +128,12 @@ namespace lessSEM
             const tuningParametersScadGlmnet &tuningParameters)
         {
 
-            if (tuningParameters.weight.at(whichPar))
+            if (tuningParameters.weights.at(whichPar))
             {
                 // No regularization
                 return (-(g_j + hessianXdirection_j + lambda) / H_jj);
             }
-            double lambda = tuningParameters.weight.at(whichPar) * tuningParameters.lambda;
+            double lambda = tuningParameters.weights.at(whichPar) * tuningParameters.lambda;
             double theta = tuningParameters.theta;
 
             double parameterValue_j = arma::as_scalar(parameters_kMinus1.col(whichPar));
