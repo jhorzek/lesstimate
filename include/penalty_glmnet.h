@@ -80,7 +80,7 @@ namespace lessSEM
             else
             {
                 // if not regularized: coordinate descent with newton direction
-                return (-g_j / H_jj);
+                return (-(g_j + hessianXdirection_j) / H_jj);
             }
         }
 
