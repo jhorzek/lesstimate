@@ -376,7 +376,7 @@ inline arma::rowvec glmnetLineSearch(
 // @param startingValuesRcpp an Rcpp numeric vector with starting values
 // @param penalty_ a penalty derived from the penalty class in penalty.h
 // @param smoothPenalty_ a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
-// @param tuningParameters tuning parameters for the smoothPenalty function
+// @param tuningParameters tuning parameters for the penalty function and the smoothPenalty function
 // @param control_ settings for the glmnet optimizer.
 // @return fit result
 inline lessSEM::fitResults glmnet(model& model_, 
