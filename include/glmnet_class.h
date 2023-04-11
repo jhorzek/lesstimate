@@ -171,10 +171,11 @@ namespace lessSEM
         // get the update to the parameter:
         z_j = penalty_.getZ(
           randOrder.at(p),
+          parameters_kMinus1,
           gradients_kMinus1,
           stepDirection,
           Hessian,
-          tuning);
+          tuningParameters);
         z.col(randOrder.at(p)) = z_j(0, 0);
         stepDirection.col(randOrder.at(p)) += z_j(0, 0);
       }
