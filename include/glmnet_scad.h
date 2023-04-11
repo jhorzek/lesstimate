@@ -139,7 +139,7 @@ namespace lessSEM
             double H_jj = arma::as_scalar(Hessian.row(whichPar).col(whichPar));
             double g_j = arma::as_scalar(gradient.col(whichPar));
 
-            if (tuningParameters.weights.at(whichPar))
+            if (tuningParameters.weights.at(whichPar) == 0)
             {
                 // No regularization
                 return (-(g_j + hessianXdirection_j + lambda) / H_jj);
