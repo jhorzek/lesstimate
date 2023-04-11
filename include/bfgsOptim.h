@@ -4,7 +4,7 @@
 #include "model.h"
 #include "fitResults.h"
 #include "proximalOperator.h"
-#include "ridge.h"
+#include "glmnet_ridge.h"
 #include "bfgs.h"
 
 // The design follows ensmallen (https://github.com/mlpack/ensmallen) in that the 

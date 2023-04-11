@@ -4,11 +4,11 @@
 #include "penalty_type.h"
 #include "proximalOperator.h"
 #include "penalty.h"
-#include "cappedL1.h"
-#include "lasso.h"
-#include "lsp.h"
-#include "mcp.h"
-#include "scad.h"
+#include "ista_cappedL1.h"
+#include "ista_lasso.h"
+#include "ista_lsp.h"
+#include "ista_mcp.h"
+#include "ista_scad.h"
 
 
 // The proximal operator for this penalty function has been developed by

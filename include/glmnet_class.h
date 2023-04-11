@@ -3,8 +3,8 @@
 #include <RcppArmadillo.h>
 #include "model.h"
 #include "fitResults.h"
-#include "lasso.h"
-#include "ridge.h"
+#include "glmnet_lasso.h"
+#include "glmnet_ridge.h"
 #include "enet.h"
 #include "bfgs.h"
 
