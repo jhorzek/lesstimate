@@ -25,6 +25,21 @@
 
 namespace lessSEM{
 
+// convCritInnerIsta
+//
+// Convergence criteria used by the ista optimizer.
+// istaCrit: The approximated fit based on the quadratic approximation
+// h(parameters_k) := fit(parameters_k) + 
+// (parameters_k-parameters_kMinus1)*gradients_k^T + 
+// (L/2)*(parameters_k-parameters_kMinus1)^2 + 
+// penalty(parameters_k) 
+// is compared to the exact fit
+//
+// gistCrit:
+// the exact fit is compared to 
+// h(parameters_k) := fit(parameters_k) + 
+// penalty(parameters_kMinus1) +
+// L*(sigma/2)*(parameters_k-parameters_kMinus1)^2
 enum convCritInnerIsta{
   istaCrit,
   gistCrit
@@ -34,13 +49,23 @@ const std::vector<std::string> convCritInnerIsta_txt = {
   "gistCrit"
 };
 
+// stepSizeInheritance
+//
+// The ista optimizer provides different rules to be used to find an initial
+// step size. It defines if and how the step size should be carried forward
+// from iteration to iteration.
+// initial: resets the step size to L0 in each iteration
+// istaStepInheritance: takes the previous step size as initial value for the 
+// next iteration
+// barzilaiBorwein: uses the Barzilai-Borwein procedure
+// stochasticBarzilaiBorwein: uses the Barzilai-Borwein procedure, but sometimes
+// resets the step size; this can help when the optimizer is caught in a bad spot.
 enum stepSizeInheritance{
   initial,
   istaStepInheritance,
   barzilaiBorwein,
   stochasticBarzilaiBorwein
 };
-
 const std::vector<std::string> stepSizeInheritance_txt = {
   "initial",
   "istaStepInheritance",
@@ -48,37 +73,47 @@ const std::vector<std::string> stepSizeInheritance_txt = {
   "stochasticBarzilaiBorwein"
 };
 
+
+// control
+//
+// Settings for the ista optimizer.
+//
+// L0: controls the step size used in the first iteration
+// eta: controls by how much the step size changes in 
+// inner iterations with (eta^i)*L, where i is the inner iteration
+// accelerate: if true, the extrapolation parameter is used
+// to accelerate ista (see, e.g., Parikh, N., & Boyd, S. (2013). 
+// Proximal Algorithms. Foundations and Trends in Optimization, 1(3), 123–231., 
+// p. 152)
+// maxIterOut: maximal number of outer iterations
+// maxIterIn: maximal number of inner iterations
+// breakOuter: change in fit required to break the outer iteration
+// convCritInner: this is related to the inner breaking condition. ista, as presented by Beck & Teboulle (2009); 
+// see Remark 3.1 on p. 191 (ISTA with backtracking) or gist, as presented by Gong et al. (2013) (Equation 3)
+// sigma: sigma in (0,1) is used by the gist convergence criterion. larger
+// sigma enforce larger improvement in fit
+// stepSizeIn: how should step sizes be carried forward? See stepSizeInheritance
+// sampleSize: can be used to scale the fitting function down
+// verbose: if set to a value > 0, the fit every verbose iterations
+// is printed.
 struct control{
-  double L0; // L0 controls the step size used in the first iteration
-  double eta; // eta controls by how much the step size changes in the
-  // inner iterations with (eta^i)*L, where i is the inner iteration
-  bool accelerate; // if true, the extrapolation parameter is used
-  // to accelerate ista (see, e.g., Parikh, N., & Boyd, S. (2013). 
-  // Proximal Algorithms. Foundations and Trends in Optimization, 1(3), 123–231., 
-  // p. 152)
-  int maxIterOut; // maximal number of outer iterations
-  int maxIterIn; // maximal number of inner iterations
-  double breakOuter; // change in fit required to break the outer iteration
-  convCritInnerIsta convCritInner; // this is related to the inner
-  // breaking condition. 
-  // ista, as presented by Beck & Teboulle (2009); see Remark 3.1 on p. 191 (ISTA with backtracking)
-  // gist, as presented by Gong et al. (2013) (Equation 3)
-  // 
-  double sigma; // sigma in (0,1) is used by the gist convergence criterion. larger
-  // sigma enforce larger improvement in fit
-  stepSizeInheritance stepSizeIn; // how should step sizes be carried forward?
-  // from iteration to iteration? 
-  // initial resets the step size to L0 in each iteration
-  // istaStepInheritance takes the previous step size as initial value for the 
-  // next iteration
-  // barzilaiBorwein uses the Barzilai-Borwein procedure
-  // stochasticBarzilaiBorwein uses the Barzilai-Borwein procedure, but sometimes
-  // resets the step size; this can help when the optimizer is caught in a bad spot.
-  int sampleSize; // can be used to scale the fitting function down
-  int verbose; // if set to a value > 0, the fit every verbose iterations
-  // is printed.
+  double L0;
+  double eta;
+  bool accelerate;
+  int maxIterOut;
+  int maxIterIn;
+  double breakOuter;
+  convCritInnerIsta convCritInner;
+  double sigma;
+  stepSizeInheritance stepSizeIn;
+  int sampleSize;
+  int verbose;
 };
 
+// controlDefault
+//
+// Returns the default setting for the ista optimizer
+// @return object of class control.
 inline control controlDefault(){
   control defaultIs ={
     .1, //L0
@@ -96,6 +131,21 @@ inline control controlDefault(){
   return(defaultIs);
 }
 
+
+// ista
+//
+// Implements (variants of) the ista optimizer.
+//
+// @param model_ the model object derived from the model class in model.h 
+// @param startingValuesRcpp an Rcpp numeric vector with starting values
+// @parma proximalOperator_ a proximal operator for the penalty function
+// @param 
+// @param penalty_ a penalty derived from the penalty class in penalty.h
+// @param smoothPenalty_ a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
+// @param tuningParameters tuning parameters for the penalty function
+// @parma smoothTuningParameters tuning parameters for the smooth penalty function
+// @param control_ settings for the ista optimizer.
+// @return fit result
 template<typename T, typename U> // T is the type of the tuning parameters
 inline lessSEM::fitResults ista(
     model& model_, 
@@ -263,7 +313,7 @@ inline lessSEM::fitResults ista(
         // the exact fit is compared to 
         // h(parameters_k) := fit(parameters_k) + 
         // penalty(parameters_kMinus1) +
-        // L*(sigma/2)*(parameters_k-parameters_kMinus1)^2 + 
+        // L*(sigma/2)*(parameters_k-parameters_kMinus1)^2
         // 
         parameterChange = parameters_k-parameters_kMinus1;
         quadr = parameterChange*arma::trans(parameterChange); // always positive

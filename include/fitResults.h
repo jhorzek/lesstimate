@@ -3,11 +3,20 @@
 
 namespace lessSEM{
 
+// fitResults
+//
+// The fit results returned by the optimizers.
+//
+// @param fit the final fit value (regularized fit)
+// @param fits a vector with all fits at the outer iteration
+// @param convergence was the outer breaking condition met?
+// @param parameterValues final parameter values
+// @param Hessian final Hessian approximation (optional)
 struct fitResults{
-  double fit; // the final fit value (regularized fit)
-  arma::rowvec fits; // a vector with all fits at the outer iteration
-  bool convergence; // was the outer breaking condition met?
-  arma::rowvec parameterValues; // final parameter values
+  double fit;
+  arma::rowvec fits;
+  bool convergence;
+  arma::rowvec parameterValues;
   arma::mat Hessian;
 };
 
