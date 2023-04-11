@@ -231,7 +231,7 @@ namespace lessSEM
                                      const arma::rowvec &gradients,
                                      const tuningParametersScadGlmnet &tuningParameters)
         {
-            Rcpp::stop("Subgradients not yet implemented for scad penalty. Use different convergence criterion.")
+            Rcpp::stop("Subgradients not yet implemented for scad penalty. Use different convergence criterion.");
         }
     };
 
