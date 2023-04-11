@@ -142,7 +142,7 @@ namespace lessSEM
             if (tuningParameters.weights.at(whichPar) == 0)
             {
                 // No regularization
-                return (-(g_j + hessianXdirection_j + lambda) / H_jj);
+                return (-(g_j + hessianXdirection_j) / H_jj);
             }
 
             // The scad penalty is non-convex and may have multiple minima.
