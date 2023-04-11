@@ -127,12 +127,6 @@ namespace lessSEM
             const arma::mat &Hessian,
             const tuningParametersScadGlmnet &tuningParameters)
         {
-
-            if (tuningParameters.weights.at(whichPar))
-            {
-                // No regularization
-                return (-(g_j + hessianXdirection_j + lambda) / H_jj);
-            }
             double lambda = tuningParameters.weights.at(whichPar) * tuningParameters.lambda;
             double theta = tuningParameters.theta;
 
@@ -144,6 +138,12 @@ namespace lessSEM
             double hessianXdirection_j = arma::as_scalar(hessianXdirection.row(whichPar));
             double H_jj = arma::as_scalar(Hessian.row(whichPar).col(whichPar));
             double g_j = arma::as_scalar(gradient.col(whichPar));
+
+            if (tuningParameters.weights.at(whichPar))
+            {
+                // No regularization
+                return (-(g_j + hessianXdirection_j + lambda) / H_jj);
+            }
 
             // The scad penalty is non-convex and may have multiple minima.
             // However, there are parts of the function that are convex. We
