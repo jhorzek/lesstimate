@@ -13,7 +13,7 @@ namespace lessSEM
         double getValue(const arma::rowvec &parameterValues,
                         const Rcpp::StringVector &parameterLabels,
                         const tuningParametersEnetGlmnet &tuningParameters) 
-                        override const
+                        override
         {
 
             double penalty = 0.0;
@@ -48,7 +48,7 @@ namespace lessSEM
             const arma::rowvec& gradient,
             const arma::rowvec& stepDirection,
             const arma::mat& Hessian,
-            const tuningParametersEnetGlmnet &tuningParameters) const
+            const tuningParametersEnetGlmnet &tuningParameters)
         {
 
             double tuning = tuningParameters.alpha.at(whichPar) *
@@ -86,7 +86,7 @@ namespace lessSEM
 
         arma::rowvec getSubgradients(const arma::rowvec& parameterValues,
                                      const arma::rowvec& gradients,
-                                     const tuningParametersEnetGlmnet& tuningParameters) const
+                                     const tuningParametersEnetGlmnet& tuningParameters)
         {
 
             arma::rowvec subgradients = gradients;

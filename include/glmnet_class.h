@@ -124,7 +124,7 @@ namespace lessSEM
   inline arma::rowvec glmnetInner(const arma::rowvec &parameters_kMinus1,
                                   const arma::rowvec &gradients_kMinus1,
                                   const arma::mat &Hessian,
-                                  const nonsmoothPenalty &penalty_,
+                                  nonsmoothPenalty &penalty_,
                                   const tuning &tuningParameters,
                                   const int maxIterIn,
                                   const double breakInner,
