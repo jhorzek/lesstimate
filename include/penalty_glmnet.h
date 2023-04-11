@@ -55,11 +55,12 @@ namespace lessSEM
                             tuningParameters.lambda.at(whichPar) *
                             tuningParameters.weights.at(whichPar);
 
-            parameterValue_j = arma::as_scalar(parameters_kMinus1.col(whichPar));
+            double parameterValue_j = arma::as_scalar(parameters_kMinus1.col(whichPar));
 
             // compute derivative elements:
             double d_j = arma::as_scalar(stepDirection.col(whichPar));
             arma::rowvec hessianXdirection = Hessian * arma::trans(stepDirection);
+            double hessianXdirection_j = arma::as_scalar(hessianXdirection.col(whichPar));
             double H_jj = arma::as_scalar(Hessian.row(whichPar).col(whichPar));
             double g_j = arma::as_scalar(gradient.col(whichPar));
 
