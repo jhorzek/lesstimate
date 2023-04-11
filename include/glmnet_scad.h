@@ -3,15 +3,16 @@
 
 #include "penalty.h"
 
-class tuningParametersScadGlmnet
-{
-public:
-    double lambda;
-    double theta;
-};
-
 namespace lessSEM
 {
+
+    class tuningParametersScadGlmnet
+    {
+    public:
+        double lambda;
+        double theta;
+    };
+
     // the glmnet penalty allows for vectors of alpha and lambda
     class penaltySCADGlmnet : public penalty<tuningParametersScadGlmnet>
     {
@@ -204,7 +205,7 @@ namespace lessSEM
                 {
                     changed = true;
                 }
-            
+
                 fitValue[i] = this->subproblemValue(
                     parameterValue_j,
                     z[i],
