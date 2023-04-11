@@ -47,9 +47,11 @@ namespace lessSEM
                     // reduces to a constant penalty
                     penalty += (((tuningParameters.theta + 1.0) * std::pow(tuningParameters.lambda, 2)) / 2.0);
                 }
-
-                // the following should never be called:
-                Rcpp::stop("Error while evaluating scad");
+                else
+                {
+                    // the following should never be called:
+                    Rcpp::stop("Error while evaluating scad");
+                }
             }
 
             return penalty;
