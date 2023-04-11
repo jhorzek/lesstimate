@@ -1,5 +1,5 @@
-#ifndef PENALTY_GLMNET.h
-#define PENALTY_GLMNET .h
+#ifndef PENALTY_GLMNET_H
+#define PENALTY_GLMNET_H
 
 #include "penalty.h"
 #include "enet.h"
