@@ -44,21 +44,25 @@ namespace lessSEM
         // @param weight weight given to the penalty of this parameter (relevant in adaptive lasso)
         double getZ(
             unsigned int whichPar,
+            const arma::rowvec& parameters_kMinus1,
             const arma::rowvec& gradient,
             const arma::rowvec& stepDirection,
             const arma::mat& Hessian,
             const tuningParametersEnetGlmnet &tuningParameters)
-            override
         {
 
             double tuning = tuningParameters.alpha.at(whichPar) *
                             tuningParameters.lambda.at(whichPar) *
                             tuningParameters.weights.at(whichPar);
 
+            parameterValue_j = arma::as_scalar(parameters_kMinus1.col(whichPar));
+
             // compute derivative elements:
+            double d_j = arma::as_scalar(stepDirection.col(whichPar));
             arma::rowvec hessianXdirection = Hessian * arma::trans(stepDirection);
-            double H_jj = Hessian.row(whichPar).col(whichPar);
-            double g_j = gradient.col(whichPar);
+            double H_jj = arma::as_scalar(Hessian.row(whichPar).col(whichPar));
+            double g_j = arma::as_scalar(gradient.col(whichPar));
+
             // if the parameter is regularized:
             if (tuning != 0)
             {
