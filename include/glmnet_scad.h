@@ -9,6 +9,7 @@ namespace lessSEM
     class tuningParametersScadGlmnet
     {
     public:
+        arma::rowvec weights;
         double lambda;
         double theta;
     };
@@ -28,24 +29,30 @@ namespace lessSEM
             for (unsigned int p = 0; p < parameterValues.n_elem; p++)
             {
 
+                if (tuningParameters.weights.at(p) == 0)
+                    continue;
+
+                double lambda = tuningParameters.weights.at(p) * tuningParameters.lambda;
+                double theta = tuningParameters.theta;
+
                 double absPar = std::abs(parameterValues.at(p));
 
-                if (absPar <= tuningParameters.lambda)
+                if (absPar <= lambda)
                 {
                     // reduces to lasso penalty
-                    penalty += (tuningParameters.lambda * absPar);
+                    penalty += (lambda * absPar);
                 }
-                else if ((tuningParameters.lambda < absPar) && (absPar <= tuningParameters.lambda * tuningParameters.theta))
+                else if ((lambda < absPar) && (absPar <= lambda * theta))
                 {
                     // reduces to a smooth penalty
                     penalty += ((-std::pow(parameterValues.at(p), 2) +
-                                 2.0 * tuningParameters.theta * tuningParameters.lambda * absPar - std::pow(tuningParameters.lambda, 2)) /
-                                (2.0 * (tuningParameters.theta - 1.0)));
+                                 2.0 * theta * lambda * absPar - std::pow(lambda, 2)) /
+                                (2.0 * (theta - 1.0)));
                 }
-                else if (absPar > (tuningParameters.lambda * tuningParameters.theta))
+                else if (absPar > (lambda * theta))
                 {
                     // reduces to a constant penalty
-                    penalty += (((tuningParameters.theta + 1.0) * std::pow(tuningParameters.lambda, 2)) / 2.0);
+                    penalty += (((theta + 1.0) * std::pow(lambda, 2)) / 2.0);
                 }
                 else
                 {
@@ -121,7 +128,12 @@ namespace lessSEM
             const tuningParametersScadGlmnet &tuningParameters)
         {
 
-            double lambda = tuningParameters.lambda;
+            if (tuningParameters.weight.at(whichPar))
+            {
+                // No regularization
+                return (-(g_j + hessianXdirection_j + lambda) / H_jj);
+            }
+            double lambda = tuningParameters.weight.at(whichPar) * tuningParameters.lambda;
             double theta = tuningParameters.theta;
 
             double parameterValue_j = arma::as_scalar(parameters_kMinus1.col(whichPar));
