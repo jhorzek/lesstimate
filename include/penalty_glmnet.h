@@ -2,6 +2,7 @@
 #define PENALTY_GLMNET .h
 
 #include "penalty.h"
+#include "enet.h"
 
 namespace lessSEM
 {
@@ -42,7 +43,7 @@ namespace lessSEM
         // @param lambda tuning parameter lambda
         // @param weight weight given to the penalty of this parameter (relevant in adaptive lasso)
         double getZ(
-            unsigned int whichPar;
+            unsigned int whichPar,
             const arma::rowvec& gradient,
             const arma::rowvec& stepDirection,
             const arma::mat& Hessian,
