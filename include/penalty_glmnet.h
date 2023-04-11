@@ -59,8 +59,8 @@ namespace lessSEM
 
             // compute derivative elements:
             double d_j = arma::as_scalar(stepDirection.col(whichPar));
-            arma::rowvec hessianXdirection = Hessian * arma::trans(stepDirection);
-            double hessianXdirection_j = arma::as_scalar(hessianXdirection.col(whichPar));
+            arma::colvec hessianXdirection = Hessian * arma::trans(stepDirection);
+            double hessianXdirection_j = arma::as_scalar(hessianXdirection.row(whichPar));
             double H_jj = arma::as_scalar(Hessian.row(whichPar).col(whichPar));
             double g_j = arma::as_scalar(gradient.col(whichPar));
 
