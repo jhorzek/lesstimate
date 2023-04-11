@@ -4,6 +4,7 @@
 #include <RcppArmadillo.h>
 #include "ista_class.h"
 #include "glmnet_class.h"
+#include "penalty_glmnet.h"
 #include "bfgsOptim.h"
 #include "lasso.h"
 #include "cappedL1.h"
