@@ -100,7 +100,7 @@ namespace lessSEM
         fitChange,      // convergenceCriterion; // this is related to the inner
         // breaking condition.
         0 // verbose; // if set to a value > 0, the fit every verbose iterations
-        // is printed.
+          // is printed.
     };
     return (defaultIs);
   }
@@ -126,9 +126,6 @@ namespace lessSEM
                                   const arma::mat &Hessian,
                                   const nonsmoothPenalty &penalty_,
                                   const tuning &tuningParameters,
-                                  // const arma::rowvec& lambda,
-                                  // const arma::rowvec& alpha,
-                                  // const arma::rowvec& weights,
                                   const int maxIterIn,
                                   const double breakInner,
                                   const int verbose)
@@ -170,12 +167,12 @@ namespace lessSEM
       {
         // get the update to the parameter:
         z_j = penalty_.getZ(
-          randOrder.at(p),
-          parameters_kMinus1,
-          gradients_kMinus1,
-          stepDirection,
-          Hessian,
-          tuningParameters);
+            randOrder.at(p),
+            parameters_kMinus1,
+            gradients_kMinus1,
+            stepDirection,
+            Hessian,
+            tuningParameters);
         z.col(randOrder.at(p)) = z_j(0, 0);
         stepDirection.col(randOrder.at(p)) += z_j(0, 0);
       }
@@ -468,9 +465,8 @@ namespace lessSEM
       direction = glmnetInner(parameters_kMinus1,
                               gradients_kMinus1,
                               Hessian_kMinus1,
-                              tuningParameters.lambda,
-                              tuningParameters.alpha,
-                              tuningParameters.weights,
+                              penalty_,
+                              tuningParameters,
                               control_.maxIterIn,
                               control_.breakInner,
                               control_.verbose);
