@@ -5,14 +5,6 @@
 
 namespace lessSEM
 {
-
-    class penaltyGlmnet : public penalty
-    {
-    public:
-        // function to update a single parameter:
-        virtual double getZ();
-    };
-
     // the glmnet penalty allows for vectors of alpha and lambda
     class penaltyLASSOGlmnet : public penalty<tuningParametersEnetGlmnet>
     {
