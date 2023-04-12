@@ -100,7 +100,7 @@ namespace lessSEM
             if (probe <= lambda)
                 return (base + lambda * probe);
 
-            if (lambda < probe && probe <= lambda * theta)
+            if ((lambda < probe) && (probe <= lambda * theta))
                 return (base + (-probe * probe + 2.0 * theta * lambda * probe - lambda * lambda) / (2.0 * (theta - 1.0)));
 
             if (probe >= lambda * theta)
@@ -149,76 +149,69 @@ namespace lessSEM
             // However, there are parts of the function that are convex. We
             // can therefore check these parts for their respective minima and
             // then check which is the overall minimum.
-            double z[3];
-            double fitValue[3];
+            double z[5];
+            double fitValue[5];
 
             // Case 1: lasso
             double probe1 = parameterValue_j + d_j - (g_j + hessianXdirection_j + lambda) / H_jj;
             double probe2 = parameterValue_j + d_j - (g_j + hessianXdirection_j - lambda) / H_jj;
 
-            if ((probe1 > 0) & (std::abs(probe1) <= lambda))
+            if ((probe1 > 0))
             {
-                z[0] = -(g_j + hessianXdirection_j + lambda) / H_jj;
+                // parameterValue_j + d_j + z > 0
+                // additionally: parameterValue_j + d_j + z < lambda
+                // so z must be z < lambda - (parameterValue_j + d_j)
+                z[0] = std::min(lambda - (parameterValue_j + d_j),
+                                -(g_j + hessianXdirection_j + lambda) / H_jj);
             }
-            else if ((probe2 < 0) & (std::abs(probe2) <= lambda))
+            else if ((probe2 < 0))
             {
-                z[0] = -(g_j + hessianXdirection_j - lambda) / H_jj;
+                // parameterValue_j + d_j + z < 0
+                // additionally: parameterValue_j + d_j + z < -lambda
+                // so z must be z < -lambda - (parameterValue_j + d_j)
+                z[0] = std::max(-lambda - (parameterValue_j + d_j),
+                                -(g_j + hessianXdirection_j - lambda) / H_jj);
             }
             else
             {
+                // parameterValue_j + d_j + z = 0
+                // it directly follows that -lambda <= parameterValue_j + d_j + z <= lambda
                 z[0] = -parameterValue_j - d_j;
             }
 
             // Case 2: smooth penalty
-            probe1 = (-2.0 * hessianXdirection_j * (theta - 1) +
-                      lambda * (-2.0 * d_j - 2.0 * theta + lambda - 2.0 * parameterValue_j) -
-                      2.0 * g_j * (theta - 1)) /
-                     (2.0 * (H_jj * (theta - 1.0) + lambda));
-            probe2 = (-2.0 * hessianXdirection_j * (theta - 1) +
-                      lambda * (-2.0 * d_j + 2.0 * theta + lambda - 2.0 * parameterValue_j) -
-                      2.0 * g_j * (theta - 1)) /
-                     (2.0 * (H_jj * (theta - 1.0) + lambda));
+            // assume that parameterValue_j + d_j + z > 0
+            // additionally: parameterValue_j + d_j + z >  lambda       -> z >  lambda - (parameterValue_j + d_j)
+            // and:          parameterValue_j + d_j + z <= lambda*theta -> z <= lambda*theta - (parameterValue_j + d_j)
+            z[1] = std::max(
+                lambda - (parameterValue_j + d_j),
+                std::min(
+                    lambda * theta - (parameterValue_j + d_j),
+                    (parameterValue_j + d_j - theta * lambda - (g_j + hessianXdirection_j) * (theta - 1)) / (H_jj * (theta - 1) - 1)));
 
-            if ((parameterValue_j + d_j + probe1 > lambda) &
-                (lambda * theta >= parameterValue_j + d_j + probe1))
-            {
-                z[1] = probe1;
-            }
-            else if ((parameterValue_j + d_j + probe1 < lambda) &
-                     (lambda * theta >= std::abs(parameterValue_j + d_j + probe1)))
-            {
-                z[1] = probe2;
-            }
-            else
-            {
-                z[1] = arma::datum::nan;
-            }
+            // assume that parameterValue_j + d_j + z < 0
+            // additionally: parameterValue_j + d_j + z <  -lambda       -> z <  -lambda - (parameterValue_j + d_j)
+            // and:          parameterValue_j + d_j + z >= -lambda*theta -> z >= -lambda*theta - (parameterValue_j + d_j)
+            z[2] = std::max(
+                -lambda * theta - (parameterValue_j + d_j),
+                std::min(
+                    -lambda - (parameterValue_j + d_j),
+                    (parameterValue_j + d_j + theta * lambda - (g_j + hessianXdirection_j) * (theta - 1)) / (H_jj * (theta - 1) - 1)));
 
             // Case 3: constant penalty
-            probe1 = -(g_j + hessianXdirection_j) / H_jj;
-
-            if (std::abs(parameterValue_j + d_j + probe1) >= theta * lambda)
-            {
-                z[2] = probe1;
-            }
-            else
-            {
-                z[2] = arma::datum::nan;
-            }
+            //     parameterValue_j + d_j + z >  lambda*theta -> z >  lambda*theta - (parameterValue_j + d_j)
+            // or: parameterValue_j + d_j + z < -lambda*theta -> z < -lambda*theta - (parameterValue_j + d_j)
+            // if parameterValue_j + d_j + z is positive:
+            z[3] = std::max(lambda * theta - (parameterValue_j + d_j),
+                            -(g_j + hessianXdirection_j) / H_jj);
+            // if parameterValue_j + d_j + z is negative:
+            z[4] = std::min(-lambda * theta - (parameterValue_j + d_j),
+                            -(g_j + hessianXdirection_j) / H_jj);
 
             // compute fit value
             int whichmin = 0;
-            bool changed = false;
-            for (unsigned int i = 0; i < 3; i++)
+            for (unsigned int i = 0; i < 5; i++)
             {
-                if (!arma::is_finite(z[i]))
-                {
-                    continue;
-                }
-                else
-                {
-                    changed = true;
-                }
 
                 fitValue[i] = this->subproblemValue(
                     parameterValue_j,
@@ -236,8 +229,6 @@ namespace lessSEM
                         whichmin = i;
                 }
             }
-            if (!changed)
-                Rcpp::stop("In Scad: Could not find a minimum.");
 
             return (z[whichmin]);
         }
