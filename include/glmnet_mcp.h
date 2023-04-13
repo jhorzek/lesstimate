@@ -145,11 +145,10 @@ public:
     // H_jj - (1/theta).
     // Note that the points we are deriving below are only minima if H_jj - (1/theta) > 0.
     // Otherwise, they are maxima! Therefore, we also check the value H_jj - (1/theta):
-    if(H_jj - 1.0/theta <= 0)
-      Rcpp::warning("One of the subproblems for theta = %i and lambda = %j  is not positive definite. Using a small hack... This may work or may fail. We recommend using method = 'ista' for mcp.", theta, lambda);
     
     if(H_jj - (1/theta) <= 0){
-      // We will make the function positive definite by replacing the Hessian approximation:
+      Rcpp::warning("One of the subproblems for theta = %i and lambda = %j  is not positive definite. Using a small hack... This may work or may fail. We recommend using method = 'ista' for mcp.", theta, lambda);
+      // We will make the function positive definite by replacing the Hessian approximation. This seems to work in practice...
       H_jj += (1/theta) + .001;
     }
     
@@ -229,11 +228,7 @@ public:
         z[2] = lambda*theta - (parameterValue_j + d_j);
       }
     }
-    
-    // For completeness sake, we also check the boundaries explicitly
-    // z[2] = lambda*theta - (parameterValue_j + d_j);
-    // z[3] = -lambda*theta - (parameterValue_j + d_j);  
-    
+        
     // compute fit value
     int whichmin = -1;
     for (unsigned int i = 0; i < 3; i++)
