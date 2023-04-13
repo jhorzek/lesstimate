@@ -134,16 +134,12 @@ namespace lessSEM
     stepDirection.fill(0.0);
     arma::rowvec z = parameters_kMinus1;
     z.fill(0.0);
-    arma::rowvec parameters_k = parameters_kMinus1;
-    parameters_k.fill(0.0);
-    arma::colvec hessianXdirection,
-        HessTimesZ(Hessian.n_rows, arma::fill::zeros);
-    arma::mat HessDiag(Hessian.n_rows, Hessian.n_cols, arma::fill::zeros),
-        dp_k(1, 1, arma::fill::zeros),
-        H_jj(1, 1, arma::fill::zeros),
-        z_j(1, 1, arma::fill::zeros),
-        newParameter(1, 1, arma::fill::zeros),
-        zChange(1, 1, arma::fill::zeros);
+    //arma::rowvec parameters_k = parameters_kMinus1;
+    //parameters_k.fill(0.0);
+    arma::colvec HessTimesZ(Hessian.n_rows, arma::fill::zeros);
+    arma::mat HessDiag(Hessian.n_rows, Hessian.n_cols, arma::fill::zeros);//,
+        //zChange(1, 1, arma::fill::zeros);
+    double z_j;
 
     HessDiag.diag() = Hessian.diag();
 
@@ -173,8 +169,8 @@ namespace lessSEM
             stepDirection,
             Hessian,
             tuningParameters);
-        z.col(randOrder.at(p)) = z_j(0, 0);
-        stepDirection.col(randOrder.at(p)) += z_j(0, 0);
+        z.col(randOrder.at(p)) = z_j;
+        stepDirection.col(randOrder.at(p)) += z_j;
       }
 
       // check inner stopping criterion:
