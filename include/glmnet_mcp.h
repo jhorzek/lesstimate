@@ -143,7 +143,7 @@ public:
     // issue:
     // d/dz (g_j + hessianXdirection_j + z * H_jj + lambda - (paramterValue_j + d_j + z) /(theta)) =
     // H_jj - (1/theta).
-    // Note that the points we are deriving below are only a minima if H_jj - (1/theta) > 0.
+    // Note that the points we are deriving below are only minima if H_jj - (1/theta) > 0.
     // Otherwise, they are maxima! Therefore, we also check the value H_jj - (1/theta):
     if(H_jj - 1.0/theta <= 0)
       Rcpp::warning("One of the subproblems for theta = %i and lambda = %j  is not positive definite. Using a small hack... This may work or may fail. We recommend using method = 'ista' for mcp.", theta, lambda);
