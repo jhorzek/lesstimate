@@ -1,6 +1,6 @@
 # lessOptimizers
 
-This repository contrains the C++ header files for the optimizers used in the (**lessSEM**)[https://github.com/jhorzek/lessSEM] R package. These optimizers can be used to estimate models with ridge, lasso, adaptiveLasso, elasticNet, cappedL1, lsp, scad, or mcp penalty. The main objective of keeping a separate repository just for the optimizers is that they can also be used by other R packages by copying the folder or by keeping the files in a git submodule. This way, you can make sure that your code will still work even if there are breaking changes in the optimizers used by **lessSEM**.
+This repository contrains the C++ header files for the optimizers used in the [**lessSEM**](https://github.com/jhorzek/lessSEM) R package. These optimizers can be used to estimate models with ridge, lasso, adaptiveLasso, elasticNet, cappedL1, lsp, scad, or mcp penalty. The main objective of keeping a separate repository just for the optimizers is that they can also be used by other R packages by copying the folder or by keeping the files in a git submodule. This way, you can make sure that your code will still work even if there are breaking changes in the optimizers used by **lessSEM**.
 
 # References
 
