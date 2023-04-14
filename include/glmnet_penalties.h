@@ -8,5 +8,6 @@
 #include "glmnet_cappedL1.h"
 #include "glmnet_mcp.h"
 #include "glmnet_lsp.h"
+#include "glmnet_mixedPenalty.h"
 
 #endif
