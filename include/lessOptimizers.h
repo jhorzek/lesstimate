@@ -7,6 +7,7 @@
 #include "glmnet_class.h"
 #include "glmnet_penalties.h"
 #include "bfgsOptim.h"
+#include "simplified_interfaces.h"
 
 
 #endif
