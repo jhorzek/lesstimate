@@ -109,6 +109,10 @@ struct control{
   int sampleSize;
   int verbose;
 };
+// the name "control" dates back to when there was no glmnet optimizer and is
+// kept for backwards compatability. For consistency, we also define a more
+// explicit name:
+typedef control controlIsta;
 
 // controlDefault
 //
@@ -131,6 +135,9 @@ inline control controlDefault(){
   return(defaultIs);
 }
 
+inline control controlIstaDefault(){
+  return(controlDefault());
+}
 
 // ista
 //
