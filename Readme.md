@@ -1,6 +1,15 @@
 # lessOptimizers
 
-This repository contrains the C++ header files for the optimizers used in the [**lessSEM**](https://github.com/jhorzek/lessSEM) R package. These optimizers can be used to estimate models with ridge, lasso, adaptiveLasso, elasticNet, cappedL1, lsp, scad, or mcp penalty. The main objective of keeping a separate repository just for the optimizers is that they can also be used by other R packages by copying the folder or by keeping the files in a git submodule. This way, you can make sure that your code will still work even if there are breaking changes in the optimizers used by **lessSEM**.
+This repository provides optimizers implemented in C++ header files for regularized model estimation in R using Rcpp. These optimizers are mainly used in the R package [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models. The main objective of keeping a separate repository just for the optimizers is that they can also be used by other R packages by copying the include-folder in the inst-folder of your package or by keeping the files in a git submodule. This way you can make sure that your code will still work even if there are breaking changes in the optimizers used by **lessSEM**.
+
+To use the optimziers, you will need two functions:
+
+1. a function that computes the fit value (e.g., the -2log-Likelihood) of your model
+2. a functions that computes the gradients of the model
+
+Given these two functions, **lessOptimizers** lets you apply any of the following penalties to your model: ridge, lasso, adaptiveLasso, elasticNet, cappedL1, lsp, scad, or mcp. Models can be estimated using the glmnet optimizer or variants of the ista optimizer. The interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
+
+An introduction to optimizing models with **lessOptimizers** can be found in the [**lessLM**](https://github.com/jhorzek/lessLM) repository. We recommend that you use the [simplified interfaces](https://github.com/jhorzek/lessOptimizers/blob/main/include/simplified_interfaces.h) to get started. 
 
 # References
 
