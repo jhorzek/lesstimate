@@ -1,6 +1,7 @@
 #ifndef GLMNETCLASS_H
 #define GLMNETCLASS_H
-#include <RcppArmadillo.h>
+#include "common_headers.h"
+
 #include "model.h"
 #include "fitResults.h"
 #include "glmnet_lasso.h"

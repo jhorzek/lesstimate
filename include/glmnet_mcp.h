@@ -1,5 +1,6 @@
 #ifndef GLMNET_MCP
 #define GLMNET_MCP
+#include "common_headers.h"
 
 #include "penalty.h"
 

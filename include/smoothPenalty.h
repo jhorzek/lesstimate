@@ -1,6 +1,6 @@
 #ifndef SMOOTHPENALTY_H
 #define SMOOTHPENALTY_H
-#include <RcppArmadillo.h>
+#include "common_headers.h"
 
 namespace lessSEM{
 

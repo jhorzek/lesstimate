@@ -1,7 +1,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <RcppArmadillo.h>
+#include "common_headers.h"
 
 namespace lessSEM{
 
