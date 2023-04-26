@@ -1,5 +1,6 @@
 #ifndef SCAD_GLMNET_H
 #define SCAD_GLMNET_H
+#include "common_headers.h"
 
 #include "penalty.h"
 

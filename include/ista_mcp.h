@@ -1,6 +1,7 @@
 #ifndef MCP_H
 #define MCP_H
-#include <RcppArmadillo.h>
+#include "common_headers.h"
+
 #include "proximalOperator.h"
 #include "penalty.h"
 

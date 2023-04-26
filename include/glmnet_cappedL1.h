@@ -2,6 +2,7 @@
 #define GLMNET_CAPPEDL1
 
 #include "penalty.h"
+#include "common_headers.h"
 
 namespace lessSEM
 {

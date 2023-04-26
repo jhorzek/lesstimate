@@ -1,5 +1,6 @@
 #ifndef FITRESULTS_H
 #define FITRESULTS_H
+#include "common_headers.h"
 
 namespace lessSEM{
 

@@ -1,6 +1,6 @@
 #ifndef PENALTY_H
 #define PENALTY_H
-#include <RcppArmadillo.h>
+#include "common_headers.h"
 
 namespace lessSEM{
 

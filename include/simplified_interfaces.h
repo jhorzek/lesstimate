@@ -5,7 +5,7 @@
 // function out of the box. The following classes are meant to reduce this
 // overhead by providing simplified interfaces to specific penalty functions.
 
-#include <RcppArmadillo.h>
+#include "common_headers.h"
 #include "glmnet_class.h"
 #include "glmnet_penalties.h"
 #include "ista_class.h"

@@ -1,6 +1,7 @@
 #ifndef MIXEDPENALTY_H
 #define MIXEDPENALTY_H
-#include <RcppArmadillo.h>
+#include "common_headers.h"
+
 #include "penalty_type.h"
 #include "proximalOperator.h"
 #include "penalty.h"

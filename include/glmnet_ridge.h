@@ -1,6 +1,7 @@
 #ifndef GLMNET_RIDGE_H
 #define GLMNET_RIDGE_H
-#include <RcppArmadillo.h>
+#include "common_headers.h"
+
 #include "smoothPenalty.h"
 #include "enet.h" // for definition of tuning parameters
 

@@ -1,5 +1,6 @@
 #ifndef LASSO_GLMNET_H
 #define LASSO_GLMNET_H
+#include "common_headers.h"
 
 #include "penalty.h"
 #include "enet.h"

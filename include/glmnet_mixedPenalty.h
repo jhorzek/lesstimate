@@ -1,5 +1,6 @@
 #ifndef MIXEDPENALTY_GLMNET_H
 #define MIXEDPENALTY_GLMNET_H
+#include "common_headers.h"
 
 #include "penalty.h"
 #include "penalty_type.h"

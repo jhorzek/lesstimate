@@ -1,6 +1,7 @@
 #ifndef CAPPEDL1_H
 #define CAPPEDL1_H
-#include <RcppArmadillo.h>
+#include "common_headers.h"
+
 #include "proximalOperator.h"
 #include "penalty.h"
 #include "enet.h" // for definition of tuning parameters

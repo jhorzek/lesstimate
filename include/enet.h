@@ -1,6 +1,6 @@
 #ifndef ENET_H
 #define ENET_H
-#include <RcppArmadillo.h>
+#include "common_headers.h"
 
 // The elastic net is a combination of ridge and lasso
 // In this file, only the tuning parameters required by lasso

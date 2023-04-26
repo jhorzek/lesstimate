@@ -1,6 +1,7 @@
 #ifndef LASSO_H
 #define LASSO_H
-#include <RcppArmadillo.h>
+#include "common_headers.h"
+
 #include "proximalOperator.h"
 #include "penalty.h"
 #include "enet.h" // for definition of tuning parameters

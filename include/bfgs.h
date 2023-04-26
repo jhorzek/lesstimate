@@ -1,6 +1,8 @@
 #ifndef BFGS_H
 #define BFGS_H
 
+#include "common_headers.h"
+
 namespace lessSEM{
 
 // BFGS

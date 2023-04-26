@@ -1,6 +1,7 @@
 #ifndef ISTA_RIDGE_H
 #define ISTA_RIDGE_H
-#include <RcppArmadillo.h>
+#include "common_headers.h"
+
 #include "proximalOperator.h"
 #include "smoothPenalty.h"
 #include "enet.h" // for definition of tuning parameters
