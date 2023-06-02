@@ -45,7 +45,7 @@ inline double mcpPenalty(const double par,
     );
     
   }else{
-    Rcpp::stop("Error while evaluating mcp");
+    error("Error while evaluating mcp");
   }
   // The following should never be called:
   return 0.0;
@@ -57,7 +57,7 @@ public:
   
   arma::rowvec getParameters(const arma::rowvec& parameterValues, 
                              const arma::rowvec& gradientValues, 
-                             const Rcpp::StringVector& parameterLabels,
+                             const stringVector& parameterLabels,
                              const double L,
                              const tuningParametersMcp& tuningParameters) 
   override {
@@ -132,7 +132,7 @@ class penaltyMcp: public penalty<tuningParametersMcp>{
 public:
   
   double getValue(const arma::rowvec& parameterValues, 
-                  const Rcpp::StringVector& parameterLabels,
+                  const stringVector& parameterLabels,
                   const tuningParametersMcp& tuningParameters) 
   override {
     

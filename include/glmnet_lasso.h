@@ -12,7 +12,7 @@ namespace lessSEM
     {
     public:
         double getValue(const arma::rowvec &parameterValues,
-                        const Rcpp::StringVector &parameterLabels,
+                        const stringVector &parameterLabels,
                         const tuningParametersEnetGlmnet &tuningParameters) 
                         override
         {
@@ -123,7 +123,7 @@ namespace lessSEM
                     }
                     else
                     {
-                        Rcpp::stop("Error in subgradient computation");
+                        error("Error in subgradient computation");
                     }
                 }
                 else

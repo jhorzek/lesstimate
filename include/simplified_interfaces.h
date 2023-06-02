@@ -15,7 +15,7 @@ namespace lessSEM{
 // regularized SEM. Your mileage may vary, so please make sure to adapt the settings
 // to your needs. 
 // @param userModel your model. Must inherit from lessSEM::model!
-// @param startingValues Rcpp::NumericVector with initial starting values. This 
+// @param startingValues numericVector with initial starting values. This 
 // vector can have names.
 // @param penalty vector with strings indicating the penalty for each parameter. 
 // Currently supported are "none", "cappedL1", "lasso", "lsp", "mcp", and "scad". 
@@ -39,7 +39,7 @@ namespace lessSEM{
 // @return fitResults
 inline fitResults fitGlmnet(
     model& userModel,
-    Rcpp::NumericVector startingValues,
+    numericVector startingValues,
     std::vector<std::string> penalty,
     arma::rowvec lambda,
     arma::rowvec theta,
@@ -49,7 +49,7 @@ inline fitResults fitGlmnet(
 ){
   
   unsigned int numberParameters = startingValues.length();
-  Rcpp::StringVector parameterLabels = startingValues.names();
+  stringVector parameterLabels = startingValues.names();
   
   // We expect startingValues, penalty, regularized, weights,
   // lambda, theta, and alpha to all be of the same length. For convenience, 
@@ -67,7 +67,7 @@ inline fitResults fitGlmnet(
     initialHessian.fill(0.0);
     initialHessian.diag() += hessianValue;
     
-    Rcpp::warning("Setting initial Hessian to identity matrix. We recommend passing a better Hessian.");
+    warn("Setting initial Hessian to identity matrix. We recommend passing a better Hessian.");
   }
   
   controlOptimizer.initialHessian = initialHessian;
@@ -81,7 +81,7 @@ inline fitResults fitGlmnet(
   
   if(!allEqual(nElements)
   ){
-    Rcpp::stop("penalty, regularized, lambda, theta, alpha, nrow(initialHessian) and ncol(initialHessian) must all be of the same length.");
+    error("penalty, regularized, lambda, theta, alpha, nrow(initialHessian) and ncol(initialHessian) must all be of the same length.");
   }
   
   std::vector<double> weights(numberParameters);
@@ -134,7 +134,7 @@ inline fitResults fitGlmnet(
 // regularized SEM. Your mileage may vary, so please make sure to adapt the settings
 // to your needs. 
 // @param userModel your model. Must inherit from lessSEM::model!
-// @param startingValues Rcpp::NumericVector with initial starting values. This 
+// @param startingValues numericVector with initial starting values. This 
 // vector can have names.
 // @param penalty vector with strings indicating the penalty for each parameter. 
 // Currently supported are "none", "cappedL1", "lasso", "lsp", "mcp", and "scad". 
@@ -157,7 +157,7 @@ inline fitResults fitGlmnet(
 // @return fitResults
 inline fitResults fitIsta(
     model& userModel,
-    Rcpp::NumericVector startingValues,
+    numericVector startingValues,
     std::vector<std::string> penalty,
     arma::rowvec lambda,
     arma::rowvec theta,
@@ -166,7 +166,7 @@ inline fitResults fitIsta(
 ){
   
   unsigned int numberParameters = startingValues.length();
-  Rcpp::StringVector parameterLabels = startingValues.names();
+  stringVector parameterLabels = startingValues.names();
   
   // We expect startingValues, penalty, regularized, weights,
   // lambda, theta, and alpha to all be of the same length. For convenience, 
@@ -185,7 +185,7 @@ inline fitResults fitIsta(
   
   if(!allEqual(nElements)
   ){
-    Rcpp::stop("penalty, regularized, lambda, theta, and alpha must all be of the same length.");
+    error("penalty, regularized, lambda, theta, and alpha must all be of the same length.");
   }
   
   std::vector<double> weights(numberParameters);

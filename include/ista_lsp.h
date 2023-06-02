@@ -40,7 +40,7 @@ public:
   
   arma::rowvec getParameters(const arma::rowvec& parameterValues, 
                              const arma::rowvec& gradientValues, 
-                             const Rcpp::StringVector& parameterLabels,
+                             const stringVector& parameterLabels,
                              const double L,
                              const tuningParametersLSP& tuningParameters) 
   override {
@@ -51,7 +51,6 @@ public:
     parameters_kp1.fill(arma::datum::nan);
     
     double x, abs_u_k;
-    Rcpp::String parameterLabel;
     std::vector<double> C(3, 0.0);
     std::vector<double> xVec(3, 0.0);
     double tempValue;
@@ -114,7 +113,7 @@ class penaltyLSP: public penalty<tuningParametersLSP>{
 public:
   
   double getValue(const arma::rowvec& parameterValues, 
-                  const Rcpp::StringVector& parameterLabels,
+                  const stringVector& parameterLabels,
                   const tuningParametersLSP& tuningParameters) 
   override {
     

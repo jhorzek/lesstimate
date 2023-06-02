@@ -13,7 +13,7 @@ public:
   
   arma::rowvec getParameters(const arma::rowvec& parameterValues, 
                              const arma::rowvec& gradientValues, 
-                             const Rcpp::StringVector& parameterLabels,
+                             const stringVector& parameterLabels,
                              const double L,
                              const tuningParametersEnet& tuningParameters) 
   override {
@@ -24,7 +24,6 @@ public:
     parameters_kp1.fill(arma::datum::nan);
     
     double lambda_i;
-    Rcpp::String parameterLabel;
     int sign;
     for(unsigned int p = 0; p < parameterValues.n_elem; p ++)
     {
@@ -47,7 +46,7 @@ class penaltyLASSO: public penalty<tuningParametersEnet>{
 public:
   
   double getValue(const arma::rowvec& parameterValues, 
-                  const Rcpp::StringVector& parameterLabels,
+                  const stringVector& parameterLabels,
                   const tuningParametersEnet& tuningParameters) 
   override {
     
@@ -95,7 +94,7 @@ public:
           subgradients.at(p)  = gradients.at(p) + lower;
           continue;
         }else{
-          Rcpp::stop("Error in subgradient computation");
+          error("Error in subgradient computation");
         }
         
       }else{

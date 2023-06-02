@@ -42,7 +42,7 @@ public:
   
   arma::rowvec getParameters(const arma::rowvec& parameterValues, 
                              const arma::rowvec& gradientValues, 
-                             const Rcpp::StringVector& parameterLabels,
+                             const stringVector& parameterLabels,
                              const double L,
                              const tuningParametersMixedPenalty& tuningParameters) 
   override {
@@ -65,7 +65,6 @@ public:
       if(tuningParameters.pt.at(p) == cappedL1){
         
         double lambda_i, x_1, x_2, h_1, h_2, abs_u_k;
-        Rcpp::String parameterLabel;
         int sign;
         lambda_i = tuningParameters.alpha.at(p) *
           tuningParameters.lambda.at(p) * 
@@ -108,7 +107,6 @@ public:
       if(tuningParameters.pt.at(p) == lasso){
         
         double lambda_i;
-        Rcpp::String parameterLabel;
         int sign;
         
         lambda_i = tuningParameters.lambda.at(p) * 
@@ -125,7 +123,6 @@ public:
       if(tuningParameters.pt.at(p) == lsp){
         
         double x, abs_u_k;
-        Rcpp::String parameterLabel;
         std::vector<double> C(3, 0.0);
         std::vector<double> xVec(3, 0.0);
         double tempValue;
@@ -224,7 +221,6 @@ public:
       if(tuningParameters.pt.at(p) == scad){
         
         double abs_u_k, v;
-        Rcpp::String parameterLabel;
         std::vector<double> x(4, 0.0); // to save the minima of the 
         // three different regions of the penalty function
         std::vector<double> h(4, 0.0); // to save the function values of the 
@@ -293,7 +289,7 @@ public:
         continue;
       }
       
-      Rcpp::stop("Unknown penalty function.");
+      error("Unknown penalty function.");
       
       
     }
@@ -307,7 +303,7 @@ class penaltyMixedPenalty: public penalty<tuningParametersMixedPenalty>{
 public:
   
   double getValue(const arma::rowvec& parameterValues, 
-                  const Rcpp::StringVector& parameterLabels,
+                  const stringVector& parameterLabels,
                   const tuningParametersMixedPenalty& tuningParameters) 
   override {
     
@@ -363,7 +359,7 @@ public:
         break;
         
       default:
-        Rcpp::stop("Penalty not found.");
+        error("Penalty not found.");
       }
       
     }

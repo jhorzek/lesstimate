@@ -42,12 +42,12 @@ inline arma::mat BFGS(
     
   }catch(...){
     // skip in case of error: return Hessian_kMinus1
-    if(verbose) Rcpp::warning("Hessian update skipped.");
+    if(verbose) warn("Hessian update skipped.");
     return(Hessian_k);
   }
   
   if(yTimesD(0,0) < 0){
-    if(verbose) Rcpp::warning("Hessian update possibly non-positive definite.");
+    if(verbose) warn("Hessian update possibly non-positive definite.");
     if(skipUpdate) return(Hessian_k);
   }
   
@@ -62,7 +62,7 @@ inline arma::mat BFGS(
     ySquared/yTimesD(0,0);
   
   if(!arma::is_finite(Hessian_k)){
-    if(verbose) Rcpp::warning("Non-finite Hessian. Returning previous Hessian");
+    if(verbose) warn("Non-finite Hessian. Returning previous Hessian");
     return(Hessian_kMinus1);
   }
   
@@ -70,7 +70,7 @@ inline arma::mat BFGS(
   if(!Hessian_k.is_symmetric()){
     // make symmetric
     double sumElem = arma::accu(arma::pow(Hessian_k - .5*(Hessian_k + arma::trans(Hessian_k)),2));
-    if((sumElem > 1) & verbose) Rcpp::warning("Hessian not symmetric");
+    if((sumElem > 1) & verbose) warn("Hessian not symmetric");
     Hessian_k = .5*(Hessian_k + arma::trans(Hessian_k));
   }else{
     return(Hessian_k);
@@ -81,7 +81,7 @@ inline arma::mat BFGS(
   if(!Hessian_k.is_sympd()){
     // make positive definite
     // see https://nhigham.com/2021/02/16/diagonally-perturbing-a-symmetric-matrix-to-make-it-positive-definite/
-    if(verbose) Rcpp::warning("Hessian not pd");
+    if(verbose) warn("Hessian not pd");
     arma::vec eigenValues = arma::eig_sym(Hessian_k);
     arma::mat diagMat = arma::eye(Hessian_k.n_rows, 
                                   Hessian_k.n_cols);
@@ -92,7 +92,7 @@ inline arma::mat BFGS(
     // check again...
     if(!Hessian_k.is_sympd()){
       // return non-updated hessian
-      if(verbose) Rcpp::warning("Invalid Hessian. Returning previous Hessian");
+      if(verbose) warn("Invalid Hessian. Returning previous Hessian");
       return(Hessian_kMinus1);
     }
   }

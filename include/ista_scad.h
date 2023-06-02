@@ -51,7 +51,7 @@ inline double scadPenalty(const double par,
     
   }else{
     
-    Rcpp::stop("Error while evaluating scad");
+    error("Error while evaluating scad");
     
   }
   
@@ -67,7 +67,7 @@ public:
   
   arma::rowvec getParameters(const arma::rowvec& parameterValues, 
                              const arma::rowvec& gradientValues, 
-                             const Rcpp::StringVector& parameterLabels,
+                             const stringVector& parameterLabels,
                              const double L,
                              const tuningParametersScad& tuningParameters) 
   override {
@@ -78,7 +78,6 @@ public:
     parameters_kp1.fill(arma::datum::nan);
     
     double abs_u_k, v;
-    Rcpp::String parameterLabel;
     std::vector<double> x(4, 0.0); // to save the minima of the 
     // three different regions of the penalty function
     std::vector<double> h(4, 0.0); // to save the function values of the 
@@ -165,7 +164,7 @@ class penaltyScad: public penalty<tuningParametersScad>{
 public:
   
   double getValue(const arma::rowvec& parameterValues, 
-                  const Rcpp::StringVector& parameterLabels,
+                  const stringVector& parameterLabels,
                   const tuningParametersScad& tuningParameters) 
   override {
     

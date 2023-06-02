@@ -108,7 +108,7 @@ inline arma::rowvec bfgsLineSearch(
     model& model_,
     smoothPenalty<T>& smoothPenalty_,
     const arma::rowvec& parameters_kMinus1, 
-    const Rcpp::StringVector& parameterLabels,
+    const stringVector& parameterLabels,
     const arma::rowvec& direction,
     const double fit_kMinus1, 
     const arma::rowvec& gradients_kMinus1,
@@ -127,7 +127,7 @@ inline arma::rowvec bfgsLineSearch(
   arma::rowvec parameters_k(gradients_kMinus1.n_rows);
   parameters_k.fill(arma::datum::nan);
   
-  Rcpp::NumericVector randomNumber;
+  numericVector randomNumber;
   
   double fit_k; // new fit value of differentiable part
   double p_k; // new penalty value
@@ -157,11 +157,11 @@ inline arma::rowvec bfgsLineSearch(
     currentStepSize = stepSize;
   }
   
-  randomNumber = Rcpp::runif(1,0.0,1.0);
+  randomNumber = unif(1,0.0,1.0);
   // randomly resetting the step size can help
   // if the optimizer is stuck
   if(randomNumber.at(0) < 0.25){
-    Rcpp::NumericVector tmp = Rcpp::runif(1,.5,.99);
+    numericVector tmp =  unif(1,0.0,1.0);
     currentStepSize = tmp.at(0);
   }
   
@@ -227,7 +227,7 @@ inline arma::rowvec bfgsLineSearch(
     
   }// end line search
   
-  if(!converged) Rcpp::warning("Line search did not converge.");
+  if(!converged) warn("Line search did not converge.");
   
   return(parameters_k);
 }
@@ -243,18 +243,17 @@ inline arma::rowvec bfgsLineSearch(
 // @return fit result
 template<typename T> // T is the type of the tuning parameters
 inline lessSEM::fitResults bfgsOptim(model& model_, 
-                               Rcpp::NumericVector startingValuesRcpp,
-                               smoothPenalty<T>& smoothPenalty_,
-                               const T& tuningParameters, // tuning parameters are of type T
-                               const controlBFGS& control_){
+                                     numericVector startingValuesRcpp,
+                                     smoothPenalty<T>& smoothPenalty_,
+                                     const T& tuningParameters, // tuning parameters are of type T
+                                     const controlBFGS& control_){
   if(control_.verbose != 0) {
-    Rcpp::Rcout << "Optimizing with bfgs.\n" <<
-      std::endl;
+    print << "Optimizing with bfgs.\n";
   }
   
   // separate labels and values
-  arma::rowvec startingValues = Rcpp::as<arma::rowvec>(startingValuesRcpp);
-  const Rcpp::StringVector parameterLabels = startingValuesRcpp.names();
+  arma::rowvec startingValues = toArmaVector(startingValuesRcpp);
+  const stringVector parameterLabels = startingValuesRcpp.names();
   
   // prepare parameter vectors
   arma::rowvec parameters_k = startingValues, 
@@ -279,7 +278,7 @@ inline lessSEM::fitResults bfgsOptim(model& model_,
   double penalizedFit_kMinus1 = fit_kMinus1;
   
   // the following vector will save the fits of all iterations:
-  Rcpp::NumericVector fits(control_.maxIterOut+1);
+  numericVector fits(control_.maxIterOut+1);
   fits.fill(NA_REAL);
   fits.at(0) = penalizedFit_kMinus1;
   
@@ -306,9 +305,11 @@ inline lessSEM::fitResults bfgsOptim(model& model_,
   
   // outer iteration
   for(int outer_iteration = 0; outer_iteration < control_.maxIterOut; outer_iteration ++){
-
+    
     // check if user wants to stop the computation:
+#if USE_R
     Rcpp::checkUserInterrupt();
+#endif
     
     // the gradients will be used by the inner iteration to compute the new 
     // parameters
@@ -355,11 +356,13 @@ inline lessSEM::fitResults bfgsOptim(model& model_,
     
     // print fit info
     if(control_.verbose > 0 && outer_iteration % control_.verbose == 0){
-      Rcpp::Rcout << "Fit in iteration outer_iteration " << 
-        outer_iteration + 1 << 
-          ": " << penalizedFit_k << 
-            std::endl;
-      Rcpp::Rcout << parameters_k << std::endl;
+      print << "Fit in iteration outer_iteration "
+            << outer_iteration + 1
+            << ": "
+            << penalizedFit_k
+            << "\n"
+            << parameters_k
+            << std::endl;
     } 
     
     // Approximate Hessian using BFGS
@@ -383,7 +386,7 @@ inline lessSEM::fitResults bfgsOptim(model& model_,
       try{
         breakOuter = max(HessDiag*arma::pow(arma::trans(direction),2)) < control_.breakOuter;
       }catch(...){
-        Rcpp::stop("Error while computing convergence criterion");
+        error("Error while computing convergence criterion");
       }
       
     }
@@ -393,7 +396,7 @@ inline lessSEM::fitResults bfgsOptim(model& model_,
           fits.at(outer_iteration)) < 
             control_.breakOuter;
       }catch(...){
-        Rcpp::stop("Error while computing convergence criterion");
+        error("Error while computing convergence criterion");
       }
     }
     if(control_.convergenceCriterion == gradients_){
@@ -404,7 +407,7 @@ inline lessSEM::fitResults bfgsOptim(model& model_,
         breakOuter = arma::sum(arma::abs(subGradients) < control_.breakOuter) == 
           subGradients.n_elem;
       }catch(...){
-        Rcpp::stop("Error while computing convergence criterion");
+        error("Error while computing convergence criterion");
       }
     }
     
@@ -422,7 +425,7 @@ inline lessSEM::fitResults bfgsOptim(model& model_,
   }// end outer iteration
   
   if(!breakOuter){
-    Rcpp::warning("Outer iterations did not converge");
+    warn("Outer iterations did not converge");
   }
   
   fitResults fitResults_;

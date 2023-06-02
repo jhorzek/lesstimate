@@ -19,7 +19,7 @@ namespace lessSEM
     {
     public:
         double getValue(const arma::rowvec &parameterValues,
-                        const Rcpp::StringVector &parameterLabels,
+                        const stringVector &parameterLabels,
                         const tuningParametersCappedL1Glmnet &tuningParameters)
             override
         {
@@ -176,7 +176,7 @@ namespace lessSEM
                         const arma::rowvec &gradients,
                         const tuningParametersCappedL1Glmnet &tuningParameters)
         {
-            Rcpp::stop("Subgradients not yet implemented for cappedL1 penalty. Use different convergence criterion.");
+            error("Subgradients not yet implemented for cappedL1 penalty. Use different convergence criterion.");
         }
     };
 }

@@ -8,7 +8,7 @@ class proximalOperator{
 public:
   virtual arma::rowvec getParameters(const arma::rowvec& parameterValues, 
                                             const arma::rowvec& gradientValues,
-                                            const Rcpp::StringVector& parameterLabels,
+                                            const stringVector& parameterLabels,
                                             const double L,
                                             const T& tuningParameters) = 0;
 };

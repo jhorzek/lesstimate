@@ -157,7 +157,7 @@ inline control controlIstaDefault(){
 template<typename T, typename U> // T is the type of the tuning parameters
 inline lessSEM::fitResults ista(
     model& model_, 
-    Rcpp::NumericVector startingValuesRcpp,
+    numericVector startingValuesRcpp,
     proximalOperator<T>& proximalOperator_, // proximalOperator takes the tuning parameters
     // as input -> <T>
     penalty<T>& penalty_, // penalty takes the tuning parameters
@@ -169,18 +169,29 @@ inline lessSEM::fitResults ista(
 )
 {
   if(control_.verbose != 0) {
-    Rcpp::Rcout << "Optimizing with ista.\n" <<
-      "Using " << convCritInnerIsta_txt.at(control_.convCritInner) << " as inner convergence criterion\n" <<
-        "Using " << stepSizeInheritance_txt.at(control_.stepSizeIn) << " as step size inheritance\n" << 
-          "Tuning parameters: \n eta = " << control_.eta  << "\n" << 
-            " accelerate = " << control_.accelerate  << "\n" << 
-              " sigma = " << control_.sigma  << "\n" << 
-                " breakOuter = " << control_.breakOuter  << "\n" << 
-                  std::endl;
+    print << "Optimizing with ista.\n"
+          << "Using "
+          << convCritInnerIsta_txt.at(control_.convCritInner)
+          << " as inner convergence criterion\n"
+          << "Using "
+          << stepSizeInheritance_txt.at(control_.stepSizeIn)
+          << " as step size inheritance\n"
+          << "Tuning parameters: \n eta = " 
+          << control_.eta
+          << "\n"
+          << " accelerate = "
+          << control_.accelerate
+          << "\n"
+          << " sigma = "
+          << control_.sigma
+          << "\n"
+          << " breakOuter = "
+          << control_.breakOuter
+          << std::endl;
   }
   // separate labels and values
-  const arma::rowvec startingValues = Rcpp::as<arma::rowvec>(startingValuesRcpp);
-  const Rcpp::StringVector parameterLabels = startingValuesRcpp.names();
+  const arma::rowvec startingValues = toArmaVector(startingValuesRcpp);
+  const stringVector parameterLabels = startingValuesRcpp.names();
   
   // prepare parameter vectors
   arma::rowvec parameters_k = startingValues, 
@@ -191,7 +202,7 @@ inline lessSEM::fitResults ista(
   arma::rowvec parameterChange(startingValues.n_elem);
   arma::rowvec gradientChange(startingValues.n_elem); // necessary for Barzilai Borwein
   arma::mat quadr, parchTimeGrad;
-  Rcpp::NumericVector randomNumber; // for stochastic Barzilai Borwein
+  numericVector randomNumber; // for stochastic Barzilai Borwein
   
   // prepare fit elements
   double fit_k = (1.0/control_.sampleSize)*model_.fit(startingValues, parameterLabels) +
@@ -209,9 +220,9 @@ inline lessSEM::fitResults ista(
     penalty_.getValue(parameters_kMinus1, parameterLabels, tuningParameters); // lasso penalty part
   
   // the following vector will save the fits of all iterations:
-  Rcpp::NumericVector fits(control_.maxIterOut+1);
-  fits.fill(NA_REAL);
-  fits.at(0) = penalizedFit_kMinus1;
+  arma::rowvec fits(control_.maxIterOut+1);
+  fits.fill(arma::datum::nan);
+  fits(0) = penalizedFit_kMinus1;
   
   // prepare gradient elements 
   // NOTE: We combine the gradients of the smooth functions (the log-Likelihood)
@@ -235,7 +246,9 @@ inline lessSEM::fitResults ista(
   for(int outer_iteration = 0; outer_iteration < control_.maxIterOut; outer_iteration ++){
     
     // check if user wants to stop the computation:
+#if USE_R
     Rcpp::checkUserInterrupt();
+#endif
     
     for(int inner_iteration = 0; inner_iteration < control_.maxIterIn; inner_iteration ++){
       // inner iteration: reduce step size until the convergence criterion is met
@@ -352,14 +365,14 @@ inline lessSEM::fitResults ista(
     
     // print fit info
     if((control_.verbose > 0) && (outer_iteration % control_.verbose == 0)){
-      Rcpp::Rcout << "Fit in iteration outer_iteration " << 
+      print << "Fit in iteration outer_iteration " << 
         outer_iteration + 1 << 
           ": " << penalizedFit_k << " (" << fit_k << " + " << penalty_k  << ")" << std::endl;
-      Rcpp::Rcout << parameters_k << std::endl;
+      print << parameters_k << std::endl;
     } 
     
     if((!breakInner) && (control_.verbose < 0)){
-      Rcpp::warning("Inner iterations did not improve the fit --> resetting L.");
+      warn("Inner iterations did not improve the fit --> resetting L.");
       L_kMinus1 = control_.L0;
       continue;
     }
@@ -370,10 +383,10 @@ inline lessSEM::fitResults ista(
                                                  parameterLabels, 
                                                  smoothTuningParameters); // ridge part
     
-    fits.at(outer_iteration+1) = penalizedFit_k;
+    fits(outer_iteration+1) = penalizedFit_k;
     
     // check outer breaking condition
-    breakOuter = std::abs(fits.at(outer_iteration+1) - fits.at(outer_iteration)) < control_.breakOuter;
+    breakOuter = std::abs(fits(outer_iteration+1) - fits(outer_iteration)) < control_.breakOuter;
     
     if(breakOuter) {
       break;
@@ -398,7 +411,7 @@ inline lessSEM::fitResults ista(
       if(L_kMinus1 < 1e-10 || L_kMinus1 > 1e10) L_kMinus1 = control_.L0;
       
       
-      randomNumber = Rcpp::runif(1,0.0,1.0);
+      randomNumber = unif(1,0.0,1.0);
       if((control_.stepSizeIn == stochasticBarzilaiBorwein) && 
          (randomNumber.at(0) < 0.25)) {
         L_kMinus1 = control_.L0;// reset with 25% probability
@@ -409,7 +422,7 @@ inline lessSEM::fitResults ista(
       L_kMinus1 = L_k;
       
     }else{
-      Rcpp::stop("Unknown step inheritance.");
+      error("Unknown step inheritance.");
     }
     
     // for next iteration: save current values as previous values
