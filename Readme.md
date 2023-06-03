@@ -11,6 +11,10 @@ Given these two functions, **lessOptimizers** lets you apply any of the followin
 
 An introduction to optimizing models with **lessOptimizers** can be found in the [**lessLM**](https://github.com/jhorzek/lessLM) repository. We recommend that you use the [simplified interfaces](https://github.com/jhorzek/lessOptimizers/blob/main/include/simplified_interfaces.h) to get started. 
 
+## Using lessOptimizers outside of *R*
+
+**lessOptimizers** can be used outside of *R* by setting the USE_R in [common_headers.h](https://github.com/jhorzek/lessOptimizers/blob/main/include/common_headers.h) to zero (e.g., using `-DUSE_R=0` when compiling). An example for using **lessOptimizers** in a pure C++ package can be found in the [lessLMcpp](https://github.com/jhorzek/lessLMcpp) repository. The procedure is currently documented in the src-files. More documentation will follow.
+
 # References
 
 ## Penalty Functions
