@@ -33,17 +33,28 @@ namespace lessSEM
   // define functions:
   inline arma::rowvec toArmaVector(numericVector numVec)
   {
-    return (Rcpp::as<arma::rowvec>(numVec));
+    arma::rowvec armaVec(numVec.length());
+    for(unsigned int i = 0; i < numVec.length(); i++){
+      armaVec(i) = numVec(i);
+    }
+    return (armaVec);
   }
 
   inline numericVector toNumericVector(arma::rowvec vec)
   {
-    return (Rcpp::as<numericVector>(vec));
+    numericVector numVec(vec.n_elem);
+    for(unsigned int i = 0; i < numVec.length(); i++){
+      numVec(i) = vec(i);
+    }
+    return (numVec);
   }
 
   inline stringVector toStringVector(std::vector<std::string> vec)
   {
-    stringVector myStringVec = Rcpp::as<stringVector>(vec);
+    stringVector myStringVec(vec.size());
+    for(unsigned int i = 0; i < myStringVec.length(); i++){
+      myStringVec(i) = vec.at(i);
+    }
     return (myStringVec);
   }
   inline numericVector sample(numericVector vec, int nSamples, bool replace)
