@@ -135,11 +135,11 @@ namespace lessSEM
     stepDirection.fill(0.0);
     arma::rowvec z = parameters_kMinus1;
     z.fill(0.0);
-    //arma::rowvec parameters_k = parameters_kMinus1;
-    //parameters_k.fill(0.0);
+    // arma::rowvec parameters_k = parameters_kMinus1;
+    // parameters_k.fill(0.0);
     arma::colvec HessTimesZ(Hessian.n_rows, arma::fill::zeros);
-    arma::mat HessDiag(Hessian.n_rows, Hessian.n_cols, arma::fill::zeros);//,
-        //zChange(1, 1, arma::fill::zeros);
+    arma::mat HessDiag(Hessian.n_rows, Hessian.n_cols, arma::fill::zeros); //,
+                                                                           // zChange(1, 1, arma::fill::zeros);
     double z_j;
 
     HessDiag.diag() = Hessian.diag();
@@ -348,6 +348,12 @@ namespace lessSEM
 
     return (parameters_k);
   }
+
+  // We provide two optimizer interfaces: One uses a combination of arma::rowvec and lessSEM::stringVector for starting
+  // values and parameter labels respectively. This interface is consistent with the fit and gradient function of the
+  // lessSEM::model-class. Alternatively, a numericVector can be passed to the optimizers. This design is rooted in
+  // the use of Rcpp::NumericVectors that combine values and labels similar to an R vector. Thus, interfacing to this
+  // second function call can be easier when coming from R.
 
   // glmnet
   //
@@ -609,6 +615,40 @@ namespace lessSEM
     return (fitResults_);
 
   } // end glmnet
+
+  // glmnet
+  //
+  // Optimize a model using the glmnet procedure.
+  // @param model_ the model object derived from the model class in model.h
+  // @param startingValues an arma::rowvec numeric vector with starting values
+  // @param parameterLabels a lessSEM::stringVector with labels for parameters
+  // @param penalty_ a penalty derived from the penalty class in penalty.h
+  // @param smoothPenalty_ a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
+  // @param tuningParameters tuning parameters for the penalty functions. Note that both penalty functions must
+  // take the same tuning parameters.
+  // @param control_ settings for the glmnet optimizer.
+  // @return fit result
+  template <typename nonsmoothPenalty, typename smoothPenalty,
+            typename tuning>
+  inline lessSEM::fitResults glmnet(model &model_,
+                                    arma::rowvec startingValues,
+                                    stringVector parameterLabels,
+                                    nonsmoothPenalty &penalty_,
+                                    smoothPenalty &smoothPenalty_,
+                                    const tuning &tuningParameters,
+                                    const controlGLMNET &control_ = controlGlmnetDefault())
+  {
+    numericVector startingValuesNumVec = toNumericVector(startingValues);
+    startingValuesNumVec.names() = parameterLabels;
+
+    return (
+        glmnet(model_,
+               startingValuesNumVec,
+               penalty_,
+               smoothPenalty_,
+               tuningParameters,
+               control_));
+  }
 
 } // end namespace
 

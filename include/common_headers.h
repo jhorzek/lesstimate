@@ -36,6 +36,16 @@ namespace lessSEM
     return (Rcpp::as<arma::rowvec>(numVec));
   }
 
+  inline numericVector toNumericVector(arma::rowvec vec)
+  {
+    return (Rcpp::as<numericVector>(vec));
+  }
+
+  inline stringVector toStringVector(std::vector<std::string> vec)
+  {
+    stringVector myStringVec = Rcpp::as<stringVector>(vec);
+    return (myStringVec);
+  }
   inline numericVector sample(numericVector vec, int nSamples, bool replace)
   {
     return (Rcpp::sample(vec, nSamples, replace));
@@ -120,6 +130,13 @@ namespace lessSEM
     }
   };
 
+  inline stringVector toStringVector(std::vector<std::string> vec)
+  {
+    stringVector myStringVec;
+    myStringVec.values = vec;
+    return (myStringVec);
+  }
+
   class numericVector
   {
   public:
@@ -192,6 +209,11 @@ namespace lessSEM
   inline arma::rowvec toArmaVector(numericVector numVec)
   {
     return (numVec.values);
+  }
+
+  inline numericVector toNumericVector(arma::rowvec vec)
+  {
+    return (numericVector(vec));
   }
 
   inline numericVector sample(numericVector vec, int nSamples, bool replace)
