@@ -51,7 +51,7 @@ inline arma::rowvec resizeVector(unsigned int numberParameters,
 // @return boolean indicating if all elements are the same.
 inline bool allEqual(std::vector<unsigned int> myvec){
   if(myvec.size() == 0){
-    Rcpp::stop("Empty vector");
+    error("Empty vector");
   }
   unsigned int element_1 = myvec.at(0);
   for(auto i: myvec){
@@ -85,7 +85,7 @@ inline std::vector<penaltyType> stringPenaltyToPenaltyType(std::vector<std::stri
     }else if(penalty.at(i).compare("scad") == 0){
       penalties.at(i) = penaltyType::scad;
     }else{
-      Rcpp::stop("Unknown penalty type: " + 
+      error("Unknown penalty type: " + 
         penalty.at(i) + 
         ". Supported are: none, cappedL1, lasso, lsp, mcp, or scad."
       );
@@ -98,14 +98,14 @@ inline std::vector<penaltyType> stringPenaltyToPenaltyType(std::vector<std::stri
 // printPenaltyDetails
 // 
 // prints information about the penalties if verbose is set to true.
-// @param parameterLabels Rcpp::StringVector with the names of the parameters
+// @param parameterLabels stringVector with the names of the parameters
 // @param penalties penaltyType vector indicating the penalty for each parameter
 // @param lambda lambda tuning parameter values. One lambda value for each parameter
 // @param theta theta tuning parameter values. One theta value for each parameter
 // @param verbose should information be printed
 // @return nothing
 inline void printPenaltyDetails(
-    const Rcpp::StringVector& parameterLabels,
+    const stringVector& parameterLabels,
     const std::vector<penaltyType>& penalties,
     const arma::rowvec& lambda,
     const arma::rowvec& theta){
@@ -117,7 +117,7 @@ inline void printPenaltyDetails(
     }
   }else{
     for(unsigned int i = 0; i < penalties.size(); i++){
-      parameterLabels_.at(i) = Rcpp::as<std::string>(parameterLabels.at(i));
+      parameterLabels_.at(i) = parameterLabels.at(i);
     }
   }
   
@@ -125,46 +125,46 @@ inline void printPenaltyDetails(
     
     switch(penalties.at(i)){
     case none:
-      Rcpp::Rcout << "No penalty on " 
-                  << parameterLabels_.at(i)
-                  << std::endl;
+      print << "No penalty on " 
+            << parameterLabels_.at(i)
+            << std::endl;
       break;
     case cappedL1:
-      Rcpp::Rcout << "cappedL1 penalty on " 
-                  << parameterLabels_.at(i)
-                  << " lambda = " << lambda(i)
-                  << " theta = " << theta(i)
-                  << std::endl;
+      print << "cappedL1 penalty on " 
+            << parameterLabels_.at(i)
+            << " lambda = " << lambda(i)
+            << " theta = " << theta(i)
+            << std::endl;
       break;
     case lasso:
-      Rcpp::Rcout << "lasso penalty on " 
-                  << parameterLabels_.at(i)
-                  << " lambda = " << lambda(i)
-                  << std::endl;
+      print << "lasso penalty on " 
+            << parameterLabels_.at(i)
+            << " lambda = " << lambda(i)
+            << std::endl;
       break;
     case lsp:
-      Rcpp::Rcout << "lsp penalty on " 
-                  << parameterLabels_.at(i)
-                  << " lambda = " << lambda(i)
-                  << " theta = " << theta(i)
-                  << std::endl;
+      print << "lsp penalty on " 
+            << parameterLabels_.at(i)
+            << " lambda = " << lambda(i)
+            << " theta = " << theta(i)
+            << std::endl;
       break;
     case mcp:
-      Rcpp::Rcout << "mcp penalty on " 
-                  << parameterLabels_.at(i)
-                  << " lambda = " << lambda(i)
-                  << " theta = " << theta(i)
-                  << std::endl;
+      print << "mcp penalty on " 
+            << parameterLabels_.at(i)
+            << " lambda = " << lambda(i)
+            << " theta = " << theta(i)
+            << std::endl;
       break;
     case scad:
-      Rcpp::Rcout << "scad penalty on " 
-                  << parameterLabels_.at(i)
-                  << " lambda = " << lambda(i)
-                  << " theta = " << theta(i)
-                  << std::endl;
+      print << "scad penalty on " 
+            << parameterLabels_.at(i)
+            << " lambda = " << lambda(i)
+            << " theta = " << theta(i)
+            << std::endl;
       break;
     default:
-      Rcpp::stop("Unknown penalty on " + parameterLabels_.at(i));
+      error("Unknown penalty on " + parameterLabels_.at(i));
     }
     
   }

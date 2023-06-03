@@ -20,7 +20,7 @@ namespace lessSEM
     {
     public:
         double getValue(const arma::rowvec &parameterValues,
-                        const Rcpp::StringVector &parameterLabels,
+                        const stringVector &parameterLabels,
                         const tuningParametersScadGlmnet &tuningParameters)
             override
         {
@@ -58,7 +58,7 @@ namespace lessSEM
                 else
                 {
                     // the following should never be called:
-                    Rcpp::stop("Error while evaluating scad");
+                    error("Error while evaluating scad");
                 }
             }
 
@@ -107,7 +107,7 @@ namespace lessSEM
             if (probe >= lambda * theta)
                 return (base + (theta + 1.0) * lambda * lambda / 2.0);
 
-            Rcpp::stop("This should not have happened... Scad ran into issues");
+            error("This should not have happened... Scad ran into issues");
         }
 
         // getZ
@@ -238,7 +238,7 @@ namespace lessSEM
                                      const arma::rowvec &gradients,
                                      const tuningParametersScadGlmnet &tuningParameters)
         {
-            Rcpp::stop("Subgradients not yet implemented for scad penalty. Use different convergence criterion.");
+            error("Subgradients not yet implemented for scad penalty. Use different convergence criterion.");
         }
     };
 

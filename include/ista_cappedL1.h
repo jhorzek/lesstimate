@@ -28,7 +28,7 @@ namespace lessSEM{
       
       arma::rowvec getParameters(const arma::rowvec& parameterValues, 
                                  const arma::rowvec& gradientValues, 
-                                 const Rcpp::StringVector& parameterLabels,
+                                 const stringVector& parameterLabels,
                                  const double L,
                                  const tuningParametersCappedL1& tuningParameters) 
     override {
@@ -40,7 +40,6 @@ namespace lessSEM{
       parameters_kp1.fill(arma::datum::nan);
       
       double lambda_i, x_1, x_2, h_1, h_2, abs_u_k;
-      Rcpp::String parameterLabel;
       int sign;
       for(unsigned int p = 0; p < parameterValues.n_elem; p ++)
       {
@@ -88,7 +87,7 @@ namespace lessSEM{
     public:
       
       double getValue(const arma::rowvec& parameterValues, 
-                      const Rcpp::StringVector& parameterLabels,
+                      const stringVector& parameterLabels,
                       const tuningParametersCappedL1& tuningParameters) 
     override {
       

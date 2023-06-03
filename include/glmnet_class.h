@@ -135,18 +135,18 @@ namespace lessSEM
     stepDirection.fill(0.0);
     arma::rowvec z = parameters_kMinus1;
     z.fill(0.0);
-    //arma::rowvec parameters_k = parameters_kMinus1;
-    //parameters_k.fill(0.0);
+    // arma::rowvec parameters_k = parameters_kMinus1;
+    // parameters_k.fill(0.0);
     arma::colvec HessTimesZ(Hessian.n_rows, arma::fill::zeros);
-    arma::mat HessDiag(Hessian.n_rows, Hessian.n_cols, arma::fill::zeros);//,
-        //zChange(1, 1, arma::fill::zeros);
+    arma::mat HessDiag(Hessian.n_rows, Hessian.n_cols, arma::fill::zeros); //,
+                                                                           // zChange(1, 1, arma::fill::zeros);
     double z_j;
 
     HessDiag.diag() = Hessian.diag();
 
     // the order in which parameters are updated should be random
-    Rcpp::NumericVector randOrder(stepDirection.n_elem);
-    Rcpp::NumericVector sampleFrom(stepDirection.n_elem);
+    numericVector randOrder(stepDirection.n_elem);
+    numericVector sampleFrom(stepDirection.n_elem);
     for (unsigned int i = 0; i < stepDirection.n_elem; i++)
       sampleFrom.at(i) = i;
 
@@ -158,7 +158,7 @@ namespace lessSEM
       // z_old.fill(arma::fill::zeros);
 
       // iterate over parameters in random order
-      randOrder = Rcpp::sample(sampleFrom, stepDirection.n_elem, false);
+      randOrder = sample(sampleFrom, stepDirection.n_elem, false);
 
       for (unsigned int p = 0; p < stepDirection.n_elem; p++)
       {
@@ -220,7 +220,7 @@ namespace lessSEM
       nonsmoothPenalty &penalty_,
       smoothPenalty &smoothPenalty_,
       const arma::rowvec &parameters_kMinus1,
-      const Rcpp::StringVector &parameterLabels,
+      const stringVector &parameterLabels,
       const arma::rowvec &direction,
       const double fit_kMinus1,
       const arma::rowvec &gradients_kMinus1,
@@ -239,7 +239,7 @@ namespace lessSEM
     gradients_k.fill(arma::datum::nan);
     arma::rowvec parameters_k(gradients_kMinus1.n_rows);
     parameters_k.fill(arma::datum::nan);
-    Rcpp::NumericVector randomNumber;
+    numericVector randomNumber;
 
     double fit_k; // new fit value of differentiable part
     double p_k;   // new penalty value
@@ -271,10 +271,10 @@ namespace lessSEM
       currentStepSize = stepSize;
     }
 
-    randomNumber = Rcpp::runif(1, 0.0, 1.0);
+    randomNumber = unif(1, 0.0, 1.0);
     if (randomNumber.at(0) < 0.25)
     {
-      Rcpp::NumericVector tmp = Rcpp::runif(1, .5, .99);
+      numericVector tmp = unif(1, .5, .99);
       currentStepSize = tmp.at(0);
     }
 
@@ -349,6 +349,12 @@ namespace lessSEM
     return (parameters_k);
   }
 
+  // We provide two optimizer interfaces: One uses a combination of arma::rowvec and lessSEM::stringVector for starting
+  // values and parameter labels respectively. This interface is consistent with the fit and gradient function of the
+  // lessSEM::model-class. Alternatively, a numericVector can be passed to the optimizers. This design is rooted in
+  // the use of Rcpp::NumericVectors that combine values and labels similar to an R vector. Thus, interfacing to this
+  // second function call can be easier when coming from R.
+
   // glmnet
   //
   // Optimize a model using the glmnet procedure.
@@ -363,7 +369,7 @@ namespace lessSEM
   template <typename nonsmoothPenalty, typename smoothPenalty,
             typename tuning>
   inline lessSEM::fitResults glmnet(model &model_,
-                                    Rcpp::NumericVector startingValuesRcpp,
+                                    numericVector startingValuesRcpp,
                                     nonsmoothPenalty &penalty_,
                                     smoothPenalty &smoothPenalty_,
                                     const tuning &tuningParameters,
@@ -372,13 +378,12 @@ namespace lessSEM
 
     if (control_.verbose != 0)
     {
-      Rcpp::Rcout << "Optimizing with glmnet.\n"
-                  << std::endl;
+      print << "Optimizing with glmnet.\n";
     }
 
     // separate labels and values
-    arma::rowvec startingValues = Rcpp::as<arma::rowvec>(startingValuesRcpp);
-    const Rcpp::StringVector parameterLabels = startingValuesRcpp.names();
+    arma::rowvec startingValues = toArmaVector(startingValuesRcpp);
+    stringVector parameterLabels = startingValuesRcpp.names();
 
     // prepare parameter vectors
     arma::rowvec parameters_k = startingValues,
@@ -409,9 +414,9 @@ namespace lessSEM
                                                     tuningParameters);
 
     // the following vector will save the fits of all iterations:
-    Rcpp::NumericVector fits(control_.maxIterOut + 1);
+    arma::rowvec fits(control_.maxIterOut + 1);
     fits.fill(NA_REAL);
-    fits.at(0) = penalizedFit_kMinus1;
+    fits(0) = penalizedFit_kMinus1;
 
     // prepare gradient elements
     // NOTE: We combine the gradients of the smooth functions (the log-Likelihood)
@@ -451,7 +456,9 @@ namespace lessSEM
     {
 
       // check if user wants to stop the computation:
+#if USE_R
       Rcpp::checkUserInterrupt();
+#endif
 
       // the gradients will be used by the inner iteration to compute the new
       // parameters
@@ -505,13 +512,18 @@ namespace lessSEM
                                          parameterLabels,
                                          tuningParameters);
 
-      fits.at(outer_iteration + 1) = penalizedFit_k;
+      fits(outer_iteration + 1) = penalizedFit_k;
 
       // print fit info
       if (control_.verbose > 0 && outer_iteration % control_.verbose == 0)
       {
-        Rcpp::Rcout << "Fit in iteration outer_iteration " << outer_iteration + 1 << ": " << penalizedFit_k << std::endl;
-        Rcpp::Rcout << parameters_k << std::endl;
+        print << "Fit in iteration outer_iteration "
+              << outer_iteration + 1
+              << ": "
+              << penalizedFit_k
+              << "\n"
+              << parameters_k
+              << "\n";
       }
 
       // Approximate Hessian using BFGS
@@ -538,20 +550,20 @@ namespace lessSEM
         }
         catch (...)
         {
-          Rcpp::stop("Error while computing convergence criterion");
+          error("Error while computing convergence criterion");
         }
       }
       if (control_.convergenceCriterion == fitChange)
       {
         try
         {
-          breakOuter = std::abs(fits.at(outer_iteration + 1) -
-                                fits.at(outer_iteration)) <
+          breakOuter = std::abs(fits(outer_iteration + 1) -
+                                fits(outer_iteration)) <
                        control_.breakOuter;
         }
         catch (...)
         {
-          Rcpp::stop("Error while computing convergence criterion");
+          error("Error while computing convergence criterion");
         }
       }
       if (control_.convergenceCriterion == gradients)
@@ -569,7 +581,7 @@ namespace lessSEM
         }
         catch (...)
         {
-          Rcpp::stop("Error while computing convergence criterion");
+          error("Error while computing convergence criterion");
         }
       }
 
@@ -589,7 +601,7 @@ namespace lessSEM
 
     if (!breakOuter)
     {
-      Rcpp::warning("Outer iterations did not converge");
+      warn("Outer iterations did not converge");
     }
 
     fitResults fitResults_;
@@ -603,6 +615,40 @@ namespace lessSEM
     return (fitResults_);
 
   } // end glmnet
+
+  // glmnet
+  //
+  // Optimize a model using the glmnet procedure.
+  // @param model_ the model object derived from the model class in model.h
+  // @param startingValues an arma::rowvec numeric vector with starting values
+  // @param parameterLabels a lessSEM::stringVector with labels for parameters
+  // @param penalty_ a penalty derived from the penalty class in penalty.h
+  // @param smoothPenalty_ a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
+  // @param tuningParameters tuning parameters for the penalty functions. Note that both penalty functions must
+  // take the same tuning parameters.
+  // @param control_ settings for the glmnet optimizer.
+  // @return fit result
+  template <typename nonsmoothPenalty, typename smoothPenalty,
+            typename tuning>
+  inline lessSEM::fitResults glmnet(model &model_,
+                                    arma::rowvec startingValues,
+                                    stringVector parameterLabels,
+                                    nonsmoothPenalty &penalty_,
+                                    smoothPenalty &smoothPenalty_,
+                                    const tuning &tuningParameters,
+                                    const controlGLMNET &control_ = controlGlmnetDefault())
+  {
+    numericVector startingValuesNumVec = toNumericVector(startingValues);
+    startingValuesNumVec.names() = parameterLabels;
+
+    return (
+        glmnet(model_,
+               startingValuesNumVec,
+               penalty_,
+               smoothPenalty_,
+               tuningParameters,
+               control_));
+  }
 
 } // end namespace
 

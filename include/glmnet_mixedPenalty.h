@@ -32,13 +32,13 @@ class penaltyMixedGlmnet: public penalty<tuningParametersMixedGlmnet>
 {
 public:
   double getValue(const arma::rowvec &parameterValues,
-                  const Rcpp::StringVector &parameterLabels,
+                  const stringVector &parameterLabels,
                   const tuningParametersMixedGlmnet &tuningParameters)
   override {
     
     double penalty = 0.0;
     arma::rowvec parameterValue(1);
-    Rcpp::StringVector parameterLabel(1);
+    stringVector parameterLabel(1);
     
     // The following is really ugly, but it's easy to implement, so here we go...
     tuningParametersCappedL1Glmnet tpCappedL1;
@@ -131,7 +131,7 @@ public:
         break;
         
       default:
-        Rcpp::stop("Unknown penalty type");
+        error("Unknown penalty type");
       
       }
       
@@ -271,10 +271,10 @@ public:
       );
       
     default:
-      Rcpp::stop("Unknown penalty type");
+      error("Unknown penalty type");
     
     }
-    Rcpp::stop("Unknown penalty type");
+    error("Unknown penalty type");
     
   } // end getZ
   
@@ -282,7 +282,7 @@ public:
                                const arma::rowvec& gradients,
                                const tuningParametersMixedGlmnet& tuningParameters)
   {
-    Rcpp::stop("Subgradients are not yet implemented for mixedPenalty");
+    error("Subgradients are not yet implemented for mixedPenalty");
   }
   
 };

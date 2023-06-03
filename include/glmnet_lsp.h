@@ -20,7 +20,7 @@ class penaltyLSPGlmnet : public penalty<tuningParametersLspGlmnet>
 {
 public:
   double getValue(const arma::rowvec &parameterValues,
-                  const Rcpp::StringVector &parameterLabels,
+                  const stringVector &parameterLabels,
                   const tuningParametersLspGlmnet &tuningParameters)
   override
   {
@@ -205,7 +205,7 @@ public:
     }
     
     if(whichmin == -1)
-      Rcpp::stop("Could not find a minimum.");
+      error("Could not find a minimum.");
     
     return (z[whichmin]);
   }
@@ -214,7 +214,7 @@ public:
                                const arma::rowvec &gradients,
                                const tuningParametersLspGlmnet &tuningParameters)
   {
-    Rcpp::stop("Subgradients not yet implemented for lsp penalty. Use different convergence criterion.");
+    error("Subgradients not yet implemented for lsp penalty. Use different convergence criterion.");
   }
 };
 

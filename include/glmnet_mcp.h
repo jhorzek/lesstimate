@@ -22,7 +22,7 @@ class penaltyMcpGlmnet : public penalty<tuningParametersMcpGlmnet>
 {
 public:
   double getValue(const arma::rowvec &parameterValues,
-                  const Rcpp::StringVector &parameterLabels,
+                  const stringVector &parameterLabels,
                   const tuningParametersMcpGlmnet &tuningParameters)
   override
   {
@@ -51,7 +51,7 @@ public:
         penalty += theta * std::pow(lambda_i, 2) / 2.0;
         
       }else{
-        Rcpp::stop("Error while evaluating mcp");
+        error("Error while evaluating mcp");
       }
       
     }
@@ -148,7 +148,7 @@ public:
     // Otherwise, they are maxima! Therefore, we also check the value H_jj - (1/theta):
     
     if(H_jj - (1/theta) <= 0){
-      Rcpp::warning("One of the subproblems for theta = %i and lambda = %j  is not positive definite. Using a small hack... This may work or may fail. We recommend using method = 'ista' for mcp.", theta, lambda);
+      warn("One of the subproblems is not positive definite. Using a small hack... This may work or may fail. We recommend using method = 'ista' for mcp.");
       // We will make the function positive definite by replacing the Hessian approximation. This seems to work in practice...
       H_jj += (1/theta) + .001;
     }
@@ -256,7 +256,7 @@ public:
       }
     }
     if(whichmin == -1){
-      Rcpp::stop("Found no minimum");
+      error("Found no minimum");
     }
     
     return (z[whichmin]);
@@ -267,7 +267,7 @@ public:
                   const arma::rowvec &gradients,
                   const tuningParametersMcpGlmnet &tuningParameters)
   {
-    Rcpp::stop("Subgradients not yet implemented for mcp penalty. Use different convergence criterion.");
+    error("Subgradients not yet implemented for mcp penalty. Use different convergence criterion.");
   }
 };
 }

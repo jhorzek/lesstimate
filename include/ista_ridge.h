@@ -12,7 +12,7 @@ class penaltyRidge: public smoothPenalty<tuningParametersEnet>{
 public:
   
   double getValue(const arma::rowvec& parameterValues, 
-                  const Rcpp::StringVector& parameterLabels,
+                  const stringVector& parameterLabels,
                   const tuningParametersEnet& tuningParameters) override 
                   {
                     // if ridge is not used:
@@ -21,7 +21,6 @@ public:
                     // else
                     double penalty = 0.0;
                     double lambda_i;
-                    Rcpp::String parameterLabel;
                     
                     for(unsigned int p = 0; p < parameterValues.n_elem; p ++){
                       
@@ -36,7 +35,7 @@ public:
                   }
   
   arma::rowvec getGradients(const arma::rowvec& parameterValues, 
-                            const Rcpp::StringVector& parameterLabels,
+                            const stringVector& parameterLabels,
                             const tuningParametersEnet& tuningParameters) override 
                             {
                               

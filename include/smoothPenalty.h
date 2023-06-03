@@ -9,10 +9,10 @@ class smoothPenalty{
 public:
   
   virtual double getValue(const arma::rowvec& parameterValues,
-                          const Rcpp::StringVector& parameterLabels,
+                          const stringVector& parameterLabels,
                           const T& tuningParameters);
   virtual arma::rowvec getGradients(const arma::rowvec& parameterValues,
-                                    const Rcpp::StringVector& parameterLabels,
+                                    const stringVector& parameterLabels,
                                     const T& tuningParameters);
 };
 
@@ -22,13 +22,13 @@ class noSmoothPenalty: public smoothPenalty<T>{
 public:
   
   double getValue(const arma::rowvec& parameterValues,
-                  const Rcpp::StringVector& parameterLabels,
+                  const stringVector& parameterLabels,
                   const T& tuningParameters) override
                   {
                     return(0.0);
                   };
   arma::rowvec getGradients(const arma::rowvec& parameterValues,
-                            const Rcpp::StringVector& parameterLabels,
+                            const stringVector& parameterLabels,
                             const T& tuningParameters) override
                             {
                               arma::rowvec gradients(parameterValues.n_elem);
@@ -49,7 +49,7 @@ class smoothElasticNet: public smoothPenalty<tuningParametersSmoothElasticNet>{
 public:
   
   double getValue(const arma::rowvec& parameterValues, 
-                  const Rcpp::StringVector& parameterLabels,
+                  const stringVector& parameterLabels,
                   const tuningParametersSmoothElasticNet& tuningParameters) 
   override {
     
@@ -78,7 +78,7 @@ public:
   }
   
   arma::rowvec getGradients(const arma::rowvec& parameterValues, 
-                            const Rcpp::StringVector& parameterLabels,
+                            const stringVector& parameterLabels,
                             const tuningParametersSmoothElasticNet& tuningParameters) override {
                               
                               arma::rowvec gradients(parameterValues.n_elem);

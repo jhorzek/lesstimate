@@ -1,7 +1,7 @@
 #ifndef lessOptimizers_H
 #define lessOptimizers_H
 
-#include <RcppArmadillo.h>
+#include "common_headers.h"
 #include "ista_class.h"
 #include "ista_penalties.h"
 #include "glmnet_class.h"
