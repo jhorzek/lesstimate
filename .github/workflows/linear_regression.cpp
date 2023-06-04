@@ -146,11 +146,11 @@ int main()
         // initialHessian, // optional, but can be very useful
     );
 
-    std::cout << "### glmnet ###\n";
+    std::cout << "\n\n### glmnet ###\n";
     std::cout << "fit: " << fitResultGlmnet.fit << "\n";
     std::cout << "parameters: " << fitResultGlmnet.parameterValues << "\n";
 
-    std::cout << "### ista ###\n";
+    std::cout << "\n### ista ###\n";
     lessSEM::fitResults fitResultIsta = lessSEM::fitIsta(
         linReg,
         startingValues,
