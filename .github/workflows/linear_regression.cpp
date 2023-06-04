@@ -1,5 +1,5 @@
 #include <armadillo>
-#include <include/lessOptimizers>
+#include <include/lessOptimizers.h>
 
 double sumSquaredError(
     arma::colvec b, // the parameter vector
