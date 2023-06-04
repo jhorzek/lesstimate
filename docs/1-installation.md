@@ -8,8 +8,8 @@ to be installed differently.
 
 When using **lessOptimizers** in your R package, first make sure that **RcppArmadillo**
 is installed (if not, run `install.packages("RcppArmadillo")`. You will also
-need a C++ compiler. Instructions to [install C++](https://teuder.github.io/rcpp4everyone_en/020_install.html) 
-can be found in the official documentation of **Rcpp**.
+need a C++ compiler. Instructions to [install C++](https://adv-r.hadley.nz/rcpp.html#prerequisites-17) 
+can be found in the Advanced R book by Hadley Wickham.
 
 Next, create a folder called `inst` in your R package. Within `inst`, create a folder
 called `include`. You should now have the following folder structure:
