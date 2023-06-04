@@ -28,9 +28,9 @@ jobs:
         cd ..
     - name: copy src files
       run: |
-        cp .github/actions/linear_regression.cpp .
-        cp .github/actions/vcpkg.json .
-        cp .github/actions/CMakeLists.txt .
+        cp .github/workflows/linear_regression.cpp .
+        cp .github/workflows/vcpkg.json .
+        cp .github/workflows/CMakeLists.txt .
     - name: build 
       run: |
         ls
