@@ -7,9 +7,10 @@ to be installed differently.
 ## Using lessOptimizers in your R package
 
 When using **lessOptimizers** in your R package, first make sure that **RcppArmadillo**
+(Eddelbuettel et al., 2014)
 is installed (if not, run `install.packages("RcppArmadillo")`. You will also
 need a C++ compiler. Instructions to [install C++](https://adv-r.hadley.nz/rcpp.html#prerequisites-17) 
-can be found in the Advanced R book by Hadley Wickham.
+can be found in the *Advanced R* book by Hadley Wickham.
 
 Next, create a folder called `inst` in your R package. Within `inst`, create a folder
 called `include`. You should now have the following folder structure:
@@ -27,7 +28,7 @@ called `include`. You should now have the following folder structure:
 
 Clone the lessOptimizers git repository in your include folder with `git clone https://github.com/jhorzek/lessOptimizers.git`.
 
-Add a file called `lessSEM.h` in the folder inst/include ([see e.g., here](https://github.com/jhorzek/lessSEM/blob/82a4432649f4c9d6072f79836ef3ddefb001d083/inst/include/lessSEM.h)) and
+Add a file called `lessSEM.h` in the folder inst/include ([see here for an example](https://github.com/jhorzek/lessSEM/blob/82a4432649f4c9d6072f79836ef3ddefb001d083/inst/include/lessSEM.h)) and
 save the following in this file:
 
 ```
@@ -53,7 +54,12 @@ Open the DESCRIPTION file of your package and add `Rcpp` and `RcppArmadillo` to 
 
 ## Using lessOptimizers in your C++ package
 
-For C++, you will need the **armadillo** - library. This library is available [here](https://arma.sourceforge.net/)
-or using the package manager Conan or vcpkg. You will have to include lessOptimizers in your
+For C++, you will need the **armadillo**(https://arma.sourceforge.net/) - library (Sanderson et al., 2016). This library is also available
+using the package manager Conan or vcpkg. You will have to include lessOptimizers in your
 C++ library Cmake file. An example can be found in the [lessLMcpp-project](https://github.com/jhorzek/lessLMcpp).
+
+# References
+
+- Conrad Sanderson and Ryan Curtin. Armadillo: a template-based C++ library for linear algebra. Journal of Open Source Software, Vol. 1, No. 2, pp. 26, 2016. 
+- Eddelbuettel D, Sanderson C (2014). “RcppArmadillo: Accelerating R with high-performance C++ linear algebra.” Computational Statistics and Data Analysis, 71, 1054–1063. doi:10.1016/j.csda.2013.02.005. 
 
