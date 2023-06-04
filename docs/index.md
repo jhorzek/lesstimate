@@ -19,10 +19,18 @@ uses the gradients of the function $f(\pmb\theta)$.
 
 
 **lessOptimizers** was mainly developed to be used in [**lessSEM**](https://jhorzek.github.io/lessSEM/), an 
-R package for regularized Structural Equation Models. However, the library can also be used from C++. 
+R package for regularized Structural Equation Models. However, the library can also be used from C++.
+**lessOptimizers** builds heavily on the **RcppAdmadillo** (Eddelbuettel et al., 2014) and **armadillo** (Sanderson et al., 2016) 
+libraries. The optimizer interface is inspired by the **ensmallen** library (Curtin et al., 2021).
 
 
 # References
+
+## Software
+
+- Curtin R R, Edel M, Prabhu R G, Basak S, Lou Z, Sanderson C (2021). The ensmallen library for flexible numerical optimization. Journal of Machine Learning Research, 22 (166).
+- Eddelbuettel D, Sanderson C (2014). “RcppArmadillo: Accelerating R with high-performance C++ linear algebra.” Computational Statistics and Data Analysis, 71, 1054–1063. doi:10.1016/j.csda.2013.02.005.
+- Sanderson C, Curtin R (2016). Armadillo: a template-based C++ library for linear algebra. Journal of Open Source Software, 1 (2), pp. 26.
 
 ## Penalty Functions
 
