@@ -156,7 +156,7 @@ public:
 
 Instances of `linearRegressionModel` can be passed to the `glmnet` or `ista` optimizers.
 
-## Step 4: Interfacing to the optimizers
+### Step 4: Interfacing to the optimizers
 
 Ther are two interfaces you can use: 
 
