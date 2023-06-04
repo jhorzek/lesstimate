@@ -88,7 +88,7 @@ you may want to also implement a function that computes the Hessian. It can be b
 provide a good starting point for the bfgs updates using this Hessian.
 
 
-### Step 4: Creating a model object
+### Step 3: Creating a model object
 
 **lessOptimizers** assumes that you pass a model-object to the optimizers. This model 
 object ist implemented in the [`lessSEM::model`-class] ADD LINK TO FILE IN GITHUB.
@@ -156,7 +156,7 @@ public:
 
 Instances of `linearRegressionModel` can be passed to the `glmnet` or `ista` optimizers.
 
-## Step 5: Interfacing to the optimizers
+## Step 4: Interfacing to the optimizers
 
 Ther are two interfaces you can use: 
 
