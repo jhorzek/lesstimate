@@ -1,7 +1,7 @@
 # Getting Started
 
-**lessOptimizers** was initially a sub-folder of hte **lessSEM** package. Therefore,
-the fefault is currently to still assume that you are using the library in an R package.
+**lessOptimizers** was initially a sub-folder of the **lessSEM** package. Therefore,
+the default is currently to still assume that you are using the library in an R package.
 In the [common_headers.h](https://github.com/jhorzek/lessOptimizers/blob/f8aa3169da617ca2d6afbd330e1fb5395ba40898/include/common_headers.h#L8)-file, 
 you will find a variable called `USE_R`. If this variable is set to 1 (default), **lessOptimizers**
 is setup to be used from R. If `USE_R` is set to zero, the library no longer relies on the R packages
@@ -17,7 +17,7 @@ regularized objective function. Second, a function that computes
 $\triangledown_{\pmb\theta} f(\pmb\theta)$, the gradient vector of your
 un-regularized objective function with respect to the parameters $\pmb\theta$.
 We also assume that these functions use armadillo. If you don't use armadillo,
-you may have to write a translation layer. The setup outlined in the following
+you may have to write a translation layer. The optimizer interface outlined in the following
 is adapted from the [**ensmallen**](https://ensmallen.org/) library (Curtin et al.; 2021).
 
 ### Step 1: Including the necessary headers
