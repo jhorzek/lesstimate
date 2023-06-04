@@ -1,5 +1,7 @@
 # lessOptimizers
 
+> A longer documentation of the library can be found [here](https://jhorzek.github.io/lessOptimizers/).
+
 This repository provides optimizers implemented in C++ header files for regularized model estimation in R using Rcpp. These optimizers are mainly used in the R package [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models. The main objective of keeping a separate repository just for the optimizers is that they can also be used by other R packages by copying the include-folder in the inst-folder of your package or by keeping the files in a git submodule. This way you can make sure that your code will still work even if there are breaking changes in the optimizers used by **lessSEM**.
 
 To use the optimziers, you will need two functions:
