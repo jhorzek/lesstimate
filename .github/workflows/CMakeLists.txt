@@ -12,6 +12,9 @@ add_subdirectory("include/lessOptimizers")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# we want to use lessOptimizers without Rcpp -> set USE_R=0
+add_definitions(-DUSE_R=0)
+
 # create target:
 add_executable(${PROJECT_NAME} "linear_regression.cpp")
 
