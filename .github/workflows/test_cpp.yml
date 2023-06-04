@@ -1,0 +1,45 @@
+name: check cpp documentation
+
+on:
+  push:
+    branches: [ "documentation"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+ build:
+  runs-on: ubuntu-latest
+    
+  steps:
+    - uses: actions/checkout@v3
+    - name: install Cmake
+      run: sudo apt-get install cmake 
+    - name: install vcpkg
+      run: |
+        git clone https://github.com/Microsoft/vcpkg.git
+        ./vcpkg/bootstrap-vcpkg.sh
+    - name: install lessOptimizers
+      run: |
+        mkdir include 
+        cd include
+        git clone https://github.com/jhorzek/lessOptimizers.git
+        cd ..
+    - name: copy src files
+      run: |
+        cp .github/actions/linear_regression.cpp .
+        cp .github/actions/vcpkg.json .
+        cp .github/actions/CMakeLists.txt .
+    - name: build 
+      run: |
+        ls
+        mkdir build 
+        cd build
+        cmake build .. -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
+        cd ..
+        cmake --build build
+        ls
+    - name: run test
+      run: |
+        build/testDocumentation

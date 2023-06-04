@@ -1,8 +1,9 @@
-site_name: My Docs
+site_name: lessOptimizers
 
 theme:
   name: material
-  
+  palette:
+    scheme: slate
   
 extra_javascript:
   - javascripts/katex.js 
@@ -12,4 +13,7 @@ extra_javascript:
 extra_css:
   - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.css
 
-
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true 
