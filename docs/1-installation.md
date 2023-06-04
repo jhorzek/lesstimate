@@ -8,8 +8,8 @@ to be installed differently.
 
 When using **lessOptimizers** in your R package, first make sure that **RcppArmadillo**
 is installed (if not, run `install.packages("RcppArmadillo")`. You will also
-need a C++ compiler. Instructions to install those can be found in the official
-R documentation [ADD LINK HERE].
+need a C++ compiler. Instructions to [install C++](https://teuder.github.io/rcpp4everyone_en/020_install.html) 
+can be found in the official documentation of **Rcpp**.
 
 Next, create a folder called `inst` in your R package. Within `inst`, create a folder
 called `include`. You should now have the following folder structure:
@@ -41,7 +41,7 @@ save the following in this file:
 
 This file makes sure that R can find the functions of **lessOptimizers**. 
 
-In your src-folder, open the files Makevars and Makevars.win. Add the following line ([see here](https://github.com/jhorzek/lessSEM/blob/82a4432649f4c9d6072f79836ef3ddefb001d083/src/Makevars#L1):
+In your src-folder, open the files Makevars and Makevars.win. Add the following line ([see here](https://github.com/jhorzek/lessSEM/blob/82a4432649f4c9d6072f79836ef3ddefb001d083/src/Makevars#L1)):
 ```
 PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) -I../inst/include/
 ```
