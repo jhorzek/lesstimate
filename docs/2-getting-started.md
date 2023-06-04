@@ -1,23 +1,29 @@
 # Getting Started
 
-**lessOptimizers** was initially a sub-folder of hte **lessSEM** package. Therefore,
-the fefault is currently to still assume that you are using the library in an R package.
+**lessOptimizers** was initially a sub-folder of the **lessSEM** package. Therefore,
+the default is currently to still assume that you are using the library in an R package.
 In the [common_headers.h](https://github.com/jhorzek/lessOptimizers/blob/f8aa3169da617ca2d6afbd330e1fb5395ba40898/include/common_headers.h#L8)-file, 
 you will find a variable called `USE_R`. If this variable is set to 1 (default), **lessOptimizers**
 is setup to be used from R. If `USE_R` is set to zero, the library no longer relies on the R packages
-**Rcpp** or **RcppArmadillo**. The library can now be used in C++ projects as long as the armadillo
+**Rcpp** (Eddelbuettel et al., 2011) or **RcppArmadillo** (Eddelbuettel et al., 2014). The library can now be used in 
+C++ projects as long as the [**armadillo**](https://arma.sourceforge.net/) (Sanderson et al., 2016)
 library is installed. These settings are implemented in the [CMakeLists.txt](https://github.com/jhorzek/lessOptimizers/blob/main/CMakeLists.txt)-file included
 in the project.
 
 ## Interfacing to **lessOptimizers**
 
+As outlined in the introduction, the optimizers in **lessOptimizers** minimize functions
+of the form 
+$$g(\pmb\theta) = f(\pmb\theta) + p(\pmb\theta)$$
+where $f(\pmb\theta)$ is (twice) continously differentiable with respect to $\theta$ and $p(\pmb\theta)$
+is a non-differentiable penalty function (e.g., lasso or scad).
 To use **lessOptimizers** for your project, you will need two functions.
 First, a function that computes $f(\pmb\theta)$, the value of your un-
 regularized objective function. Second, a function that computes 
 $\triangledown_{\pmb\theta} f(\pmb\theta)$, the gradient vector of your
 un-regularized objective function with respect to the parameters $\pmb\theta$.
-We also assume that these functions use armadillo. If you don't use armadillo,
-you may have to write a translation layer. The setup outlined in the following
+We also assume that these functions use **armadillo**. If you don't use **armadillo**,
+you may have to write a translation layer. The optimizer interface outlined in the following
 is adapted from the [**ensmallen**](https://ensmallen.org/) library (Curtin et al.; 2021).
 
 ### Step 1: Including the necessary headers
@@ -91,7 +97,7 @@ provide a good starting point for the bfgs updates using this Hessian.
 ### Step 3: Creating a model object
 
 **lessOptimizers** assumes that you pass a model-object to the optimizers. This model 
-object ist implemented in the [`lessSEM::model`-class] ADD LINK TO FILE IN GITHUB.
+object ist implemented in the [`lessSEM::model`-class](https://github.com/jhorzek/lessOptimizers/blob/main/include/model.h).
 Therefore, we have to create a custom class that inherits from `lessSEM::model` and 
 implements our linear regression using the functions defined above:
 
@@ -303,6 +309,8 @@ used with multiple tuning parameter settings (e.g., $\lambda \in \{0, .1, .2, ..
 
 ## References
 
-- Ryan R. Curtin, Marcus Edel, Rahul Ganesh Prabhu, Suryoday Basak, Zhihao Lou, Conrad Sanderson. The ensmallen library for flexible numerical optimization.
-Journal of Machine Learning Research, Vol. 22, No. 166, 2021.
+- Sanderson C, Curtin R (2016). Armadillo: a template-based C++ library for linear algebra. Journal of Open Source Software, 1 (2), pp. 26.
+- Eddelbuettel D, François R (2011). “Rcpp: Seamless R and C++ Integration.” Journal of Statistical Software, 40(8), 1–18. doi:10.18637/jss.v040.i08. 
+- Eddelbuettel D, Sanderson C (2014). “RcppArmadillo: Accelerating R with high-performance C++ linear algebra.” Computational Statistics and Data Analysis, 71, 1054–1063. doi:10.1016/j.csda.2013.02.005. 
+- Curtin R R, Edel M, Prabhu R G, Basak S, Lou Z, Sanderson C (2021). The ensmallen library for flexible numerical optimization. Journal of Machine Learning Research, 22 (166).
 
