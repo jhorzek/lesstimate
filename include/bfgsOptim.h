@@ -295,9 +295,9 @@ namespace lessSEM
     double penalizedFit_kMinus1 = fit_kMinus1;
 
     // the following vector will save the fits of all iterations:
-    numericVector fits(control_.maxIterOut + 1);
+    arma::rowvec fits(control_.maxIterOut + 1);
     fits.fill(NA_REAL);
-    fits.at(0) = penalizedFit_kMinus1;
+    fits(0) = penalizedFit_kMinus1;
 
     // prepare gradient elements
     // NOTE: We combine the gradients of the smooth functions (the log-Likelihood)
@@ -370,7 +370,7 @@ namespace lessSEM
       // add non-differentiable part -> there is none here
       penalizedFit_k = fit_k;
 
-      fits.at(outer_iteration + 1) = penalizedFit_k;
+      fits(outer_iteration + 1) = penalizedFit_k;
 
       // print fit info
       if (control_.verbose > 0 && outer_iteration % control_.verbose == 0)
@@ -415,8 +415,8 @@ namespace lessSEM
       {
         try
         {
-          breakOuter = std::abs(fits.at(outer_iteration + 1) -
-                                fits.at(outer_iteration)) <
+          breakOuter = std::abs(fits(outer_iteration + 1) -
+                                fits(outer_iteration)) <
                        control_.breakOuter;
         }
         catch (...)
