@@ -165,7 +165,7 @@ int main()
 
     // adapt optimizer 
     // First, create a new instance of class controlGLMNET:
-    lessSEM::controlGLMNET controlOptimizerGlmnet = lessSEM::controlGlmnetDefault()
+    lessSEM::controlGLMNET controlOptimizerGlmnet = lessSEM::controlGlmnetDefault();
     // Next, adapt the settings:
     controlOptimizerGlmnet.maxIterOut = 1000;
     // pass the argument to the fitGlmnet function:
@@ -188,7 +188,7 @@ int main()
 
 
     // First, create a new instance of class controlIsta:
-    lessSEM::controlIsta controlOptimizerIsta = lessSEM::controlIstaDefault()
+    lessSEM::controlIsta controlOptimizerIsta = lessSEM::controlIstaDefault();
     // Next, adapt the settings:
     controlOptimizerIsta.maxIterOut = 1000;
     // pass the argument to the fitIsta function:
