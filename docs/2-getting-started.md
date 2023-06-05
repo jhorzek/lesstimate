@@ -216,8 +216,8 @@ class `lessSEM::stringVector`:
     ``` r
     Rcpp::StringVector parameterLabels;
     parameterLabels[0] = "b0";
-    parameterLabels[0] = "b1";
-    parameterLabels[0] = "b2";
+    parameterLabels[1] = "b1";
+    parameterLabels[2] = "b2";
     ```
 
 === "C++"
