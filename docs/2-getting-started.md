@@ -93,17 +93,26 @@ With these two functions, we are ready to go. If you want to use the glmnet opti
 you may want to also implement a function that computes the Hessian. It can be beneficial to
 provide a good starting point for the bfgs updates using this Hessian.
 
-
 ### Step 3: Creating a model object
 
 **lessOptimizers** assumes that you pass a model-object to the optimizers. This model 
 object ist implemented in the [`lessSEM::model`-class](https://github.com/jhorzek/lessOptimizers/blob/main/include/model.h).
 Therefore, we have to create a custom class that inherits from `lessSEM::model` and 
-implements our linear regression using the functions defined above:
+implements our linear regression using the functions defined above. 
+
+=== "R"
+    Make sure to follow the install instructions for R first to make this work:
+    ```
+    #include "lessSEM.h"
+    ```
+
+=== "C++"
+
+    ```
+    #include "include/lessOptimizers/lessOptimizers.h"
+    ```
 
 ```
-#include "include/lessOptimizers/lessOptimizers.h"
-
 // IMPORTANT: The library is calles lessOptimizers, but
 // because it was initially a sub-folder of lessSEM, the
 // namespace is still called lessSEM.
