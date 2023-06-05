@@ -230,28 +230,7 @@ class `lessSEM::stringVector`:
 Now we have to specify the values for our tuning parameters. These
 depend on the penalty we want to use:
 
-$$
-\begin{array}{l|llll}
-	\text{penalty} & \text{function} & \text{optimizer} & \text{reference}\\
-	\hline
-	\text{ridge} & p( x_j) = \lambda x_j^2 & \text{glmnet, ista} & \text{(Hoerl \& Kennard, 1970)}\\
-	\text{lasso} & p( x_j) = \lambda| x_j| & \text{glmnet, ista} & \text{(Tibshirani, 1996)}\\
-	\text{adaptive lasso} & p( x_j) = \frac{1}{w_j}\lambda| x_j| & \text{glmnet, ista} & \text{(Zou, 2006)}\\
-	\text{elastic net} & p( x_j) = \alpha\lambda| x_j| + (1-\alpha)\lambda x_j^2 & \text{glmnet, ista} & \text{(Zou \& Hastie, 2005)}\\
-	\text{cappedL1} & p( x_j) = \lambda \min(| x_j|, \theta); \theta > 0 &\text{glmnet,ista}& \text{(Zhang, 2010)}\\
-	\text{lsp} & p( x_j) = \lambda \log(1 + |x_j|/\theta); \theta > 0 &\text{glmnet,ista}& \text{(Candès et al., 2008)} \\
-	\text{scad} & p( x_j) = \begin{cases}
-		\lambda |x_j| & \text{if } |x_j| \leq \lambda\\
-		\frac{-x_j^2 + 2\theta\lambda |x_j| - \lambda^2}{2(\theta -1)} & \text{if } \lambda < |x_j| \leq \lambda\theta \\
-		(\theta + 1) \lambda^2/2 & \text{if } |x_j| \geq \theta\lambda\\
-	\end{cases}; \theta > 2 &\text{glmnet,ista}& \text{(Fan \& Li, 2001)} \\
-	\text{mcp} & p( x_j) = 
-	\begin{cases}
-		\lambda |x_j| - x_j^2/(2\theta) & \text{if } |x_j| \leq \theta\lambda\\
-		\theta\lambda^2/2 & \text{if } |x_j| > \lambda\theta
-	\end{cases}; \theta > 0 &\text{glmnet,ista}& \text{(Zhang, 2010)}
-\end{array}
-$$
+![peanlty functions](penaltyFunctions.png)
 
 Note that some penalty functions only have $\lambda$ as tuning parameter, while others
 have $\lambda$ and $\theta$. The interface used below does not support elastic net penalties;
@@ -338,7 +317,7 @@ In the `fitResults_` object, you will find:
 Returning this Hessian is useful because it can be used as input for the next optimization if glmnet is
 used with multiple tuning parameter settings (e.g., $\lambda \in \{0, .1, .2, ..., 1\}$.
 
-## Advanced settings
+## Optimizer settings
 
 The default settings of the optimizers may not work for your use case. Adapting these settings can therefore be crucial for a 
 succesful optimization. In the `fitGlmnet` and `fitIsta` functions above, the optimizer settings are adapted using the `controlOptimizer`
@@ -364,7 +343,7 @@ argument. Depending on the optimizer used, different settings can be adapted.
 
     ``` c++
     // First, create a new instance of class controlGLMNET:
-    controlGLMNET controlOptimizer = controlGlmnetDefault()
+    lessSEM::controlGLMNET controlOptimizer = controlGlmnetDefault()
     // Next, adapt the settings:
     controlOptimizer.maxIterOut = 1000;
     // pass the argument to the fitGlmnet function:
@@ -379,6 +358,110 @@ argument. Depending on the optimizer used, different settings can be adapted.
 	      arma::mat(1, 1, arma::fill::ones), // initial Hessian
         controlOptimizer//,
         // verbose // set to >0 to get additional information on the optimization
+      );
+    ```
+
+=== "ista"
+
+    The ista optimizer has the following additional settings:
+
+    - `L0`: a `double` controling the step size used in the first iteration
+    - `eta`: a `double` controling by how much the step size changes in inner iterations with $(\eta^i)*L$, where $i$ is the inner iteration
+    - `accelerate`: a `bool`; if  the extrapolation parameter is used to accelerate ista (see, e.g., Parikh, N., & Boyd, S. (2013). Proximal Algorithms. 
+    Foundations and Trends in Optimization, 1(3), 123–231., p. 152)
+    - `maxIterOut`: an `int` specifying the maximal number of outer iterations
+    - `maxIterIn`: an `int` specifying the maximal number of inner iterations
+    - `breakOuter`: a `double` specyfing the stopping criterion for outer iterations
+    - `breakInner`: a `double` specyfing the stopping criterion for inner iterations
+    - `convCritInner`: a `convCritInnerIsta` that specifies the inner breaking condition. Can be set to `lessSEM::istaCrit` (see Beck & Teboulle (2009);
+     Remark 3.1 on p. 191 (ISTA with backtracking)) or `lessSEM::gistCrit` (see Gong et al., 2013; Equation 3) 
+    - `sigma`: a `double` in (0,1) that is used by the gist convergence criterion. Larger sigma enforce larger improvement in fit
+    - `stepSizeIn`: a `stepSizeInheritance` that specifies how step sizes should be carried forward from iteration to iteration. 
+  `lessSEM::initial`: resets the step size to L0 in each iteration, `lessSEM::istaStepInheritance`: takes the previous step 
+  size as initial value for the next iteration, `lessSEM::barzilaiBorwein`: uses the Barzilai-Borwein procedure, 
+  `lessSEM::stochasticBarzilaiBorwein`: uses the Barzilai-Borwein procedure, but sometimes resets the step size; 
+  this can help when the optimizer is caught in a bad spot.
+    - `sampleSize`: an `int` that can be used to scale the fitting function down if the fitting function depends on the sample size
+    - `verbose`: an `int`, where 0 prints no additional information, > 0 prints GLMNET iterations
+
+    ``` c++
+    // First, create a new instance of class controlIsta:
+    lessSEM::controlIsta controlOptimizer = controlIstaDefault()
+    // Next, adapt the settings:
+    controlOptimizer.maxIterOut = 1000;
+    // pass the argument to the fitIsta function:
+    lessSEM::fitResults fitResult_ = lessSEM::fitIsta(
+      	linReg,
+      	startingValues,
+      	parameterLabels,
+      	penalty,
+      	lambda,
+      	theta,
+        controlOptimizer//,
+        // verbose // set to >0 to get additional information on the optimization
+      );
+    ```
+
+## Specialized interfaces
+
+If you are only interested in one specific penalty function (e.g., lasso), it can be beneficial to use the specialized interfaces provided by **lessOptimizers**.
+These can be faster because **lessOptimizers** no longer has to check which penalty is used for which parameter. That said, the specialized interface takes 
+some more time to set up and is less flexible than the simplified interface used above.
+
+To use the specialized interface, we have to define the penalties we want to use. In general,
+the specialized interface allows for specifying two penalties for each parameter: a smooth (i.e., differentiable) 
+penalty (currently only ridge is supported) and a non-smooth (i.e., non-differentiable) penalty (any of the penalties mentioned above). We will use 
+the elastic net below as this penalty combines a ridge and a lasso penalty.
+
+=== "glmnet"
+    
+    ``` c++
+    // Specify the penalties we want to use:
+    lessSEM::penaltyLASSOGlmnet lasso;
+    lessSEM::penaltyRidgeGlmnet ridge;
+    // Note that we used the glmnet variants of lasso and ridge. The reason
+    // for this is that the glmnet implementation allows for parameter-specific
+    // lambda and alpha values while the current ista implementation does not.
+    
+    // These penalties take tuning parameters of class tuningParametersEnetGlmnet
+    lessSEM::tuningParametersEnetGlmnet tp;
+    
+    // Finally, there is also the weights. The weights vector indicates, which
+    // of the parameters is regularized (weight = 1) and which is unregularized 
+    // (weight =0). It also allows for adaptive lasso weights (e.g., weight =.0123).
+    // weights must be an arma::rowvec of the same length as our parameter vector.
+    arma::rowvec weights(startingValues.n_elem);
+    weights.fill(1.0); // we want to regularize all parameters
+    weights.at(0) = 0.0; // except for the first one, which is our intercept.
+    tp.weights = weights;   
+    
+    // to optimize this model, we have to pass it to
+    // the glmnet function:
+    
+    lessSEM::fitResults lmFit = lessSEM::glmnet(
+        linReg, // the first argument is our model
+        parameterValues, // arma::rowvec with starting values
+	parameterLabels, // lessSEM::stringVector with labels
+        lasso, // non-smooth penalty
+        ridge, // smooth penalty
+        tp,    // tuning parameters
+        control // finally, let's fine tune with the control
+      );
+    
+    // Next, create a new instance of class controlGLMNET:
+    controlGLMNET controlOptimizer = controlGlmnetDefault()
+    // Next, adapt the settings:
+    controlOptimizer.maxIterOut = 1000;
+    // pass the argument to the fitGlmnet function:
+    lessSEM::fitResults lmFit = lessSEM::glmnet(
+        linReg, // the first argument is our model
+        startingValues, // the second are the parameters
+	parameterLabels,
+        lasso, // the third is our lasso penalty
+        ridge, // the fourth our ridge penalty
+        tp//, // the fifth is our tuning parameter 
+        //controlOptimizer // optional: control the optimizer; here, we can 
+	// also specify the initialHessian (see above)
       );
     ```
 
