@@ -376,11 +376,7 @@ argument. Depending on the optimizer used, different settings can be adapted.
     - `convCritInner`: a `convCritInnerIsta` that specifies the inner breaking condition. Can be set to `lessSEM::istaCrit` (see Beck & Teboulle (2009);
      Remark 3.1 on p. 191 (ISTA with backtracking)) or `lessSEM::gistCrit` (see Gong et al., 2013; Equation 3) 
     - `sigma`: a `double` in (0,1) that is used by the gist convergence criterion. Larger sigma enforce larger improvement in fit
-    - `stepSizeIn`: a `stepSizeInheritance` that specifies how step sizes should be carried forward from iteration to iteration. 
-  `lessSEM::initial`: resets the step size to L0 in each iteration, `lessSEM::istaStepInheritance`: takes the previous step 
-  size as initial value for the next iteration, `lessSEM::barzilaiBorwein`: uses the Barzilai-Borwein procedure, 
-  `lessSEM::stochasticBarzilaiBorwein`: uses the Barzilai-Borwein procedure, but sometimes resets the step size; 
-  this can help when the optimizer is caught in a bad spot.
+    - `stepSizeIn`: a `stepSizeInheritance` that specifies how step sizes should be carried forward from iteration to iteration. `lessSEM::initial`: resets the step size to L0 in each iteration, `lessSEM::istaStepInheritance`: takes the previous step size as initial value for the next iteration, `lessSEM::barzilaiBorwein`: uses the Barzilai-Borwein procedure, `lessSEM::stochasticBarzilaiBorwein`: uses the Barzilai-Borwein procedure, but sometimes resets the step size; this can help when the optimizer is caught in a bad spot.
     - `sampleSize`: an `int` that can be used to scale the fitting function down if the fitting function depends on the sample size
     - `verbose`: an `int`, where 0 prints no additional information, > 0 prints GLMNET iterations
 
