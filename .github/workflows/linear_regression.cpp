@@ -165,7 +165,7 @@ int main()
 
     // adapt optimizer 
     // First, create a new instance of class controlGLMNET:
-    controlGLMNET controlOptimizerGlmnet = controlGlmnetDefault()
+    lessSEM::controlGLMNET controlOptimizerGlmnet = controlGlmnetDefault()
     // Next, adapt the settings:
     controlOptimizerGlmnet.maxIterOut = 1000;
     // pass the argument to the fitGlmnet function:
@@ -188,7 +188,7 @@ int main()
 
 
     // First, create a new instance of class controlIsta:
-    controlIsta controlOptimizerIsta = controlIstaDefault()
+    lessSEM::controlIsta controlOptimizerIsta = controlIstaDefault()
     // Next, adapt the settings:
     controlOptimizerIsta.maxIterOut = 1000;
     // pass the argument to the fitIsta function:
@@ -206,4 +206,74 @@ int main()
     std::cout << "\n### ista - adapted optimizer ###\n";
     std::cout << "fit: " << fitResultIsta.fit << "\n";
     std::cout << "parameters: " << fitResultIsta.parameterValues << "\n";
+
+    // specialized interfaces
+
+       // Specify the penalties we want to use:
+    lessSEM::penaltyLASSOGlmnet lasso;
+    lessSEM::penaltyRidgeGlmnet ridge;
+    // Note that we used the glmnet variants of lasso and ridge. The reason
+    // for this is that the glmnet implementation allows for parameter-specific
+    // lambda and alpha values while the current ista implementation does not.
+    
+    // These penalties take tuning parameters of class tuningParametersEnetGlmnet
+    lessSEM::tuningParametersEnetGlmnet tp;
+    
+    // Finally, there is also the weights. The weights vector indicates, which
+    // of the parameters is regularized (weight = 1) and which is unregularized 
+    // (weight =0). It also allows for adaptive lasso weights (e.g., weight =.0123).
+    // weights must be an arma::rowvec of the same length as our parameter vector.
+    arma::rowvec weights(startingValues.n_elem);
+    weights.fill(1.0); // we want to regularize all parameters
+    weights.at(0) = 0.0; // except for the first one, which is our intercept.
+    tp.weights = weights;   
+    
+    // to optimize this model, we have to pass it to
+    // the glmnet function:
+    
+    lessSEM::fitResults lmFitGlmnet = lessSEM::glmnet(
+        linReg, // the first argument is our model
+        startingValues, // arma::rowvec with starting values
+        parameterLabels, // lessSEM::stringVector with labels
+        lasso, // non-smooth penalty
+        ridge, // smooth penalty
+        tp//,    // tuning parameters
+        //controlOptimizer // optional fine-tuning (see above)
+    );
+
+    // The elastic net is a combination of a ridge penalty and 
+    // a lasso penalty. 
+    // NOTE: HERE COMES THE BIGGEST DIFFERENCE BETWEEN GLMNET AND ISTA:
+    // 1) ISTA ALSO REQUIRES THE DEFINITION OF A PROXIMAL OPERATOR. THESE
+    //    ARE CALLED proximalOperatorZZZ IN lessSEM (e.g., proximalOperatorLasso 
+    //    for lasso).
+    // 2) THE SMOOTH PENALTY (RIDGE) AND THE LASSO PENALTY MUST HAVE SEPARATE 
+    //    TUNING PARMAMETERS.
+    lessSEM::proximalOperatorLasso proxOp; // HERE, WE DEFINE THE PROXIMAL OPERATOR
+    lessSEM::penaltyLASSO lassoIsta; 
+    lessSEM::penaltyRidge ridgeIsta;
+    // BOTH, LASSO AND RIDGE take tuning parameters of class tuningParametersEnet
+    lessSEM::tuningParametersEnet tpLasso;
+    lessSEM::tuningParametersEnet tpRidge;
+
+    // A weights vector indicates, which
+    // of the parameters is regularized (weight = 1) and which is unregularized 
+    // (weight =0). It also allows for adaptive lasso weights (e.g., weight =.0123).
+    // weights must be an arma::rowvec of the same length as our parameter vector.
+    tpLasso.weights = weights;
+    tpRidge.weights = weights;
+
+    // to optimize this model, we have to pass it to the ista function:
+      
+    lessSEM::fitResults lmFitIsta = lessSEM::ista(
+      linReg, // the first argument is our model
+      startingValues, // arma::rowvec with starting values
+      parameterLabels, // lessSEM::stringVector with labels
+      proxOp, // proximal opertator
+      lassoIsta, // our lasso penalty
+      ridgeIsta, // our ridge penalty
+      tpLasso, // our tuning parameter FOR THE LASSO PENALTY
+      tpRidge//, // our tuning parameter FOR THE RIDGE PENALTY
+      //controlOptimizer // optional fine-tuning (see above)
+    );
 }

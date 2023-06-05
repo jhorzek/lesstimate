@@ -440,70 +440,57 @@ the elastic net below as this penalty combines a ridge and a lasso penalty.
     
     lessSEM::fitResults lmFit = lessSEM::glmnet(
         linReg, // the first argument is our model
-        parameterValues, // arma::rowvec with starting values
-	parameterLabels, // lessSEM::stringVector with labels
+        startingValues, // arma::rowvec with starting values
+        parameterLabels, // lessSEM::stringVector with labels
         lasso, // non-smooth penalty
         ridge, // smooth penalty
-        tp,    // tuning parameters
-        control // finally, let's fine tune with the control
-      );
-    
-    // Next, create a new instance of class controlGLMNET:
-    controlGLMNET controlOptimizer = controlGlmnetDefault()
-    // Next, adapt the settings:
-    controlOptimizer.maxIterOut = 1000;
-    // pass the argument to the fitGlmnet function:
-    lessSEM::fitResults lmFit = lessSEM::glmnet(
-        linReg, // the first argument is our model
-        startingValues, // the second are the parameters
-	parameterLabels,
-        lasso, // the third is our lasso penalty
-        ridge, // the fourth our ridge penalty
-        tp//, // the fifth is our tuning parameter 
-        //controlOptimizer // optional: control the optimizer; here, we can 
-	// also specify the initialHessian (see above)
+        tp//,    // tuning parameters
+        //controlOptimizer // optional fine-tuning (see above)
       );
     ```
 
 === "ista"
 
-    The ista optimizer has the following additional settings:
-
-    - `L0`: a `double` controling the step size used in the first iteration
-    - `eta`: a `double` controling by how much the step size changes in inner iterations with $(\eta^i)*L$, where $i$ is the inner iteration
-    - `accelerate`: a `bool`; if  the extrapolation parameter is used to accelerate ista (see, e.g., Parikh, N., & Boyd, S. (2013). Proximal Algorithms. 
-    Foundations and Trends in Optimization, 1(3), 123–231., p. 152)
-    - `maxIterOut`: an `int` specifying the maximal number of outer iterations
-    - `maxIterIn`: an `int` specifying the maximal number of inner iterations
-    - `breakOuter`: a `double` specyfing the stopping criterion for outer iterations
-    - `breakInner`: a `double` specyfing the stopping criterion for inner iterations
-    - `convCritInner`: a `convCritInnerIsta` that specifies the inner breaking condition. Can be set to `lessSEM::istaCrit` (see Beck & Teboulle (2009);
-     Remark 3.1 on p. 191 (ISTA with backtracking)) or `lessSEM::gistCrit` (see Gong et al., 2013; Equation 3) 
-    - `sigma`: a `double` in (0,1) that is used by the gist convergence criterion. Larger sigma enforce larger improvement in fit
-    - `stepSizeIn`: a `stepSizeInheritance` that specifies how step sizes should be carried forward from iteration to iteration. 
-  `lessSEM::initial`: resets the step size to L0 in each iteration, `lessSEM::istaStepInheritance`: takes the previous step 
-  size as initial value for the next iteration, `lessSEM::barzilaiBorwein`: uses the Barzilai-Borwein procedure, 
-  `lessSEM::stochasticBarzilaiBorwein`: uses the Barzilai-Borwein procedure, but sometimes resets the step size; 
-  this can help when the optimizer is caught in a bad spot.
-    - `sampleSize`: an `int` that can be used to scale the fitting function down if the fitting function depends on the sample size
-    - `verbose`: an `int`, where 0 prints no additional information, > 0 prints GLMNET iterations
 
     ``` c++
-    // First, create a new instance of class controlIsta:
-    controlIsta controlOptimizer = controlIstaDefault()
-    // Next, adapt the settings:
-    controlOptimizer.maxIterOut = 1000;
-    // pass the argument to the fitIsta function:
-    lessSEM::fitResults fitResult_ = lessSEM::fitIsta(
-      	linReg,
-      	startingValues,
-      	parameterLabels,
-      	penalty,
-      	lambda,
-      	theta,
-        controlOptimizer//,
-        // verbose // set to >0 to get additional information on the optimization
-      );
+    // The elastic net is a combination of a ridge penalty and 
+    // a lasso penalty. 
+    // NOTE: HERE COMES THE BIGGEST DIFFERENCE BETWEEN GLMNET AND ISTA:
+    // 1) ISTA ALSO REQUIRES THE DEFINITION OF A PROXIMAL OPERATOR. THESE
+    //    ARE CALLED proximalOperatorZZZ IN lessSEM (e.g., proximalOperatorLasso 
+    //    for lasso).
+    // 2) THE SMOOTH PENALTY (RIDGE) AND THE LASSO PENALTY MUST HAVE SEPARATE 
+    //    TUNING PARMAMETERS.
+    lessSEM::proximalOperatorLasso proxOp; // HERE, WE DEFINE THE PROXIMAL OPERATOR
+    lessSEM::penaltyLASSO lasso; 
+    lessSEM::penaltyRidge ridge;
+    // BOTH, LASSO AND RIDGE take tuning parameters of class tuningParametersEnet
+    lessSEM::tuningParametersEnet tpLasso;
+    lessSEM::tuningParametersEnet tpRidge;
+
+    // A weights vector indicates, which
+    // of the parameters is regularized (weight = 1) and which is unregularized 
+    // (weight =0). It also allows for adaptive lasso weights (e.g., weight =.0123).
+    // weights must be an arma::rowvec of the same length as our parameter vector.
+    arma::rowvec weights(startingValues.n_elem);
+    weights.fill(1.0); // we want to regularize all parameters
+    weights.at(0) = 0.0; // except for the first one, which is our intercept.
+    tpLasso.weights = weights;
+    tpRidge.weights = weights;
+
+    // to optimize this model, we have to pass it to the ista function:
+      
+    lessSEM::fitResults lmFit = lessSEM::ista(
+      linReg, // the first argument is our model
+      startingValues, // arma::rowvec with starting values
+      parameterLabels, // lessSEM::stringVector with labels
+      proxOp, // proximal opertator
+      lasso, // our lasso penalty
+      ridge, // our ridge penalty
+      tpLasso, // our tuning parameter FOR THE LASSO PENALTY
+      tpRidge//, // our tuning parameter FOR THE RIDGE PENALTY
+      //controlOptimizer // optional fine-tuning (see above)
+    );
     ```
 
 ## References
