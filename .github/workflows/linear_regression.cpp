@@ -219,6 +219,13 @@ int main()
     // These penalties take tuning parameters of class tuningParametersEnetGlmnet
     lessSEM::tuningParametersEnetGlmnet tp;
     
+    // We have to specify alpha and lambda. Here, different values can 
+    // be specified for each parameter:
+    tp.lambda = arma::rowvec(startingValues.n_elem);
+    tp.lambda.fill(0.2);
+    tp.alpha = arma::rowvec(startingValues.n_elem);
+    tp.alpha.fill(0.3); 
+
     // Finally, there is also the weights. The weights vector indicates, which
     // of the parameters is regularized (weight = 1) and which is unregularized 
     // (weight =0). It also allows for adaptive lasso weights (e.g., weight =.0123).
@@ -241,6 +248,10 @@ int main()
         //controlOptimizer // optional fine-tuning (see above)
     );
 
+    std::cout << "\n\n### glmnet - elastic net ###\n";
+    std::cout << "fit: " << lmFitGlmnet.fit << "\n";
+    std::cout << "parameters: " << lmFitGlmnet.parameterValues << "\n";
+
     // The elastic net is a combination of a ridge penalty and 
     // a lasso penalty. 
     // NOTE: HERE COMES THE BIGGEST DIFFERENCE BETWEEN GLMNET AND ISTA:
@@ -255,6 +266,13 @@ int main()
     // BOTH, LASSO AND RIDGE take tuning parameters of class tuningParametersEnet
     lessSEM::tuningParametersEnet tpLasso;
     lessSEM::tuningParametersEnet tpRidge;
+
+    // We have to specify alpha and lambda. Here, the same value is used
+    // for each parameter:
+    tpLasso.alpha = .3;
+    tpLasso.lambda = .2;
+    tpRidge.alpha = .3;
+    tpRidge.lambda = .2;
 
     // A weights vector indicates, which
     // of the parameters is regularized (weight = 1) and which is unregularized 
@@ -276,4 +294,8 @@ int main()
       tpRidge//, // our tuning parameter FOR THE RIDGE PENALTY
       //controlOptimizer // optional fine-tuning (see above)
     );
+
+    std::cout << "\n\n### ista - elastic net ###\n";
+    std::cout << "fit: " << lmFitIsta.fit << "\n";
+    std::cout << "parameters: " << lmFitIsta.parameterValues << "\n";
 }

@@ -422,6 +422,13 @@ the elastic net below as this penalty combines a ridge and a lasso penalty.
     // These penalties take tuning parameters of class tuningParametersEnetGlmnet
     lessSEM::tuningParametersEnetGlmnet tp;
     
+    // We have to specify alpha and lambda. Here, different values can 
+    // be specified for each parameter:
+    tp.lambda = arma::rowvec(startingValues.n_elem);
+    tp.lambda.fill(0.2);
+    tp.alpha = arma::rowvec(startingValues.n_elem);
+    tp.alpha.fill(0.3); 
+
     // Finally, there is also the weights. The weights vector indicates, which
     // of the parameters is regularized (weight = 1) and which is unregularized 
     // (weight =0). It also allows for adaptive lasso weights (e.g., weight =.0123).
@@ -464,6 +471,13 @@ the elastic net below as this penalty combines a ridge and a lasso penalty.
     lessSEM::tuningParametersEnet tpLasso;
     lessSEM::tuningParametersEnet tpRidge;
 
+    // We have to specify alpha and lambda. Here, the same value is used
+    // for each parameter:
+    tpLasso.alpha = .3;
+    tpLasso.lambda = .2;
+    tpRidge.alpha = .3;
+    tpRidge.lambda = .2;
+    
     // A weights vector indicates, which
     // of the parameters is regularized (weight = 1) and which is unregularized 
     // (weight =0). It also allows for adaptive lasso weights (e.g., weight =.0123).
