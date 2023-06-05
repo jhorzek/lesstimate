@@ -343,7 +343,7 @@ argument. Depending on the optimizer used, different settings can be adapted.
 
     ``` c++
     // First, create a new instance of class controlGLMNET:
-    lessSEM::controlGLMNET controlOptimizer = controlGlmnetDefault()
+    lessSEM::controlGLMNET controlOptimizer = lessSEM::controlGlmnetDefault()
     // Next, adapt the settings:
     controlOptimizer.maxIterOut = 1000;
     // pass the argument to the fitGlmnet function:
@@ -386,7 +386,7 @@ argument. Depending on the optimizer used, different settings can be adapted.
 
     ``` c++
     // First, create a new instance of class controlIsta:
-    lessSEM::controlIsta controlOptimizer = controlIstaDefault()
+    lessSEM::controlIsta controlOptimizer = lessSEM::controlIstaDefault()
     // Next, adapt the settings:
     controlOptimizer.maxIterOut = 1000;
     // pass the argument to the fitIsta function:
