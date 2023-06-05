@@ -1,5 +1,7 @@
 site_name: lessOptimizers
 
+repo_url: https://github.com/jhorzek/lessOptimizers
+
 theme:
   name: material
   palette:
