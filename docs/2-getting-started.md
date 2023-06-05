@@ -376,8 +376,8 @@ argument. Depending on the optimizer used, different settings can be adapted.
 	      lambda,
 	      theta,
          // sets Hessian to identity; a better Hessian will help!
-	      initialHessian = arma::mat(1, 1, arma::fill::ones),
-        controlOptimizer = controlOptimizer//,
+	      arma::mat(1, 1, arma::fill::ones), // initial Hessian
+        controlOptimizer//,
         // verbose // set to >0 to get additional information on the optimization
       );
     ```
@@ -418,7 +418,7 @@ argument. Depending on the optimizer used, different settings can be adapted.
       	penalty,
       	lambda,
       	theta,
-        controlOptimizer = controlOptimizer//,
+        controlOptimizer//,
         // verbose // set to >0 to get additional information on the optimization
       );
     ```

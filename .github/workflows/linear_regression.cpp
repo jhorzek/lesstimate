@@ -150,7 +150,6 @@ int main()
     std::cout << "fit: " << fitResultGlmnet.fit << "\n";
     std::cout << "parameters: " << fitResultGlmnet.parameterValues << "\n";
 
-    std::cout << "\n### ista ###\n";
     lessSEM::fitResults fitResultIsta = lessSEM::fitIsta(
         linReg,
         startingValues,
@@ -158,6 +157,53 @@ int main()
         penalty,
         lambda,
         theta);
+    
+    std::cout << "\n### ista ###\n";
+    std::cout << "fit: " << fitResultIsta.fit << "\n";
+    std::cout << "parameters: " << fitResultIsta.parameterValues << "\n";
+
+
+    // adapt optimizer 
+    // First, create a new instance of class controlGLMNET:
+    controlGLMNET controlOptimizerGlmnet = controlGlmnetDefault()
+    // Next, adapt the settings:
+    controlOptimizerGlmnet.maxIterOut = 1000;
+    // pass the argument to the fitGlmnet function:
+    fitResultGlmnet = lessSEM::fitGlmnet(
+        linReg,
+        startingValues,
+        parameterLabels,
+        penalty,
+        lambda,
+        theta,
+        // sets Hessian to identity; a better Hessian will help!
+        arma::mat(1, 1, arma::fill::ones),
+        controlOptimizerGlmnet//,
+        // verbose // set to >0 to get additional information on the optimization
+    );
+
+    std::cout << "\n\n### glmnet - adapted optimizer ###\n";
+    std::cout << "fit: " << fitResultGlmnet.fit << "\n";
+    std::cout << "parameters: " << fitResultGlmnet.parameterValues << "\n";
+
+
+    // First, create a new instance of class controlIsta:
+    controlIsta controlOptimizerIsta = controlIstaDefault()
+    // Next, adapt the settings:
+    controlOptimizerIsta.maxIterOut = 1000;
+    // pass the argument to the fitIsta function:
+    fitResultIsta = lessSEM::fitIsta(
+        linReg,
+        startingValues,
+        parameterLabels,
+        penalty,
+        lambda,
+        theta,
+        controlOptimizerIsta//,
+        // verbose // set to >0 to get additional information on the optimization
+    );
+
+    std::cout << "\n### ista - adapted optimizer ###\n";
     std::cout << "fit: " << fitResultIsta.fit << "\n";
     std::cout << "parameters: " << fitResultIsta.parameterValues << "\n";
 }
