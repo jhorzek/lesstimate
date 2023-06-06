@@ -113,7 +113,7 @@ implements our linear regression using the functions defined above.
     ```
 
 ```
-// IMPORTANT: The library is calles lessOptimizers, but
+// IMPORTANT: The library is called lessOptimizers, but
 // because it was initially a sub-folder of lessSEM, the
 // namespace is still called lessSEM.
 
