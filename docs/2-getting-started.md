@@ -1,12 +1,11 @@
 # Getting Started
 
 === "R"
-
-  All steps outlined in the following are provided in the template for R packages using **lessOptimizers**. The C++ code can be found [in the src directory of the package](https://github.com/jhorzek/lessOptimizersTemplateR/blob/main/src/example.cpp).
+    All steps outlined in the following are provided in the template for R packages using **lessOptimizers**. The C++ code can be found [in the src directory of the package](https://github.com/jhorzek/lessOptimizersTemplateR/blob/main/src/example.cpp).
 
 === "C++"
+    All steps outlined in the following are provided in the template for C++ packages using **lessOptimizers**. The C++ code can be found [in the linear_regression.cpp file of the package](https://github.com/jhorzek/lessOptimizersTemplateCpp/blob/main/linear_regression.cpp).
 
-  All steps outlined in the following are provided in the template for C++ packages using **lessOptimizers**. The C++ code can be found [in the linear_regression.cpp file of the package](https://github.com/jhorzek/lessOptimizersTemplateCpp/blob/main/linear_regression.cpp).
 
 **lessOptimizers** was initially a sub-folder of the **lessSEM** package. Therefore,
 the default is currently to still assume that you are using the library in an R package.
