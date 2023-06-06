@@ -223,7 +223,7 @@ class `lessSEM::stringVector`:
 
     When using R, `lessSEM::stringVector` is identical to `Rcpp::StringVector`.
     ``` r
-    Rcpp::StringVector parameterLabels;
+    Rcpp::StringVector parameterLabels(3);
     parameterLabels[0] = "b0";
     parameterLabels[1] = "b1";
     parameterLabels[2] = "b2";
