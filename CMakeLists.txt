@@ -13,11 +13,8 @@ set(CMAKE_CXX_EXTENSIONS OFF) # this ensures that the project is built without
                               # compiler specific arguments (e.g., uint when using g++)
                               # to make the project more portable 
 
-# we want to use lessOptimizers without Rcpp -> set USE_R=0
-add_definitions(-DUSE_R=0)
-
-# use GNU standard install directories
-include(GNUInstallDirs)
+# Include directories
+include_directories(include)
 
 # find dependencies:
 find_package(Armadillo REQUIRED)
@@ -25,36 +22,20 @@ find_package(Armadillo REQUIRED)
 # create library
 add_library(lessOptimizers INTERFACE)
 
-# include required directories to allow users to include the project
-# with #include
-target_include_directories(${PROJECT_NAME} 
- INTERFACE
-    # ensure that the include directory is found during build
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+# we want to use lessOptimizers without Rcpp -> set USE_R=0
+target_compile_definitions(${PROJECT_NAME} INTERFACE MY_VAR=0)
 
-    # ensure that the include directory is found during install
-    # and specifies that the headers of lessOptimizers are found in the 
-    # include directory within the project that uses lessOptimizers 
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-)
+# include required directories
+target_include_directories(${PROJECT_NAME} INTERFACE include)
 
 # link to armadillo
 target_include_directories(${PROJECT_NAME} INTERFACE ${ARMADILLO_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} INTERFACE ${ARMADILLO_LIBRARIES})
 
 # install target and export
-install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}-targets)
-
 install(
-    EXPORT ${PROJECT_NAME}-targets
-    NAMESPACE ${PROJECT_NAME}::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-)
-
-install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
-
-
-
-
-
+        # source directory with files to be installed
+        DIRECTORY include/${PROJECT_NAME}
+        # install them to the include folder.
+        # users can now include the library with #include include/lessOptimizers.h
+        DESTINATION include)
