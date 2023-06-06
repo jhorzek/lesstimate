@@ -1,5 +1,13 @@
 # Getting Started
 
+=== "R"
+
+  All steps outlined in the following are provided in the template for R packages using **lessOptimizers**. The C++ code can be found [in the src directory of the package](https://github.com/jhorzek/lessOptimizersTemplateR/blob/main/src/example.cpp).
+
+=== "C++"
+
+  All steps outlined in the following are provided in the template for C++ packages using **lessOptimizers**. The C++ code can be found [in the linear_regression.cpp file of the package](https://github.com/jhorzek/lessOptimizersTemplateCpp/blob/main/linear_regression.cpp).
+
 **lessOptimizers** was initially a sub-folder of the **lessSEM** package. Therefore,
 the default is currently to still assume that you are using the library in an R package.
 In the [common_headers.h](https://github.com/jhorzek/lessOptimizers/blob/f8aa3169da617ca2d6afbd330e1fb5395ba40898/include/common_headers.h#L8)-file, 
@@ -7,7 +15,7 @@ you will find a variable called `USE_R`. If this variable is set to 1 (default),
 is setup to be used from R. If `USE_R` is set to zero, the library no longer relies on the R packages
 **Rcpp** (Eddelbuettel et al., 2011) or **RcppArmadillo** (Eddelbuettel et al., 2014). The library can now be used in 
 C++ projects as long as the [**armadillo**](https://arma.sourceforge.net/) (Sanderson et al., 2016)
-library is installed. These settings are implemented in the [CMakeLists.txt](https://github.com/jhorzek/lessOptimizers/blob/main/CMakeLists.txt)-file included
+library is installed. These settings are implemented in the [lessOptimizersConfig.cmake](https://github.com/jhorzek/lessOptimizers/blob/b952a8509f388f2284450414bc781a9114c98243/lessOptimizersConfig.cmake)-file included
 in the project.
 
 ## Interfacing to **lessOptimizers**
@@ -107,7 +115,7 @@ implements our linear regression using the functions defined above.
     ```
 
 === "C++"
-    We recommend setting up **lessOptimizers** with CMake. You will find an example [here](https://github.com/jhorzek/lessOptimizers/blob/documentation/.github/workflows/linear_regression.cpp).
+    We recommend setting up **lessOptimizers** with CMake. You will find an example [here](https://github.com/jhorzek/lessOptimizersTemplateCpp).
     ```
     #include <include/lessOptimizers.h>
     ```
@@ -283,9 +291,7 @@ Having specified the penalty and the tuning values, we can now use the optimizer
 === "glmnet"
     
      To use glmnet successfully, you should also provide an initial Hessian as this can
-     improve the optimization considerably. For simplicity, we won't do this here, but 
-     see [here](https://github.com/jhorzek/lessLMcpp/blob/2fd6e4378952bb177f0fa538f1381337e83b2c7c/src/linear_regression.cpp#L41)
-     for an example.
+     improve the optimization considerably. For simplicity, we won't do this here.
 
     ``` c++
     lessSEM::fitResults fitResult_ = lessSEM::fitGlmnet(
