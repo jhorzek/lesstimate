@@ -33,7 +33,7 @@ First, let's include the necessary headers:
 === "R"
 
     ```
-    #include <RcppArmadillo>
+    #include <RcppArmadillo.h>
     // [[Rcpp :: depends ( RcppArmadillo )]]
     ```
 
