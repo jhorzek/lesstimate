@@ -107,9 +107,9 @@ implements our linear regression using the functions defined above.
     ```
 
 === "C++"
-
+    We recommend setting up **lessOptimizers** with CMake. You will find an example [here](https://github.com/jhorzek/lessOptimizers/blob/documentation/.github/workflows/linear_regression.cpp).
     ```
-    #include "include/lessOptimizers/lessOptimizers.h"
+    #include <include/lessOptimizers.h>
     ```
 
 ```
