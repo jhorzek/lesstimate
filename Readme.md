@@ -2,7 +2,7 @@
 
 > A longer documentation of the library can be found [here](https://jhorzek.github.io/lessOptimizers/).
 
-This repository provides optimizers implemented in C++ header files for regularized model estimation in R using Rcpp. These optimizers are mainly used in the R package [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models. The main objective of keeping a separate repository just for the optimizers is that they can also be used by other R packages by copying the include-folder in the inst-folder of your package or by keeping the files in a git submodule. This way you can make sure that your code will still work even if there are breaking changes in the optimizers used by **lessSEM**.
+This repository provides optimizers implemented in C++ header files for regularized model estimation. These optimizers are used in the R package [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models. The main objective of keeping a separate repository just for the optimizers is that they can also be used by other packages (R or C++) by copying the include-folder in the inst-folder of your package or by keeping the files in a git submodule. This way you can make sure that your code will still work even if there are breaking changes in the optimizers used by **lessSEM**.
 
 To use the optimziers, you will need two functions:
 
@@ -11,11 +11,8 @@ To use the optimziers, you will need two functions:
 
 Given these two functions, **lessOptimizers** lets you apply any of the following penalties to your model: ridge, lasso, adaptiveLasso, elasticNet, cappedL1, lsp, scad, or mcp. Models can be estimated using the glmnet optimizer or variants of the ista optimizer. The interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
 
-An introduction to optimizing models with **lessOptimizers** can be found in the [**lessLM**](https://github.com/jhorzek/lessLM) repository. We recommend that you use the [simplified interfaces](https://github.com/jhorzek/lessOptimizers/blob/main/include/simplified_interfaces.h) to get started. 
-
-## Using lessOptimizers outside of *R*
-
-**lessOptimizers** can be used outside of *R* by setting the USE_R in [common_headers.h](https://github.com/jhorzek/lessOptimizers/blob/main/include/common_headers.h) to zero (e.g., using `-DUSE_R=0` when compiling). An example for using **lessOptimizers** in a pure C++ package can be found in the [lessLMcpp](https://github.com/jhorzek/lessLMcpp) repository. The procedure is currently documented in the src-files. More documentation will follow.
+Intoductions to using **lessOptimizers** in R or C++ can be found in the [documentation](https://jhorzek.github.io/lessOptimizers/). 
+We also provide a [template for using **lessOptimizers** in R](https://github.com/jhorzek/lessOptimizersTemplateR) and [template for using **lessOptimizers** in C++](https://github.com/jhorzek/lessOptimizersTemplateCpp). Finally, you will find another example for including **lessOptimizers** in R in the package [**lessLM**](https://github.com/jhorzek/lessLM). We recommend that you use the [simplified interfaces](https://github.com/jhorzek/lessOptimizers/blob/main/include/simplified_interfaces.h) to get started. 
 
 # References
 
