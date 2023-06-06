@@ -1,0 +1,8 @@
+{
+  "name": "lessoptimizers",
+  "version-string": "1.0.0",
+  "description": "Provides optimizers for regularized models such as regularized linear regression or regularized structural equation models.",
+  "dependencies": [
+    "armadillo"
+  ]
+}
