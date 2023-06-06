@@ -48,7 +48,7 @@ PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) -I../inst/include/
 ```
 This ensures that the include folder is found when compiling the package.
 
-Next add `^CMakeLists.txt$` to .Rbuildignore.
+Next add `^lessOptimizersConfig-cmake$` to .Rbuildignore.
 
 Open the DESCRIPTION file of your package and add `Rcpp` and `RcppArmadillo` to the field `LinkingTo` ([see here](https://github.com/jhorzek/lessSEM/blob/82a4432649f4c9d6072f79836ef3ddefb001d083/DESCRIPTION#L45)).
 
