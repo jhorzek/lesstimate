@@ -6,6 +6,8 @@ to be installed differently.
 
 ## Using lessOptimizers in your R package
 
+> We provide a [package template using **lessOptimizers**](https://github.com/jhorzek/lessOptimizersTemplateR). All procedures outlined in the following are already implemented in this template.
+
 When using **lessOptimizers** in your R package, first make sure that **RcppArmadillo**
 (Eddelbuettel et al., 2014)
 is installed (if not, run `install.packages("RcppArmadillo")`. You will also
@@ -28,7 +30,7 @@ called `include`. You should now have the following folder structure:
 
 Clone the lessOptimizers git repository in your include folder with `git clone https://github.com/jhorzek/lessOptimizers.git`.
 
-Add a file called `lessSEM.h` in the folder inst/include ([see here for an example](https://github.com/jhorzek/lessSEM/blob/82a4432649f4c9d6072f79836ef3ddefb001d083/inst/include/lessSEM.h)) and
+Add a file called `lessSEM.h` in the folder inst/include ([see here for an example](https://github.com/jhorzek/lessOptimizersTemplateR/blob/main/inst/include/lessSEM.h)) and
 save the following in this file:
 
 ```
@@ -42,21 +44,23 @@ save the following in this file:
 
 This file makes sure that R can find the functions of **lessOptimizers**. 
 
-In your src-folder, open the files Makevars and Makevars.win. Add the following line ([see here](https://github.com/jhorzek/lessSEM/blob/82a4432649f4c9d6072f79836ef3ddefb001d083/src/Makevars#L1)):
+In your src-folder, open the files Makevars and Makevars.win. Add the following line ([see here](https://github.com/jhorzek/lessOptimizersTemplateR/blob/main/src/Makevars)):
 ```
 PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) -I../inst/include/
 ```
 This ensures that the include folder is found when compiling the package.
 
-Next add `^CMakeLists.txt$` to .Rbuildignore.
+Next add `^lessOptimizersConfig-cmake$` to .Rbuildignore.
 
-Open the DESCRIPTION file of your package and add `Rcpp` and `RcppArmadillo` to the field `LinkingTo` ([see here](https://github.com/jhorzek/lessSEM/blob/82a4432649f4c9d6072f79836ef3ddefb001d083/DESCRIPTION#L45)).
+Open the DESCRIPTION file of your package and add `Rcpp` and `RcppArmadillo` to the field `LinkingTo` ([see here](https://github.com/jhorzek/lessOptimizersTemplateR/blob/main/DESCRIPTION)).
 
 ## Using lessOptimizers in your C++ package
 
+> We provide a [template using **lessOptimizers** with C++](https://github.com/jhorzek/lessOptimizersTemplateCpp). All procedures outlined in the following are already implemented in this template.
+
 For C++, you will need the **armadillo**(https://arma.sourceforge.net/) - library (Sanderson et al., 2016). This library is also available
 using the package manager Conan or vcpkg. You will have to include lessOptimizers in your
-C++ library Cmake file. An example can be found in the [lessLMcpp-project](https://github.com/jhorzek/lessLMcpp).
+C++ library Cmake file.
 
 # References
 
