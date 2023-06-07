@@ -2,14 +2,15 @@
 
 > A longer documentation of the library can be found [here](https://jhorzek.github.io/lessOptimizers/).
 
-This repository provides optimizers implemented in C++ header files for regularized model estimation. These optimizers are used in the R package [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models. The main objective of keeping a separate repository just for the optimizers is that they can also be used by other packages (R or C++) by copying the include-folder in the inst-folder of your package or by keeping the files in a git submodule. This way you can make sure that your code will still work even if there are breaking changes in the optimizers used by **lessSEM**.
+**lessOptimizers** provides optimizers for **ridge**, **lasso**, **adaptive lasso**, **elastic net**, **cappedL1**, **lsp**, **scad**, and **mcp** penalties as well as mixtures thereof. The 
+optimizers are implemented as C++ header-only library and are used in the R package [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models. However, they can also be used by other packages, both in R or C++.
 
 To use the optimziers, you will need two functions:
 
-1. a function that computes the fit value (e.g., the -2log-Likelihood) of your model
+1. a function that computes the fit value (e.g., the -2log-Likelihood or residual sum squared) of your model
 2. a functions that computes the gradients of the model
 
-Given these two functions, **lessOptimizers** lets you apply any of the following penalties to your model: ridge, lasso, adaptiveLasso, elasticNet, cappedL1, lsp, scad, or mcp. Models can be estimated using the glmnet optimizer or variants of the ista optimizer. The interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
+Given these two functions, **lessOptimizers** lets you apply any of the aforementioned penalties to your model using the glmnet optimizer or variants of the ista optimizer. The interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
 
 Intoductions to using **lessOptimizers** in R or C++ can be found in the [documentation](https://jhorzek.github.io/lessOptimizers/). 
 We also provide a [template for using **lessOptimizers** in R](https://github.com/jhorzek/lessOptimizersTemplateR) and [template for using **lessOptimizers** in C++](https://github.com/jhorzek/lessOptimizersTemplateCpp). Finally, you will find another example for including **lessOptimizers** in R in the package [**lessLM**](https://github.com/jhorzek/lessLM). We recommend that you use the [simplified interfaces](https://github.com/jhorzek/lessOptimizers/blob/main/include/simplified_interfaces.h) to get started. 
