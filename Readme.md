@@ -1,8 +1,8 @@
-# lesspar - **l**esspar **es**timates **s**parse **par**ameters
+# lesspar
 
 > A longer documentation of the library can be found at https://jhorzek.github.io/lesspar/.
 
-**lesspar** provides optimizers for **ridge**, **lasso**, **adaptive lasso**, **elastic net**, **cappedL1**, **lsp**, **scad**, and **mcp** penalties as well as mixtures thereof. The 
+**lesspar** (**l**esspar **es**timates **s**parse **par**ameters) provides optimizers for **ridge**, **lasso**, **adaptive lasso**, **elastic net**, **cappedL1**, **lsp**, **scad**, and **mcp** penalties as well as mixtures thereof. The 
 optimizers are implemented as C++ header-only library and are used in the R package [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models. However, they can also be used by other packages, both in R or C++.
 
 To use the optimziers, you will need two functions:
