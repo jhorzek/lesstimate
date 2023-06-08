@@ -1,6 +1,6 @@
 #ifndef SIMPLIFIED_HELPER_FUNCTIONS
 #define SIMPLIFIED_HELPER_FUNCTIONS
-// The optimizers implemented in lessOptimizers are fairly flexible, resulting 
+// The optimizers implemented in lesspar are fairly flexible, resulting 
 // in a complexity overhead for users who just want to use one specific penalty 
 // function out of the box. The following classes are meant to reduce this
 // overhead by providing simplified interfaces to specific penalty functions.

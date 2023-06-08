@@ -1,8 +1,8 @@
-# lessOptimizers
+# lesspar - **l**essta **es**timates **s**parse the**ta**
 
-> A longer documentation of the library can be found [here](https://jhorzek.github.io/lessOptimizers/).
+> A longer documentation of the library can be found at https://jhorzek.github.io/lesspar/.
 
-**lessOptimizers** provides optimizers for **ridge**, **lasso**, **adaptive lasso**, **elastic net**, **cappedL1**, **lsp**, **scad**, and **mcp** penalties as well as mixtures thereof. The 
+**lesspar** provides optimizers for **ridge**, **lasso**, **adaptive lasso**, **elastic net**, **cappedL1**, **lsp**, **scad**, and **mcp** penalties as well as mixtures thereof. The 
 optimizers are implemented as C++ header-only library and are used in the R package [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models. However, they can also be used by other packages, both in R or C++.
 
 To use the optimziers, you will need two functions:
@@ -10,10 +10,12 @@ To use the optimziers, you will need two functions:
 1. a function that computes the fit value (e.g., the -2log-Likelihood or residual sum squared) of your model
 2. a functions that computes the gradients of the model
 
-Given these two functions, **lessOptimizers** lets you apply any of the aforementioned penalties to your model using the glmnet optimizer or variants of the ista optimizer. The interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
+Given these two functions, **lesspar** lets you apply any of the aforementioned penalties to your model using the glmnet optimizer or variants of the ista optimizer. The interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
 
-Intoductions to using **lessOptimizers** in R or C++ can be found in the [documentation](https://jhorzek.github.io/lessOptimizers/). 
-We also provide a [template for using **lessOptimizers** in R](https://github.com/jhorzek/lessOptimizersTemplateR) and [template for using **lessOptimizers** in C++](https://github.com/jhorzek/lessOptimizersTemplateCpp). Finally, you will find another example for including **lessOptimizers** in R in the package [**lessLM**](https://github.com/jhorzek/lessLM). We recommend that you use the [simplified interfaces](https://github.com/jhorzek/lessOptimizers/blob/main/include/simplified_interfaces.h) to get started. 
+Intoductions to using **lesspar** in R or C++ can be found in the [documentation](https://jhorzek.github.io/lesspar/). 
+We also provide a [template for using **lesspar** in R](https://github.com/jhorzek/lessparTemplateR) and [template for using **lesspar** in C++](https://github.com/jhorzek/lessparTemplateCpp). Finally, you will find another example for including **lesspar** in R in the package [**lessLM**](https://github.com/jhorzek/lessLM). We recommend that you use the [simplified interfaces](https://github.com/jhorzek/lesspar/blob/main/include/simplified_interfaces.h) to get started. 
+
+**lesspar** is a portmanteau of less and theta. It also stands for **l**esspar **es**timates **s**parse **par**ameters and **Les**lie **s**nacks **par**ameters.  
 
 # References
 

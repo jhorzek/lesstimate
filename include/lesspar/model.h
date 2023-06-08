@@ -7,7 +7,7 @@ namespace lessSEM{
 
 // model
 //
-// model is the base class used in every optimizer implemented in lessOptimizers.
+// model is the base class used in every optimizer implemented in lesspar.
 // The user specified model should inherit from the model class and must implement
 // the two methods defined therein: 
 // @method fit method with arguments parameterValues (arma::rowvec) and parameterLabels (stringVector; see common_headers.h)
