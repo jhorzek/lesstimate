@@ -1,5 +1,5 @@
 #include <armadillo>
-#include <include/lessOptimizers.h>
+#include <include/lesspar.h>
 
 double sumSquaredError(
     arma::colvec b, // the parameter vector
@@ -40,7 +40,7 @@ arma::rowvec sumSquaredErrorGradients(
 }
 
 
-// IMPORTANT: The library is calles lessOptimizers, but
+// IMPORTANT: The library is calles lesspar, but
 // because it was initially a sub-folder of lessSEM, the
 // namespace is still called lessSEM.
 

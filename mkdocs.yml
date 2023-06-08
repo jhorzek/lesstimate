@@ -1,6 +1,6 @@
-site_name: lessOptimizers
+site_name: lesspar
 
-repo_url: https://github.com/jhorzek/lessOptimizers
+repo_url: https://github.com/jhorzek/lesspar
 
 theme:
   name: material
