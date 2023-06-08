@@ -1,6 +1,6 @@
-# lessOptimizers
+# lesspar
 
-**lessOptimizers** is a C++ header-only library implemeting optimizers for functions of the form
+**lesspar** (**l**esspar **es**timates **s**parse **par**armeters or **Les**lie **s**nacks **par**ameters) is a C++ header-only library implemeting optimizers for functions of the form
 
 $$g(\pmb\theta) = f(\pmb\theta) + p(\pmb\theta)$$
 
@@ -18,9 +18,9 @@ uses the gradients and Hessian of the function $f(\pmb\theta)$.
 uses the gradients of the function $f(\pmb\theta)$.
 
 
-**lessOptimizers** was mainly developed to be used in [**lessSEM**](https://jhorzek.github.io/lessSEM/), an 
+**lesspar** was mainly developed to be used in [**lessSEM**](https://jhorzek.github.io/lessSEM/), an 
 R package for regularized Structural Equation Models. However, the library can also be used from C++.
-**lessOptimizers** builds heavily on the **RcppAdmadillo** (Eddelbuettel et al., 2014) and **armadillo** (Sanderson et al., 2016) 
+**lesspar** builds heavily on the **RcppAdmadillo** (Eddelbuettel et al., 2014) and **armadillo** (Sanderson et al., 2016) 
 libraries. The optimizer interface is inspired by the **ensmallen** library (Curtin et al., 2021).
 
 

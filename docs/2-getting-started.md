@@ -1,30 +1,30 @@
 # Getting Started
 
 === "R"
-    All steps outlined in the following are provided in the template for R packages using **lessOptimizers**. The C++ code can be found [in the src directory of the package](https://github.com/jhorzek/lessOptimizersTemplateR/blob/main/src/example.cpp).
+    All steps outlined in the following are provided in the template for R packages using **lesspar**. The C++ code can be found [in the src directory of the package](https://github.com/jhorzek/lessparTemplateR/blob/main/src/example.cpp).
 
 === "C++"
-    All steps outlined in the following are provided in the template for C++ packages using **lessOptimizers**. The C++ code can be found [in the linear_regression.cpp file of the package](https://github.com/jhorzek/lessOptimizersTemplateCpp/blob/main/linear_regression.cpp).
+    All steps outlined in the following are provided in the template for C++ packages using **lesspar**. The C++ code can be found [in the linear_regression.cpp file of the package](https://github.com/jhorzek/lessparTemplateCpp/blob/main/linear_regression.cpp).
 
 
-**lessOptimizers** was initially a sub-folder of the **lessSEM** package. Therefore,
+**lesspar** was initially a sub-folder of the **lessSEM** package. Therefore,
 the default is currently to still assume that you are using the library in an R package.
-In the [common_headers.h](https://github.com/jhorzek/lessOptimizers/blob/f8aa3169da617ca2d6afbd330e1fb5395ba40898/include/common_headers.h#L8)-file, 
-you will find a variable called `USE_R`. If this variable is set to 1 (default), **lessOptimizers**
+In the [common_headers.h](https://github.com/jhorzek/lesspar/blob/f8aa3169da617ca2d6afbd330e1fb5395ba40898/include/common_headers.h#L8)-file, 
+you will find a variable called `USE_R`. If this variable is set to 1 (default), **lesspar**
 is setup to be used from R. If `USE_R` is set to zero, the library no longer relies on the R packages
 **Rcpp** (Eddelbuettel et al., 2011) or **RcppArmadillo** (Eddelbuettel et al., 2014). The library can now be used in 
 C++ projects as long as the [**armadillo**](https://arma.sourceforge.net/) (Sanderson et al., 2016)
-library is installed. These settings are implemented in the [lessOptimizersConfig.cmake](https://github.com/jhorzek/lessOptimizers/blob/b952a8509f388f2284450414bc781a9114c98243/lessOptimizersConfig.cmake)-file included
+library is installed. These settings are implemented in the [lessparConfig.cmake](https://github.com/jhorzek/lesspar/blob/b952a8509f388f2284450414bc781a9114c98243/lessparConfig.cmake)-file included
 in the project.
 
-## Interfacing to **lessOptimizers**
+## Interfacing to **lesspar**
 
-As outlined in the introduction, the optimizers in **lessOptimizers** minimize functions
+As outlined in the introduction, the optimizers in **lesspar** minimize functions
 of the form 
 $$g(\pmb\theta) = f(\pmb\theta) + p(\pmb\theta)$$
 where $f(\pmb\theta)$ is (twice) continously differentiable with respect to $\theta$ and $p(\pmb\theta)$
 is a non-differentiable penalty function (e.g., lasso or scad).
-To use **lessOptimizers** for your project, you will need two functions.
+To use **lesspar** for your project, you will need two functions.
 First, a function that computes $f(\pmb\theta)$, the value of your un-
 regularized objective function. Second, a function that computes 
 $\triangledown_{\pmb\theta} f(\pmb\theta)$, the gradient vector of your
@@ -102,8 +102,8 @@ provide a good starting point for the bfgs updates using this Hessian.
 
 ### Step 3: Creating a model object
 
-**lessOptimizers** assumes that you pass a model-object to the optimizers. This model 
-object ist implemented in the [`lessSEM::model`-class](https://github.com/jhorzek/lessOptimizers/blob/main/include/model.h).
+**lesspar** assumes that you pass a model-object to the optimizers. This model 
+object ist implemented in the [`lessSEM::model`-class](https://github.com/jhorzek/lesspar/blob/main/include/model.h).
 Therefore, we have to create a custom class that inherits from `lessSEM::model` and 
 implements our linear regression using the functions defined above. 
 
@@ -114,15 +114,16 @@ implements our linear regression using the functions defined above.
     ```
 
 === "C++"
-    We recommend setting up **lessOptimizers** with CMake. You will find an example [here](https://github.com/jhorzek/lessOptimizersTemplateCpp).
+    We recommend setting up **lesspar** with CMake. You will find an example [here](https://github.com/jhorzek/lessparTemplateCpp).
     ```
-    #include <include/lessOptimizers.h>
+    #include <include/lesspar.h>
     ```
 
 ```
-// IMPORTANT: The library is called lessOptimizers, but
+// IMPORTANT: The library is called lesspar, but
 // because it was initially a sub-folder of lessSEM, the
-// namespace is still called lessSEM.
+// namespace is still called lessSEM. However, you can
+// also use the lesspar namespace which just copies lessSEM.
 
 class linearRegressionModel : public lessSEM::model
 {
@@ -223,7 +224,7 @@ and two predictors.
 arma::rowvec startingValues(3);
 startingValues.fill(0.0);
 ```
-**lessOptimizers** also expects labels for these parameters. The labels are stored in an object of
+**lesspar** also expects labels for these parameters. The labels are stored in an object of
 class `lessSEM::stringVector`:
 
 === "R"
@@ -414,8 +415,8 @@ argument. Depending on the optimizer used, different settings can be adapted.
 
 ## Specialized interfaces
 
-If you are only interested in one specific penalty function (e.g., lasso), it can be beneficial to use the specialized interfaces provided by **lessOptimizers**.
-These can be faster because **lessOptimizers** no longer has to check which penalty is used for which parameter. That said, the specialized interface takes 
+If you are only interested in one specific penalty function (e.g., lasso), it can be beneficial to use the specialized interfaces provided by **lesspar**.
+These can be faster because **lesspar** no longer has to check which penalty is used for which parameter. That said, the specialized interface takes 
 some more time to set up and is less flexible than the simplified interface used above.
 
 To use the specialized interface, we have to define the penalties we want to use. In general,
