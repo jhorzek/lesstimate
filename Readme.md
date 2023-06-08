@@ -1,4 +1,4 @@
-# lesspar - **l**essta **es**timates **s**parse the**ta**
+# lesspar - **l**esspar **es**timates **s**parse **par**ameters
 
 > A longer documentation of the library can be found at https://jhorzek.github.io/lesspar/.
 
