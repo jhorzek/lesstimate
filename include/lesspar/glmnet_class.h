@@ -27,42 +27,39 @@
 namespace lessSEM
 {
 
-  // convergenceCriteriaGlmnet
-  //
-  // Specifies the convergence criteria that are currently available for the glmnet optimizer.
-  // The optimization stops if the specified convergence criterion is met.
-  //
-  // GLMNET: Uses the convergence criterion outlined in Yuan et al. (2012) for GLMNET.
-  // fitChange: Uses the change in fit from one iteration to the next.
-  // gradients: Uses the gradients; if all are (close to) zero, the minimum is found
+  /**
+   * Specifies the convergence criteria that are currently available for the glmnet optimizer. The optimization stops if the specified convergence criterion is met.
+   */
   enum convergenceCriteriaGlmnet
   {
-    GLMNET,
-    fitChange,
-    gradients
+    GLMNET,    /** Uses the convergence criterion outlined in Yuan et al. (2012) for GLMNET. Note that in case of BFGS, this will be identical to using the Armijo condition.*/
+    fitChange, /** Uses the change in fit from one iteration to the next.*/
+    gradients  /** Uses the gradients; if all are (close to) zero, the minimum is found*/
   };
   const std::vector<std::string> convergenceCriteriaGlmnet_txt = {
       "GLMNET",
       "fitChange",
       "gradients"};
 
-  // controlGLMNET
-  //
-  // Allows you to adapt the optimizer settings for the glmnet optimizer
-  //
-  // @param initialHessian initial Hessian matrix fo the optimizer.
-  // @param stepSize Initial stepSize of the outer iteration (theta_{k+1} = theta_k + stepSize * Stepdirection)
-  // @param sigma only relevant when lineSearch = 'GLMNET'. Controls the sigma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421.
-  // @param gamma Controls the gamma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421. Defaults to 0.
-  // @param maxIterOut Maximal number of outer iterations
-  // @param maxIterIn Maximal number of inner iterations
-  // @param maxIterLine Maximal number of iterations for the line search procedure
-  // @param breakOuter Stopping criterion for outer iterations
-  // @param breakInner Stopping criterion for inner iterations
-  // @param convergenceCriterion which convergence criterion should be used for the outer iterations? possible are 0 = GLMNET, 1 = fitChange, 2 = gradients.
-  // Note that in case of gradients and GLMNET, we divide the gradients (and the Hessian) of the log-Likelihood by N as it would otherwise be
-  // considerably more difficult for larger sample sizes to reach the convergence criteria.
-  // @param verbose 0 prints no additional information, > 0 prints GLMNET iterations
+  /**
+   *
+   * @struct controlGLMNET
+   * @brief Allows you to adapt the optimizer settings for the glmnet optimizer
+   *
+   * @var initialHessian initial Hessian matrix fo the optimizer.
+   * @var stepSize Initial stepSize of the outer iteration (theta_{k+1} = theta_k + stepSize * Stepdirection)
+   * @var sigma only relevant when lineSearch = 'GLMNET'. Controls the sigma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421.
+   * @var gamma Controls the gamma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421. Defaults to 0.
+   * @var maxIterOut Maximal number of outer iterations
+   * @var maxIterIn Maximal number of inner iterations
+   * @var maxIterLine Maximal number of iterations for the line search procedure
+   * @var breakOuter Stopping criterion for outer iterations
+   * @var breakInner Stopping criterion for inner iterations
+   * @var convergenceCriterion which convergence criterion should be used for the outer iterations? possible are 0 = GLMNET, 1 = fitChange, 2 = gradients.
+   * Note that in case of gradients and GLMNET, we divide the gradients (and the Hessian) of the log-Likelihood by N as it would otherwise be
+   * considerably more difficult for larger sample sizes to reach the convergence criteria.
+   * @var verbose 0 prints no additional information, > 0 prints GLMNET iterations
+   */
   struct controlGLMNET
   {
     arma::mat initialHessian;
@@ -80,10 +77,11 @@ namespace lessSEM
     // is printed.
   };
 
-  // controlGlmnetDefault
-  //
-  // Returns the default settings for the glmnet optimizer.
-  // @return object of struct controlGLMNET.
+  /**
+   * @brief Returns the default settings for the glmnet optimizer.
+   *
+   * @return controlGLMNET
+   */
   inline controlGLMNET controlGlmnetDefault()
   {
     arma::mat initialHessian(1, 1);
@@ -106,20 +104,21 @@ namespace lessSEM
     return (defaultIs);
   }
 
-  // glmnetInner
-  //
-  // The glmnet optimizer has an outer and an inner optimization loop. This function implements
-  // the inner optimization loop which returns the step direction.
-  // To this end, the function q_k(direction) = direction * gradients_kMinus1 + .5*direction*Hessian_kMinus1 * direction + sum_j(lambda_j*alpha_j*|parameters_kMinus1_j + direction_j| - lambda_j*alpha_j*|parameters_kMinus1_j|) is minimized.
-  // @param parameters_kMinus1 parameter estimates from previous iteration k-1
-  // @param gradients_kMinus1 gradients from previous iteration
-  // @param Hessian Hessian_kMinus1 Hessian from previous iteration
-  // @param lambda tuning parameter lambda
-  // @param alpha tuning parameter alpha
-  // @param weights tuning parameter weights
-  // @param maxIterIn Maximal number of inner iterations
-  // @param breakInner Stopping criterion for inner iterations
-  // @param verbose 0 prints no additional information, > 0 prints GLMNET iterations
+  /**
+   * @brief The glmnet optimizer has an outer and an inner optimization loop. This function implements
+   * the inner optimization loop which returns the step direction.
+   * To this end, the function q_k(direction) = direction * gradients_kMinus1 + .5*direction*Hessian_kMinus1 * direction + sum_j(lambda_j*alpha_j*|parameters_kMinus1_j + direction_j| - lambda_j*alpha_j*|parameters_kMinus1_j|) is minimized.
+   * @param parameters_kMinus1 parameter estimates from previous iteration k-1
+   * @param gradients_kMinus1 gradients from previous iteration
+   * @param Hessian Hessian_kMinus1 Hessian from previous iteration
+   * @param lambda tuning parameter lambda
+   * @param alpha tuning parameter alpha
+   * @param weights tuning parameter weights
+   * @param maxIterIn Maximal number of inner iterations
+   * @param breakInner Stopping criterion for inner iterations
+   * @param verbose 0 prints no additional information, > 0 prints GLMNET iterations
+   * @return arma::rowvec with parameters
+   */
   template <typename nonsmoothPenalty,
             typename tuning>
   inline arma::rowvec glmnetInner(const arma::rowvec &parameters_kMinus1,
@@ -192,27 +191,31 @@ namespace lessSEM
     return (stepDirection);
   }
 
-  // glmnetLineSearch
-  //
-  // Given a step direction "direction", the line search procedure will find an adequate
-  // step length s in this direction. The new parameter values are then given by
-  // parameters_k = parameters_kMinus1 + s*direction
-  // @param model_ the model object derived from the model class in model.h
-  // @param penalty_ a penalty derived from the penalty class in penalty.h
-  // @param smoothPenalty a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
-  // @param parameters_kMinus1 parameter estimates from previous iteration k-1
-  // @param parameterLabels names of the parameters
-  // @param direction step direction
-  // @param fit_kMinus1 fit from previous iteration
-  // @param gradients_kMinus1 gradients from previous iteration
-  // @param Hessian_kMinus1 Hessian from previous iteration
-  // @param tuningParameters tuning parameters for the penalty function
-  // @param stepSize Initial stepSize of the outer iteration (theta_{k+1} = theta_k + stepSize * Stepdirection)
-  // @param sigma only relevant when lineSearch = 'GLMNET'. Controls the sigma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421.
-  // @param gamma Controls the gamma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421. Defaults to 0.
-  // @param maxIterLine Maximal number of iterations for the line search procedure
-  // @param verbose 0 prints no additional information, > 0 prints GLMNET iterations
-  // @return vector with updated parameters (parameters_k)
+  /**
+   * @brief Given a step direction "direction", the line search procedure will find an adequate
+   * step length s in this direction. The new parameter values are then given by
+   * parameters_k = parameters_kMinus1 + s*direction
+   *
+   * @tparam nonsmoothPenalty class of type nonsmoothPenalty (e.g., lasso, scad, lsp)
+   * @tparam smoothPenalty class of type smooth penalty (e.g., ridge)
+   * @tparam tuning tuning parameters used by both, the nonsmootPenalty and the smoothPenalty
+   * @param model_ the model object derived from the model class in model.h
+   * @param penalty_ a penalty derived from the penalty class in penalty.h
+   * @param smoothPenalty a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
+   * @param parameters_kMinus1 parameter estimates from previous iteration k-1
+   * @param parameterLabels names of the parameters
+   * @param direction step direction
+   * @param fit_kMinus1 fit from previous iteration
+   * @param gradients_kMinus1 gradients from previous iteration
+   * @param Hessian_kMinus1 Hessian from previous iteration
+   * @param tuningParameters tuning parameters for the penalty function
+   * @param stepSize Initial stepSize of the outer iteration (theta_{k+1} = theta_k + stepSize * Stepdirection)
+   * @param sigma only relevant when lineSearch = 'GLMNET'. Controls the sigma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421.
+   * @param gamma Controls the gamma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421. Defaults to 0.
+   * @param maxIterLine Maximal number of iterations for the line search procedure
+   * @param verbose 0 prints no additional information, > 0 prints GLMNET iterations
+   * @return vector with updated parameters (parameters_k)
+   */
   template <typename nonsmoothPenalty, typename smoothPenalty,
             typename tuning>
   inline arma::rowvec glmnetLineSearch(
@@ -355,17 +358,21 @@ namespace lessSEM
   // the use of Rcpp::NumericVectors that combine values and labels similar to an R vector. Thus, interfacing to this
   // second function call can be easier when coming from R.
 
-  // glmnet
-  //
-  // Optimize a model using the glmnet procedure.
-  // @param model_ the model object derived from the model class in model.h
-  // @param startingValuesRcpp an Rcpp numeric vector with starting values
-  // @param penalty_ a penalty derived from the penalty class in penalty.h
-  // @param smoothPenalty_ a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
-  // @param tuningParameters tuning parameters for the penalty functions. Note that both penalty functions must
-  // take the same tuning parameters.
-  // @param control_ settings for the glmnet optimizer.
-  // @return fit result
+  /**
+   * @brief Optimize a model using the glmnet procedure.
+   *
+   * @tparam nonsmoothPenalty class of type nonsmoothPenalty (e.g., lasso, scad, lsp)
+   * @tparam smoothPenalty class of type smooth penalty (e.g., ridge)
+   * @tparam tuning tuning parameters used by both, the nonsmootPenalty and the smoothPenalty
+   * @param model_ the model object derived from the model class in model.h
+   * @param startingValuesRcpp an Rcpp numeric vector with starting values
+   * @param penalty_ a penalty derived from the penalty class in penalty.h
+   * @param smoothPenalty_ a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
+   * @param tuningParameters tuning parameters for the penalty functions. Note that both penalty functions must
+   * take the same tuning parameters.
+   * @param control_ settings for the glmnet optimizer.
+   * @return fit result
+   */
   template <typename nonsmoothPenalty, typename smoothPenalty,
             typename tuning>
   inline lessSEM::fitResults glmnet(model &model_,
@@ -616,18 +623,22 @@ namespace lessSEM
 
   } // end glmnet
 
-  // glmnet
-  //
-  // Optimize a model using the glmnet procedure.
-  // @param model_ the model object derived from the model class in model.h
-  // @param startingValues an arma::rowvec numeric vector with starting values
-  // @param parameterLabels a lessSEM::stringVector with labels for parameters
-  // @param penalty_ a penalty derived from the penalty class in penalty.h
-  // @param smoothPenalty_ a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
-  // @param tuningParameters tuning parameters for the penalty functions. Note that both penalty functions must
-  // take the same tuning parameters.
-  // @param control_ settings for the glmnet optimizer.
-  // @return fit result
+  /**
+   * @brief Optimize a model using the glmnet procedure.
+   *
+   * @tparam nonsmoothPenalty class of type nonsmoothPenalty (e.g., lasso, scad, lsp)
+   * @tparam smoothPenalty class of type smooth penalty (e.g., ridge)
+   * @tparam tuning tuning parameters used by both, the nonsmootPenalty and the smoothPenalty
+   * @param model_ the model object derived from the model class in model.h
+   * @param startingValues an arma::rowvec vector with starting values
+   * @param parameterLabels a stringVector with parameter labels
+   * @param penalty_ a penalty derived from the penalty class in penalty.h
+   * @param smoothPenalty_ a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
+   * @param tuningParameters tuning parameters for the penalty functions. Note that both penalty functions must
+   * take the same tuning parameters.
+   * @param control_ settings for the glmnet optimizer.
+   * @return fit result
+   */
   template <typename nonsmoothPenalty, typename smoothPenalty,
             typename tuning>
   inline lessSEM::fitResults glmnet(model &model_,

@@ -8,9 +8,23 @@
 
 namespace lessSEM{
 
+    /**
+   * @brief proximal operator for the lasso penalty function
+   * 
+   */
+
 class proximalOperatorLasso: public proximalOperator<tuningParametersEnet>{
 public:
-  
+  /**
+   * @brief update the parameter vector
+   * 
+   * @param parameterValues current parameter values
+   * @param gradientValues current gradient values
+   * @param parameterLabels parameter labels
+   * @param L step size
+   * @param tuningParameters tuning parameters of the penalty function
+   * @return arma::rowvec updated parameters
+   */
   arma::rowvec getParameters(const arma::rowvec& parameterValues, 
                              const arma::rowvec& gradientValues, 
                              const stringVector& parameterLabels,
@@ -42,9 +56,20 @@ public:
   
 };
 
+  /**
+   * @brief lasso penalty
+   * 
+   */
 class penaltyLASSO: public penalty<tuningParametersEnet>{
 public:
-  
+       /**
+     * @brief Get the value of the penalty function
+     * 
+     * @param parameterValues current parameter values
+     * @param parameterLabels names of the parameters
+     * @param tuningParameters values of the tuning parmameters
+     * @return double 
+     */
   double getValue(const arma::rowvec& parameterValues, 
                   const stringVector& parameterLabels,
                   const tuningParametersEnet& tuningParameters) 
@@ -65,6 +90,14 @@ public:
     return penalty;
   }
   
+         /**
+     * @brief compute subgradients of the penalty function
+     * 
+     * @param parameterValues current parameter values
+     * @param parameterLabels names of the parameters
+     * @param tuningParameters values of the tuning parmameters
+     * @return double 
+     */
   arma::rowvec getSubgradients(const arma::rowvec& parameterValues, 
                                const arma::rowvec& gradients,
                                const tuningParametersEnet& tuningParameters){

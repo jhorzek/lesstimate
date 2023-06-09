@@ -6,18 +6,33 @@
 
 namespace lessSEM
 {
-
+    /**
+     * @brief tuning parameters for the capped L1 penalty optimized with glmnet
+     *
+     */
     class tuningParametersCappedL1Glmnet
     {
     public:
-        arma::rowvec weights;
-        double lambda;
-        double theta;
+        arma::rowvec weights; ///> provide parameter-specific weights (e.g., for adaptive lasso)
+        double lambda;        ///> lambda value >= 0
+        double theta;         ///> theta value of the cappedL1 penalty > 0
     };
 
+    /**
+     * @brief cappedL1 penalty for glmnet optimizer
+     *
+     */
     class penaltyCappedL1Glmnet : public penalty<tuningParametersCappedL1Glmnet>
     {
     public:
+        /**
+         * @brief Get the value of the penalty function
+         *
+         * @param parameterValues current parameter values
+         * @param parameterLabels names of the parameters
+         * @param tuningParameters values of the tuning parmameters
+         * @return double
+         */
         double getValue(const arma::rowvec &parameterValues,
                         const stringVector &parameterLabels,
                         const tuningParametersCappedL1Glmnet &tuningParameters)
@@ -44,23 +59,23 @@ namespace lessSEM
             return penalty;
         }
 
-        // subproblemValue
-        //
-        // glmnet uses a combination of inner and outer iterations. Within the inner iteration, a
-        // subproblem is solved for a single parameter. The cappedL1 penalty is non-convex which
-        // means that there may be local minima in the subproblem. However, because the function is
-        // convex within regions, we can find the minimum within each region and then compare the results
-        // to find the global minimum. To this end, we need the function value of the subproblem. This
-        // is computed here.
-        // @param parameterValue_j parameter value from the outer iteration for parameter j
-        // @param z update for parameter j in current inner iteration
-        // @param g_j gradient value from the outer iteration for parameter j
-        // @param d_j direction value from the inner iteration for parameter j
-        // @param hessianXdirection_j product of hessian and direction parameter value from the outer iteration for parameter j
-        // @param H_jj row j, col j of Hessian matrix
-        // @param lambda tuning parameter lambda
-        // @param theta tuning parameter theta
-        // @return fit value (double)
+        /**
+         * @brief glmnet uses a combination of inner and outer iterations. Within the inner iteration, a
+         * subproblem is solved for a single parameter. The cappedL1 penalty is non-convex which
+         * means that there may be local minima in the subproblem. However, because the function is
+         * convex within regions, we can find the minimum within each region and then compare the results
+         * to find the global minimum. To this end, we need the function value of the subproblem. This
+         * is computed here.
+         * @param parameterValue_j parameter value from the outer iteration for parameter j
+         * @param z update for parameter j in current inner iteration
+         * @param g_j gradient value from the outer iteration for parameter j
+         * @param d_j direction value from the inner iteration for parameter j
+         * @param hessianXdirection_j product of hessian and direction parameter value from the outer iteration for parameter j
+         * @param H_jj row j, col j of Hessian matrix
+         * @param lambda tuning parameter lambda
+         * @param theta tuning parameter theta
+         * @return fit value (double)
+         */
         double subproblemValue(
             const double parameterValue_j,
             const double z,
@@ -78,16 +93,16 @@ namespace lessSEM
             return (base + lambda * std::min(theta, std::abs(parameterValue_j + d_j + z)));
         }
 
-        // getZ
-        //
-        // computes the step direction for a single parameter j in the inner
-        // iterations of the lasso penalty.
-        // @param d_j gradient of the smooth part for parameter j
-        // @param H_jj Hessian in row and column j
-        // @param hessianXdirection_j element j from product of Hessian and direction
-        // @param alpha tuning parameter alpha
-        // @param lambda tuning parameter lambda
-        // @param weight weight given to the penalty of this parameter
+        /**
+         * @brief computes the step direction for a single parameter j in the inner
+         * iterations of the lasso penalty.
+         * @param d_j gradient of the smooth part for parameter j
+         * @param H_jj Hessian in row and column j
+         * @param hessianXdirection_j element j from product of Hessian and direction
+         * @param alpha tuning parameter alpha
+         * @param lambda tuning parameter lambda
+         * @param weight weight given to the penalty of this parameter
+         */
         double getZ(
             unsigned int whichPar,
             const arma::rowvec &parameters_kMinus1,
@@ -114,7 +129,7 @@ namespace lessSEM
                 return (-(g_j + hessianXdirection_j) / H_jj);
             }
 
-            // CappedL1 is non-convex, but has convex regions. We test 
+            // CappedL1 is non-convex, but has convex regions. We test
             // both of these regions to check for the global minimum
             double z[2];
             double fitValue[2];
@@ -126,7 +141,7 @@ namespace lessSEM
             {
                 // parameter is positive and we have to make sure that we stay within the boundaries
                 // parameterValue_j + d_j + z < theta -> z < theta - (parameterValue_j + d_j)
-              z[0] = std::min(
+                z[0] = std::min(
                     theta - (parameterValue_j + d_j),
                     (-(g_j + hessianXdirection_j + tuning) / H_jj));
             }
@@ -134,7 +149,7 @@ namespace lessSEM
             {
                 // parameter is negative and we have to make sure that we stay within the boundaries
                 // parameterValue_j + d_j + z > -theta -> z < -theta - (parameterValue_j + d_j)
-              z[0] = std::max(
+                z[0] = std::max(
                     -theta - (parameterValue_j + d_j),
                     -(g_j + hessianXdirection_j - tuning) / H_jj);
             }
@@ -143,10 +158,10 @@ namespace lessSEM
                 // parameter is zero
                 z[0] = -parameterValue_j - d_j;
             }
-            
+
             // assume that |parameterValue_j + d_j + z| > theta
-            z[1] = (-g_j - hessianXdirection_j)/H_jj;
-            
+            z[1] = (-g_j - hessianXdirection_j) / H_jj;
+
             // compute fit value
             int whichmin = 0;
             for (unsigned int i = 0; i < 2; i++)
@@ -171,10 +186,17 @@ namespace lessSEM
             return (z[whichmin]);
         }
 
-        arma::rowvec
-        getSubgradients(const arma::rowvec &parameterValues,
-                        const arma::rowvec &gradients,
-                        const tuningParametersCappedL1Glmnet &tuningParameters)
+        /**
+         * @brief Get the subgradients of the penalty function
+         *
+         * @param parameterValues current parameter values
+         * @param parameterLabels names of the parameters
+         * @param tuningParameters values of the tuning parmameters
+         * @return arma::rowvec
+         */
+        arma::rowvec getSubgradients(const arma::rowvec &parameterValues,
+                                     const arma::rowvec &gradients,
+                                     const tuningParametersCappedL1Glmnet &tuningParameters)
         {
             error("Subgradients not yet implemented for cappedL1 penalty. Use different convergence criterion.");
         }

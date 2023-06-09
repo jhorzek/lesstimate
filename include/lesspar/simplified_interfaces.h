@@ -16,34 +16,34 @@ namespace lessSEM
   // the use of Rcpp::NumericVectors that combine values and labels similar to an R vector. Thus, interfacing to this
   // second function call can be easier when coming from R.
 
-  // fitGlmnet
-  //
-  // Function using defaults that proved to be reasonable when optimizing
-  // regularized SEM. Your mileage may vary, so please make sure to adapt the settings
-  // to your needs.
-  // @param userModel your model. Must inherit from lessSEM::model!
-  // @param startingValues numericVector with initial starting values. This
-  // vector can have names.
-  // @param penalty vector with strings indicating the penalty for each parameter.
-  // Currently supported are "none", "cappedL1", "lasso", "lsp", "mcp", and "scad".
-  // (e.g., {"none", "scad", "scad", "lasso", "none"}). If only one value is provided,
-  // the same penalty will be applied to every parameter!
-  // @param lambda lambda tuning parameter values. One lambda value for each parameter.
-  // If only one value is provided, this value will be applied to each parameter.
-  // Important: The the function will _not_ loop over these values but assume that you
-  // may want to provide different levels of regularization for each parameter!
-  // @param theta theta tuning parameter values. One theta value for each parameter
-  // If only one value is provided, this value will be applied to each parameter.
-  // Not all penalties use theta.
-  // Important: The the function will _not_ loop over these values but assume that you
-  // may want to provide different levels of regularization for each parameter!
-  // @param initialHessian matrix with initial Hessian values.
-  // @param controlOptimizer option to change the optimizer settings
-  // @param verbose should additional information be printed? If set > 0, additional
-  // information will be provided. Highly recommended for initial runs. Note that
-  // the optimizer itself has a separate verbose argument that can be used to print
-  // information on each iteration. This can be set with the controlOptimizer - argument.
-  // @return fitResults
+  /**
+   * @brief Function using defaults that proved to be reasonable when optimizing
+  * regularized SEM. Your mileage may vary, so please make sure to adapt the settings
+  * to your needs.
+  * @param userModel your model. Must inherit from lessSEM::model!
+  * @param startingValues numericVector with initial starting values. This
+  * vector can have names.
+  * @param penalty vector with strings indicating the penalty for each parameter.
+  * Currently supported are "none", "cappedL1", "lasso", "lsp", "mcp", and "scad".
+  * (e.g., {"none", "scad", "scad", "lasso", "none"}). If only one value is provided,
+  * the same penalty will be applied to every parameter!
+  * @param lambda lambda tuning parameter values. One lambda value for each parameter.
+  * If only one value is provided, this value will be applied to each parameter.
+  * Important: The the function will _not_ loop over these values but assume that you
+  * may want to provide different levels of regularization for each parameter!
+  * @param theta theta tuning parameter values. One theta value for each parameter
+  * If only one value is provided, this value will be applied to each parameter.
+  * Not all penalties use theta.
+  * Important: The the function will _not_ loop over these values but assume that you
+  * may want to provide different levels of regularization for each parameter!
+  * @param initialHessian matrix with initial Hessian values.
+  * @param controlOptimizer option to change the optimizer settings
+  * @param verbose should additional information be printed? If set > 0, additional
+  * information will be provided. Highly recommended for initial runs. Note that
+  * the optimizer itself has a separate verbose argument that can be used to print
+  * information on each iteration. This can be set with the controlOptimizer - argument.
+  * @return fitResults
+  */
   inline fitResults fitGlmnet(
       model &userModel,
       numericVector startingValues,
@@ -135,35 +135,35 @@ namespace lessSEM
 
     return (fitResults_);
   }
-
-   // fitGlmnet
-  //
-  // Function using defaults that proved to be reasonable when optimizing
-  // regularized SEM. Your mileage may vary, so please make sure to adapt the settings
-  // to your needs.
-  // @param userModel your model. Must inherit from lessSEM::model!
-  // @param startingValues an arma::rowvec numeric vector with starting values
-  // @param parameterLabels a lessSEM::stringVector with labels for parameters
-  // @param penalty vector with strings indicating the penalty for each parameter.
-  // Currently supported are "none", "cappedL1", "lasso", "lsp", "mcp", and "scad".
-  // (e.g., {"none", "scad", "scad", "lasso", "none"}). If only one value is provided,
-  // the same penalty will be applied to every parameter!
-  // @param lambda lambda tuning parameter values. One lambda value for each parameter.
-  // If only one value is provided, this value will be applied to each parameter.
-  // Important: The the function will _not_ loop over these values but assume that you
-  // may want to provide different levels of regularization for each parameter!
-  // @param theta theta tuning parameter values. One theta value for each parameter
-  // If only one value is provided, this value will be applied to each parameter.
-  // Not all penalties use theta.
-  // Important: The the function will _not_ loop over these values but assume that you
-  // may want to provide different levels of regularization for each parameter!
-  // @param initialHessian matrix with initial Hessian values.
-  // @param controlOptimizer option to change the optimizer settings
-  // @param verbose should additional information be printed? If set > 0, additional
-  // information will be provided. Highly recommended for initial runs. Note that
-  // the optimizer itself has a separate verbose argument that can be used to print
-  // information on each iteration. This can be set with the controlOptimizer - argument.
-  // @return fitResults
+  /**
+   * @brief Function using defaults that proved to be reasonable when optimizing
+  * regularized SEM. Your mileage may vary, so please make sure to adapt the settings
+  * to your needs.
+  * 
+  * @param userModel your model. Must inherit from lessSEM::model!
+  * @param startingValues an arma::rowvec numeric vector with starting values
+  * @param parameterLabels a lessSEM::stringVector with labels for parameters
+  * @param penalty vector with strings indicating the penalty for each parameter.
+  * Currently supported are "none", "cappedL1", "lasso", "lsp", "mcp", and "scad".
+  * (e.g., {"none", "scad", "scad", "lasso", "none"}). If only one value is provided,
+  * the same penalty will be applied to every parameter!
+  * @param lambda lambda tuning parameter values. One lambda value for each parameter.
+  * If only one value is provided, this value will be applied to each parameter.
+  * Important: The the function will _not_ loop over these values but assume that you
+  * may want to provide different levels of regularization for each parameter!
+  * @param theta theta tuning parameter values. One theta value for each parameter
+  * If only one value is provided, this value will be applied to each parameter.
+  * Not all penalties use theta.
+  * Important: The the function will _not_ loop over these values but assume that you
+  * may want to provide different levels of regularization for each parameter!
+  * @param initialHessian matrix with initial Hessian values.
+  * @param controlOptimizer option to change the optimizer settings
+  * @param verbose should additional information be printed? If set > 0, additional
+  * information will be provided. Highly recommended for initial runs. Note that
+  * the optimizer itself has a separate verbose argument that can be used to print
+  * information on each iteration. This can be set with the controlOptimizer - argument.
+  * @return fitResults
+  */
   inline fitResults fitGlmnet(
       model &userModel,
       arma::rowvec startingValues,
@@ -197,33 +197,33 @@ namespace lessSEM
   // the use of Rcpp::NumericVectors that combine values and labels similar to an R vector. Thus, interfacing to this
   // second function call can be easier when coming from R.
 
-  // fitIsta
-  //
-  // Function using defaults that proved to be reasonable when optimizing
-  // regularized SEM. Your mileage may vary, so please make sure to adapt the settings
-  // to your needs.
-  // @param userModel your model. Must inherit from lessSEM::model!
-  // @param startingValues numericVector with initial starting values. This
-  // vector can have names.
-  // @param penalty vector with strings indicating the penalty for each parameter.
-  // Currently supported are "none", "cappedL1", "lasso", "lsp", "mcp", and "scad".
-  // (e.g., {"none", "scad", "scad", "lasso", "none"}). If only one value is provided,
-  // the same penalty will be applied to every parameter!
-  // @param lambda lambda tuning parameter values. One lambda value for each parameter.
-  // If only one value is provided, this value will be applied to each parameter.
-  // Important: The the function will _not_ loop over these values but assume that you
-  // may want to provide different levels of regularization for each parameter!
-  // @param theta theta tuning parameter values. One theta value for each parameter
-  // If only one value is provided, this value will be applied to each parameter.
-  // Not all penalties use theta.
-  // Important: The the function will _not_ loop over these values but assume that you
-  // may want to provide different levels of regularization for each parameter!
-  // @param controlOptimizer option to change the optimizer settings
-  // @param verbose should additional information be printed? If set > 0, additional
-  // information will be provided. Highly recommended for initial runs. Note that
-  // the optimizer itself has a separate verbose argument that can be used to print
-  // information on each iteration. This can be set with the controlOptimizer - argument.
-  // @return fitResults
+/**
+ * @brief Function using defaults that proved to be reasonable when optimizing
+  * regularized SEM. Your mileage may vary, so please make sure to adapt the settings
+  * to your needs.
+  * @param userModel your model. Must inherit from lessSEM::model!
+  * @param startingValues numericVector with initial starting values. This
+  * vector can have names.
+  * @param penalty vector with strings indicating the penalty for each parameter.
+  * Currently supported are "none", "cappedL1", "lasso", "lsp", "mcp", and "scad".
+  * (e.g., {"none", "scad", "scad", "lasso", "none"}). If only one value is provided,
+  * the same penalty will be applied to every parameter!
+  * @param lambda lambda tuning parameter values. One lambda value for each parameter.
+  * If only one value is provided, this value will be applied to each parameter.
+  * Important: The the function will _not_ loop over these values but assume that you
+  * may want to provide different levels of regularization for each parameter!
+  * @param theta theta tuning parameter values. One theta value for each parameter
+  * If only one value is provided, this value will be applied to each parameter.
+  * Not all penalties use theta.
+  * Important: The the function will _not_ loop over these values but assume that you
+  * may want to provide different levels of regularization for each parameter!
+  * @param controlOptimizer option to change the optimizer settings
+  * @param verbose should additional information be printed? If set > 0, additional
+  * information will be provided. Highly recommended for initial runs. Note that
+  * the optimizer itself has a separate verbose argument that can be used to print
+  * information on each iteration. This can be set with the controlOptimizer - argument.
+  * @return fitResults
+  */
   inline fitResults fitIsta(
       model &userModel,
       numericVector startingValues,
@@ -309,33 +309,33 @@ namespace lessSEM
     return (fitResults_);
   }
 
-  // fitIsta
-  //
-  // Function using defaults that proved to be reasonable when optimizing
-  // regularized SEM. Your mileage may vary, so please make sure to adapt the settings
-  // to your needs.
-  // @param userModel your model. Must inherit from lessSEM::model!
-  // @param startingValues an arma::rowvec numeric vector with starting values
-  // @param parameterLabels a lessSEM::stringVector with labels for parameters
-  // @param penalty vector with strings indicating the penalty for each parameter.
-  // Currently supported are "none", "cappedL1", "lasso", "lsp", "mcp", and "scad".
-  // (e.g., {"none", "scad", "scad", "lasso", "none"}). If only one value is provided,
-  // the same penalty will be applied to every parameter!
-  // @param lambda lambda tuning parameter values. One lambda value for each parameter.
-  // If only one value is provided, this value will be applied to each parameter.
-  // Important: The the function will _not_ loop over these values but assume that you
-  // may want to provide different levels of regularization for each parameter!
-  // @param theta theta tuning parameter values. One theta value for each parameter
-  // If only one value is provided, this value will be applied to each parameter.
-  // Not all penalties use theta.
-  // Important: The the function will _not_ loop over these values but assume that you
-  // may want to provide different levels of regularization for each parameter!
-  // @param controlOptimizer option to change the optimizer settings
-  // @param verbose should additional information be printed? If set > 0, additional
-  // information will be provided. Highly recommended for initial runs. Note that
-  // the optimizer itself has a separate verbose argument that can be used to print
-  // information on each iteration. This can be set with the controlOptimizer - argument.
-  // @return fitResults
+/**
+ * @brief Function using defaults that proved to be reasonable when optimizing
+  * regularized SEM. Your mileage may vary, so please make sure to adapt the settings
+  * to your needs.
+  * @param userModel your model. Must inherit from lessSEM::model!
+  * @param startingValues an arma::rowvec numeric vector with starting values
+  * @param parameterLabels a lessSEM::stringVector with labels for parameters
+  * @param penalty vector with strings indicating the penalty for each parameter.
+  * Currently supported are "none", "cappedL1", "lasso", "lsp", "mcp", and "scad".
+  * (e.g., {"none", "scad", "scad", "lasso", "none"}). If only one value is provided,
+  * the same penalty will be applied to every parameter!
+  * @param lambda lambda tuning parameter values. One lambda value for each parameter.
+  * If only one value is provided, this value will be applied to each parameter.
+  * Important: The the function will _not_ loop over these values but assume that you
+  * may want to provide different levels of regularization for each parameter!
+  * @param theta theta tuning parameter values. One theta value for each parameter
+  * If only one value is provided, this value will be applied to each parameter.
+  * Not all penalties use theta.
+  * Important: The the function will _not_ loop over these values but assume that you
+  * may want to provide different levels of regularization for each parameter!
+  * @param controlOptimizer option to change the optimizer settings
+  * @param verbose should additional information be printed? If set > 0, additional
+  * information will be provided. Highly recommended for initial runs. Note that
+  * the optimizer itself has a separate verbose argument that can be used to print
+  * information on each iteration. This can be set with the controlOptimizer - argument.
+  * @return fitResults
+  */
   inline fitResults fitIsta(
       model &userModel,
       arma::rowvec startingValues,

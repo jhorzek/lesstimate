@@ -1,10 +1,12 @@
 #pragma once
 
-// The USE_R variable allows us to switch between the R implementation
-// and C++ without R. This variable can either be passed to the compiler
-// using -DUSE_R=1 or -DUSE_R=0 or by changing the value below. By default,
-// lesspar will assume that you are using R and therefor set USE_R=1
-// if the variable is not defined otherwise.
+/**
+ * @brief The USE_R variable allows us to switch between the R implementation
+ * and C++ without R. This variable can either be passed to the compiler
+ * using -DUSE_R=1 or -DUSE_R=0 or by changing the value below. By default,
+ * lesspar will assume that you are using R and therefor set USE_R=1
+ * if the variable is not defined otherwise.
+ */
 #ifndef USE_R
 #define USE_R 1
 #endif
@@ -30,38 +32,75 @@ namespace lessSEM
   typedef Rcpp::NumericVector numericVector;
   typedef Rcpp::StringVector stringVector;
 
-  // define functions:
+  /**
+   * @brief cast a Rcpp::NumericVector to arma::rowvec
+   *
+   * @param numVec vector of class Rcpp::NumericVector
+   * @return arma::rowvec
+   */
   inline arma::rowvec toArmaVector(numericVector numVec)
   {
     arma::rowvec armaVec(numVec.length());
-    for(unsigned int i = 0; i < numVec.length(); i++){
+    for (unsigned int i = 0; i < numVec.length(); i++)
+    {
       armaVec(i) = numVec(i);
     }
     return (armaVec);
   }
 
+  /**
+   * @brief cast an arma::rowvec to Rcpp::NumericVector
+   *
+   * @param vec vector of class arma::rowvec
+   * @return numericVector
+   */
   inline numericVector toNumericVector(arma::rowvec vec)
   {
     numericVector numVec(vec.n_elem);
-    for(unsigned int i = 0; i < numVec.length(); i++){
+    for (unsigned int i = 0; i < numVec.length(); i++)
+    {
       numVec(i) = vec(i);
     }
     return (numVec);
   }
 
+  /**
+   * @brief cast a std::string - vector to Rcpp::StringVector
+   *
+   * @param vec vector of class std::vector<std::string>
+   * @return stringVector
+   */
   inline stringVector toStringVector(std::vector<std::string> vec)
   {
     stringVector myStringVec(vec.size());
-    for(unsigned int i = 0; i < myStringVec.length(); i++){
+    for (unsigned int i = 0; i < myStringVec.length(); i++)
+    {
       myStringVec(i) = vec.at(i);
     }
     return (myStringVec);
   }
+
+  /**
+   * @brief sample randomly elements from a vector
+   *
+   * @param vec Rcpp::NumericVector with values to sample from
+   * @param nSamples number of elements to draw randomly
+   * @param replace should elements be replaced (i.e., can elements be drawn multiple times)
+   * @return numericVector
+   */
   inline numericVector sample(numericVector vec, int nSamples, bool replace)
   {
     return (Rcpp::sample(vec, nSamples, replace));
   }
 
+  /**
+   * @brief sample random values from a uniform distribution
+   *
+   * @param n number of elements to draw
+   * @param min minimum value of the uniform distribution
+   * @param max maximum value of the uniform distribution
+   * @return numericVector
+   */
   inline numericVector unif(int n, double min, double max)
   {
     return (Rcpp::runif(n, min, max));
@@ -97,43 +136,99 @@ namespace lessSEM
 // define data types:
 namespace lessSEM
 {
+  /**
+   * @brief Provides similar functionality as Rcpp::StringVector.
+   *
+   */
   class stringVector
   {
   public:
+    /**
+     * @brief the values are a std::vector<std::string>
+     *
+     */
     std::vector<std::string> values;
 
+    /**
+     * @brief Construct a new string Vector object
+     *
+     */
     stringVector() {}
+
+    /**
+     * @brief Construct a new string Vector object
+     *
+     * @param n_elem length of the vector
+     */
     stringVector(int n_elem)
     {
       values.resize(n_elem);
     }
 
+    /**
+     * @brief Construct a new string Vector object
+     *
+     * @param values_ provide the strings to be stored in the stringVector
+     */
     stringVector(std::vector<std::string> values_) : values(values_) {}
 
+    /**
+     * @brief return the element at a specific location of the string
+     *
+     * @param where location
+     * @return auto&
+     */
     auto &at(unsigned int where)
     {
       return (values.at(where));
     }
+
+    /**
+     * @brief return the element at a specific location of the string
+     *
+     * @param where location
+     * @return const auto&
+     */
     const auto &at(unsigned int where) const
     {
       return (values.at(where));
     }
 
+    /**
+     * @brief returns the number of elements in a stringVector
+     *
+     * @return int
+     */
     int size()
     {
       return (values.size());
     }
 
+    /**
+     * @brief returns the number of elements in a stringVector
+     *
+     * @return const int
+     */
     const int size() const
     {
       return (values.size());
     }
 
+    /**
+     * @brief returns the number of elements in a stringVector
+     *
+     * @return int
+     */
     int length()
     {
       return (values.size());
     }
 
+    /**
+     * @brief fill all elements of the stringVector with the same string
+     *
+     * @param with string to fill elements with
+     */
     void fill(std::string with)
     {
       for (auto &value : values)
@@ -141,6 +236,12 @@ namespace lessSEM
     }
   };
 
+  /**
+   * @brief cast std::vector<std::string> to stringVector
+   *
+   * @param vec std::vector<std::string>
+   * @return stringVector
+   */
   inline stringVector toStringVector(std::vector<std::string> vec)
   {
     stringVector myStringVec;
@@ -148,18 +249,39 @@ namespace lessSEM
     return (myStringVec);
   }
 
+  /**
+   * @brief numericVector provides functionality similar to Rcpp::NumericVector
+   *
+   */
   class numericVector
   {
   public:
+    /**
+     * @brief values are stored as arma::rowvec
+     *
+     */
     arma::rowvec values;
+    /**
+     * @brief labels are stored as stringVector
+     *
+     */
     stringVector par_names;
 
+    /**
+     * @brief Construct a new numeric Vector object
+     *
+     */
     numericVector()
     {
       values.resize(0);
       par_names.values.resize(0);
     }
 
+    /**
+     * @brief Construct a new numeric Vector object
+     *
+     * @param n_elem length of vector
+     */
     numericVector(int n_elem)
     {
       values.resize(n_elem);
@@ -168,6 +290,11 @@ namespace lessSEM
         par_names.values.at(i) = "";
     }
 
+    /**
+     * @brief Construct a new numeric Vector object
+     *
+     * @param vec arma::rowvec with values to be stored in numericVector
+     */
     numericVector(arma::rowvec vec)
     {
       values = vec;
@@ -176,39 +303,78 @@ namespace lessSEM
         par_names.values.at(i) = "";
     }
 
+    /**
+     * @brief Construct a new numeric Vector object
+     *
+     * @param vec arma::rowvec with values to be stored in numericVector
+     * @param labels std::vector<std::string> with names of the elements in numericVector
+     */
     numericVector(arma::rowvec vec, std::vector<std::string> labels)
     {
       values = vec;
       par_names.values = labels;
     }
 
-    // methods
+    /**
+     * @brief return the element at a specific position in the vector
+     *
+     * @param position position of element
+     * @return double&
+     */
     double &at(unsigned int position)
     {
       return (values(position));
     }
 
+    /**
+     * @brief return the element at a specific position in the vector
+     *
+     * @param position position of element
+     * @return double&
+     */
     double &operator()(unsigned int position)
     {
       return (this->at(position));
     }
 
+    /**
+     * @brief print elements of numericVector
+     *
+     * @param output std::ostream
+     * @param numVec numericVector
+     * @return std::ostream&
+     */
     friend std::ostream &operator<<(std::ostream &output, const numericVector &numVec)
     {
       output << numVec.values;
       return (output);
     }
 
+    /**
+     * @brief access the names of the numericVector elements
+     *
+     * @return stringVector&
+     */
     stringVector &names()
     {
       return par_names;
     }
 
+    /**
+     * @brief get number of elements in the numeric vector
+     *
+     * @return int
+     */
     int length()
     {
       return (values.n_elem);
     }
 
+    /**
+     * @brief fill all elements in the numeric vector with the same value
+     *
+     * @param value value to fill the vector with
+     */
     void fill(const double value)
     {
       values.fill(value);
@@ -216,17 +382,36 @@ namespace lessSEM
   };
 
   // define functions:
-
+  /**
+   * @brief cast numericVector to arma::rowvec
+   *
+   * @param numVec numericVector
+   * @return arma::rowvec
+   */
   inline arma::rowvec toArmaVector(numericVector numVec)
   {
     return (numVec.values);
   }
 
+  /**
+   * @brief cast arma::rowvec to numericVector
+   *
+   * @param vec arma::rowvec
+   * @return numericVector
+   */
   inline numericVector toNumericVector(arma::rowvec vec)
   {
     return (numericVector(vec));
   }
 
+  /**
+   * @brief sample randomly elements from a vector
+   *
+   * @param vec Rcpp::NumericVector with values to sample from
+   * @param nSamples number of elements to draw randomly
+   * @param replace should elements be replaced (i.e., can elements be drawn multiple times)
+   * @return numericVector
+   */
   inline numericVector sample(numericVector vec, int nSamples, bool replace)
   {
     arma::rowvec values = vec.values;
@@ -244,6 +429,14 @@ namespace lessSEM
     return (vec);
   }
 
+  /**
+   * @brief sample random values from a uniform distribution
+   *
+   * @param n number of elements to draw
+   * @param min minimum value of the uniform distribution
+   * @param max maximum value of the uniform distribution
+   * @return numericVector
+   */
   inline numericVector unif(int n, double min, double max)
   {
     std::default_random_engine generator;
