@@ -1,22 +1,33 @@
 # lesspar
 
-**lesspar** (**l**esspar **es**timates **s**parse **par**armeters or **Les**lie **s**nacks **par**ameters) is a C++ header-only library implemeting optimizers for functions of the form
+**lesspar** (**l**esspar **es**timates **s**parse **par**ameters) is a C++ header-only library that lets you combine statistical models such linear regression with state of the art penalty functions (e.g., lasso, elastic net, scad). With **lesspar** you can add regularization and variable selection procedures to your existing modeling framework. It is currently used in [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models.
 
-$$g(\pmb\theta) = f(\pmb\theta) + p(\pmb\theta)$$
+## Features 
 
-where $f(\pmb\theta)$ is (twice) continously differentiable with respect to $\theta$ and $p(\pmb\theta)$
-is a non-differentiable penalty function (e.g., lasso or scad). Currently, the following penalty functions
-are supported:
+- **Multiple penalty functions**: **lesspar** lets you apply any of the following penalties: ridge, lasso, adaptive lasso, elastic net, cappedL1, lsp, scad, mcp. Furthermore, you can combine multiple penalties.
+- **State of the art optimizers**: **lesspar** provides two state of the art optimizers--variants of glmnet and ista.
+- **Header-only**: **lesspar** is designed as a header-only library. Include the headers and you are ready to go.
+- **Builds on armadillo**: **lesspar** builds on the popular *C++* [**armadillo**](https://arma.sourceforge.net/docs.html) library, providing you with access to a wide range of mathematical functions to create your model.
+- **R and C++**: **lesspar** can be used in both, [*R*](https://github.com/jhorzek/lessparTemplateR) and [*C++*](https://github.com/jhorzek/lessparTemplateCpp) libraries.
 
 ![peanlty functions](penaltyFunctions.png)
 
-Two different optimization routines are implemented:
+## Details
 
-- glmnet: A quasi-newton optimization algorithm developed by Friedman et al. (2010) and Yuan et al. (2012). This optimzier 
-uses the gradients and Hessian of the function $f(\pmb\theta)$.
-- ista: A proximal-operator based optimzier adapted from Beck et al. (2009), Gong et al. (2013), and Parikh et al. (2013). This optimzier 
-uses the gradients of the function $f(\pmb\theta)$.
+**lesspar** lets you optimize fitting functions of the form
 
+$$g(\pmb\theta) = f(\pmb\theta) + p(\pmb\theta),$$
+
+where $f(\pmb\theta)$ is a smooth objective function (e.g., residual sum squared, weighted least squares or log-Likelihood) and $p(\pmb\theta)$ is a non-smooth penalty function (e.g., lasso or scad).
+
+To use the optimziers, you will need two functions:
+
+1. a function that computes the fit value $f(\pmb\theta)$ of your model
+2. a functions that computes the gradients $\triangledown_{\pmb\theta}f(\pmb\theta)$ of the model
+
+Given these two functions, **lesspar** lets you apply any of the aforementioned penalties with the quasi-Newton glmnet optimizer developed by Friedman et al. (2010) and Yuan et al. (2012) or variants of the proximal-operator based ista optimizer (see e.g., Gong et al., 2013). Because both optimziers provide a very similar interface, switching between them is fairly simple. This interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
+
+**lesspar** also stands for **Les**lie **s**nacks **par**ameters.  
 
 **lesspar** was mainly developed to be used in [**lessSEM**](https://jhorzek.github.io/lessSEM/), an 
 R package for regularized Structural Equation Models. However, the library can also be used from C++.
