@@ -22,7 +22,7 @@ glmnet and ista we assume that this fitting function is given by a differentiabl
 part and a non-differentiable part. To be more specific, the fitting function
 is given by:
 
-$$f(\pmb{\theta}) = \underbrace{l(\pmb\theta) + s(\pmb\theta,\pmb{t}_s)}_{\text{differentiable}} + \underbrace{p(\pmb\theta,\pmb{t}_p)}_{\text{non-differentiable}}$$
+$$f(\pmb{\theta}) = l(\pmb\theta) + s(\pmb\theta,\pmb{t}_s) + p(\pmb\theta,\pmb{t}_p)$$
 
 where $l(\pmb\theta)$ is the unregularized fitting function 
 (e.g., the -2log-likelihood) in the SEMs implemented in **lessSEM**. 
@@ -38,9 +38,9 @@ penalty functions can use different tuning parameters.
 A prototypical example for fitting functions of the form defined above is the 
 elastic net. Here, 
 
-$$f(\pmb{\theta}) = \underbrace{l(\pmb\theta) + (1-\alpha)\lambda \sum_j\theta_j^2}_{\text{differentiable}} + \underbrace{\alpha\lambda\sum_j| \theta_j|}_{\text{non-differentiable}}$$
+$$f(\pmb{\theta}) = l(\pmb\theta) + (1-\alpha)\lambda \sum_j\theta_j^2 + \alpha\lambda\sum_j| \theta_j|$$
 
-The elastic net is a combination of a ridge penalty and a lasso penalty. Note
+The elastic net is a combination of a ridge penalty $\lambda \sum_j\theta_j^2$ and a lasso penalty $\lambda\sum_j| \theta_j|$. Note
 that in this case, both penalties take in the same tuning parameters 
 ($\lambda$ and $\alpha$).
 
@@ -88,7 +88,7 @@ selected parameters. For instance, in a linear regression we would not want to
 penalize the intercept. To this end, the fitting function that is actually
 implemented internally is given by
 
-$$f(\pmb{\theta}) = \underbrace{l(\pmb\theta) + (1-\alpha)\lambda \sum_j\omega_j \theta_j^2}_{\text{differentiable}} + \underbrace{\alpha\lambda\sum_j\omega_j| \theta_j|}_{\text{non-differentiable}}$$
+$$f(\pmb{\theta}) = l(\pmb\theta) + (1-\alpha)\lambda \sum_j\omega_j \theta_j^2 + \alpha\lambda\sum_j\omega_j| \theta_j|$$
 
 If we set $\omega_j = 0$ for a specific parameter, this parameter is unregularized.
 Setting $\omega_j = 1$ means that parameter $j$ is penalized. $\omega_j$ can
@@ -134,7 +134,7 @@ Besides the glmnet optimizer, we also implemented variants of ista. These are
 based on the publications mentioned above. The fitting function is again given
 by 
 
-$$f(\pmb{\theta}) = \underbrace{l(\pmb\theta) + s(\pmb\theta,\pmb{t}_s)}_{\text{differentiable}} + \underbrace{p(\pmb\theta,\pmb{t}_p)}_{\text{non-differentiable}}$$
+$$f(\pmb{\theta}) = l(\pmb\theta) + s(\pmb\theta,\pmb{t}_s) + p(\pmb\theta,\pmb{t}_p)$$
 
 In the 
 following, we will build a lot on what we've already discussed regarding the 
