@@ -40,8 +40,7 @@ The following code demonstrates the use of **lesspar** with regularized linear r
 #include <armadillo>
 #include "lesspar.h"
 
-// Implement linear regressions. You model must inherit from lesspar::model
-// and override the fit and gradients function.
+// The model must inherit from lesspar::model and override the fit and gradients function.
 class linearRegressionModel : public lesspar::model
 {
 public:
@@ -118,6 +117,8 @@ int main()
         penalty,
         lambda,
         theta);
+        
+    return(0);
 }
 ```
 
