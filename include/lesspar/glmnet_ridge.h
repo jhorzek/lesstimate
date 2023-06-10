@@ -10,6 +10,16 @@ namespace lessSEM
   /**
    * @brief ridge penalty for glmnet optimizer
    *
+   * The penalty function is given by:
+   * $$p( x_j) = \lambda x_j^2$$
+   * Note that ridge regularization will not set any of the parameters to zero
+   * but result in a shrinkage towards zero.
+   *
+   * Ridge regularization:
+   *
+   * * Hoerl, A. E., & Kennard, R. W. (1970). Ridge Regression: Biased Estimation
+   * for Nonorthogonal Problems. Technometrics, 12(1), 55–67.
+   * https://doi.org/10.1080/00401706.1970.10488634
    */
   class penaltyRidgeGlmnet : public smoothPenalty<tuningParametersEnetGlmnet>
   {

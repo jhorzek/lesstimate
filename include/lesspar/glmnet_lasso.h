@@ -8,8 +8,16 @@
 namespace lessSEM
 {
     /**
-     * @brief tuning parameters for the lasso penalty optimized with glmnet
+     * @brief lasso penalty for glmnet
+     * 
+     * The penalty function is given by:
+     * $$p( x_j) = \lambda |x_j|$$
+     * Lasso regularization will set parameters to zero if $\lambda$ is large enough
      *
+     * Lasso regularization:
+     *
+     * * Tibshirani, R. (1996). Regression shrinkage and selection via the lasso. Journal of the Royal Statistical
+     * Society. Series B (Methodological), 58(1), 267–288.
      */
     class penaltyLASSOGlmnet : public penalty<tuningParametersEnetGlmnet>
     {

@@ -21,6 +21,20 @@ namespace lessSEM
     /**
      * @brief scad penalty for glmnet
      *
+     * The penalty function is given by:
+     * $$p( x_j) = \begin{cases}
+     * \lambda |x_j| & \text{if } |x_j| \leq \theta\\
+     * \frac{-x_j^2 + 2\theta\lambda |x_j| - \lambda^2}{2(\theta -1)} &
+     * \text{if } \lambda < |x_j| \leq \lambda\theta \\
+     * (\theta + 1) \lambda^2/2 & \text{if } |x_j| \geq \theta\lambda\\
+     * $$
+     * where $\theta > 2$.
+     *
+     * scad regularization:
+     *
+     * * Fan, J., & Li, R. (2001). Variable selection via nonconcave penalized
+     * likelihood and its oracle properties. Journal of the American Statistical Association,
+     * 96(456), 1348–1360. https://doi.org/10.1198/016214501753382273
      */
     class penaltySCADGlmnet : public penalty<tuningParametersScadGlmnet>
     {

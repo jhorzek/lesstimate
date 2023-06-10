@@ -19,8 +19,17 @@ namespace lessSEM
   };
 
   /**
-   * @brief lsp penalty for glmnet optimizer
+   * @brief lsp penalty for glmnet optimizer.
+   * 
+   * The penalty function is given by:
+   * $$p( x_j) = \lambda \log(1 + |x_j|/\theta)$$
+   * where $\theta > 0$.
    *
+   * lsp regularization:
+   *
+   * * Candès, E. J., Wakin, M. B., & Boyd, S. P. (2008). Enhancing Sparsity by
+   * Reweighted l1 Minimization. Journal of Fourier Analysis and Applications, 14(5–6),
+   * 877–905. https://doi.org/10.1007/s00041-008-9045-x
    */
   class penaltyLSPGlmnet : public penalty<tuningParametersLspGlmnet>
   {

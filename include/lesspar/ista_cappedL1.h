@@ -105,8 +105,19 @@ namespace lessSEM
   };
 
   /**
-   * @brief cappedL1 penalty
+   * @brief cappedL1 penalty for ista
+   * 
+   * The penalty function is given by:
+   * $$p( x_j) = \lambda \min(| x_j|, \theta)$$
+   * where $\theta > 0$. The cappedL1 penalty is identical to the lasso for
+   * parameters which are below $\theta$ and identical to a constant for parameters
+   * above $\theta$. As adding a constant to the fitting function will not change its
+   * minimum, larger parameters can stay unregularized while smaller ones are set to zero.
    *
+   * CappedL1 regularization:
+   *
+   * * Zhang, T. (2010). Analysis of Multi-stage Convex Relaxation for Sparse Regularization.
+   * Journal of Machine Learning Research, 11, 1081–1107.
    */
   class penaltyCappedL1 : public penalty<tuningParametersCappedL1>
   {

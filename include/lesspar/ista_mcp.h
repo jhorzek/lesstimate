@@ -156,8 +156,19 @@ namespace lessSEM
   };
 
   /**
-   * @brief mcp penalty
+   * @brief mcp penalty for ista
    *
+   * The penalty function is given by:
+   * $$p( x_j) = \begin{cases}
+   * \lambda |x_j| - x_j^2/(2\theta) & \text{if } |x_j| \leq \theta\lambda\\
+   * \theta\lambda^2/2 & \text{if } |x_j| > \lambda\theta
+   * \end{cases}$$
+   *  where $\theta > 1$.
+   *
+   * mcp regularization:
+   *
+   * * Zhang, C.-H. (2010). Nearly unbiased variable selection under minimax concave penalty.
+   * The Annals of Statistics, 38(2), 894–942. https://doi.org/10.1214/09-AOS729
    */
   class penaltyMcp : public penalty<tuningParametersMcp>
   {
