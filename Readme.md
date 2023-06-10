@@ -2,7 +2,20 @@
 
 > A longer documentation of the library can be found at https://jhorzek.github.io/lesspar/.
 
-**lesspar** (**l**esspar **es**timates **s**parse **par**ameters) is a C++ header-only library that provides optimizers for fitting functions of the form
+**lesspar** (**l**esspar **es**timates **s**parse **par**ameters) is a C++ header-only library that lets you combine statistical models such linear regression with state of the art penalty functions (e.g., lasso, elastic net, scad). That is, with **lesspar** you can add regularization and variable selection procedures to your existing modeling framework.
+
+## Features 
+
+- **Header-only**: **lesspar** is designed as a header-only library. Adding **lesspar** to your existing project only requires including the header-files.
+- **R and C++**: **lesspar** can be used in both, *R* and *C++* libraries. We provide templates for projects in [*R*](https://github.com/jhorzek/lessparTemplateR) and [*C++*](https://github.com/jhorzek/lessparTemplateCpp).
+- **Builds on armadillo**: **lesspar** builds on the popular *C++* [**armadillo**](https://arma.sourceforge.net/docs.html) library, providing you with access to a wide range of mathematical functions to build your model.
+- **Multiple penalty functions**: **lesspar** lets you apply any of the following penalties: **ridge**, **lasso**, **adaptive lasso**, **elastic net**, **cappedL1**, **lsp**, **scad**, **mcp**. Furthermore, you can combine multiple penalties.
+- **State of the art optimizers**: **lesspar** provides two state of the art optimizers--variants of glmnet and ista.
+- **Interface similar to ensmallen**: The optimizer interface is inspired by the optimizer library [**ensmallen**](https://ensmallen.org/). If you are already familiar with **ensmallen**, switching to **lesspar** is relatively easy.
+
+## Details
+
+**lesspar** lets you optimize fitting functions of the form
 
 $$g(\pmb\theta) = f(\pmb\theta) + p(\pmb\theta),$$
 
