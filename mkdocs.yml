@@ -2,6 +2,21 @@ site_name: lesspar
 
 repo_url: https://github.com/jhorzek/lesspar
 
+nav:
+    - Home: 'index.md'
+    - 'Getting Started':
+        - 'Installation': '01-installation.md'
+        - 'Regularizing models': '02-getting-started.md'
+        - 'Optimizer design': '03-The Optimizer Design.md'
+    - 'Code Documentation':
+        - 'Model': '04-Model.md'
+        - 'lesspar types': '05-lesspar_types.md'
+        - 'penalty types': '06-Penalty type.md'
+        - 'GLMNET optimizer': '07-GLMNET.md'
+        - 'ISTA optimizer': '08-ISTA.md'
+        - 'fitResults class': '09-fitResults.md'
+        - 'BFGS optimizer': '10-BFGS.md'
+
 theme:
   name: material
   palette:
