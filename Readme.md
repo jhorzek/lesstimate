@@ -10,8 +10,8 @@ where $f(\pmb\theta)$ is a smooth objective function (e.g., residual sum squared
 
 To use the optimziers, you will need two functions:
 
-1. a function that computes the fit value (e.g., the -2log-Likelihood or residual sum squared) of your model
-2. a functions that computes the gradients of the model
+1. a function that computes the fit value $f(\pmb\theta)$ of your model
+2. a functions that computes the gradients $\triangledown_{\pmb\theta}f(\pmb\theta)$ of the model
 
 Given these two functions, **lesspar** lets you apply any of the following penalties: **ridge**, **lasso**, **adaptive lasso**, **elastic net**, **cappedL1**, **lsp**, **scad**, **mcp**, and mixtures therof. Currently two different optimizers are implmented:
 glmnet is a quasi-Newton optimizers developed by Friedman et al. (2010) and Yuan et al. (2012). Ista is a proximal-operator based optimizer (see e.g., Gong et al., 2013). For smaller models, glmnet can be considerably faster than ista.
