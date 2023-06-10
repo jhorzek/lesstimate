@@ -2,20 +2,26 @@
 
 > A longer documentation of the library can be found at https://jhorzek.github.io/lesspar/.
 
-**lesspar** (**l**esspar **es**timates **s**parse **par**ameters) provides optimizers for **ridge**, **lasso**, **adaptive lasso**, **elastic net**, **cappedL1**, **lsp**, **scad**, and **mcp** penalties as well as mixtures thereof. The 
-optimizers are implemented as C++ header-only library and are used in the R package [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models. However, they can also be used by other packages, both in R or C++.
+**lesspar** (**l**esspar **es**timates **s**parse **par**ameters) is a C++ header-only library that provides optimizers for fitting functions of the form
+
+$$g(\pmb\theta) = f(\pmb\theta) + p(\pmb\theta),$$
+
+where $f(\pmb\theta)$ is a smooth objective function (e.g., residual sum squared, weighted least squares or log-Likelihood) and $p(\pmb\theta)$ is a non-smooth penalty function (e.g., lasso or scad).
 
 To use the optimziers, you will need two functions:
 
 1. a function that computes the fit value (e.g., the -2log-Likelihood or residual sum squared) of your model
 2. a functions that computes the gradients of the model
 
-Given these two functions, **lesspar** lets you apply any of the aforementioned penalties to your model using the glmnet optimizer or variants of the ista optimizer. The interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
+Given these two functions, **lesspar** lets you apply any of the following penalties: **ridge**, **lasso**, **adaptive lasso**, **elastic net**, **cappedL1**, **lsp**, **scad**, **mcp**, and mixtures therof. Currently two different optimizers are implmented:
+glmnet is a quasi-Newton optimizers developed by Friedman et al. (2010) and Yuan et al. (2012). Ista is a proximal-operator based optimizer (see e.g., Gong et al., 2013). For smaller models, glmnet can be considerably faster than ista.
+Because both optimziers provide a very similar interface, sitching between them is fairly simple.
+This interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
 
-Intoductions to using **lesspar** in R or C++ can be found in the [documentation](https://jhorzek.github.io/lesspar/). 
+A thorough introduction to **lesspar** and its use in R or C++ can be found in the [documentation](https://jhorzek.github.io/lesspar/). 
 We also provide a [template for using **lesspar** in R](https://github.com/jhorzek/lessparTemplateR) and [template for using **lesspar** in C++](https://github.com/jhorzek/lessparTemplateCpp). Finally, you will find another example for including **lesspar** in R in the package [**lessLM**](https://github.com/jhorzek/lessLM). We recommend that you use the [simplified interfaces](https://github.com/jhorzek/lesspar/blob/main/include/simplified_interfaces.h) to get started. 
 
-**lesspar** is a portmanteau of less and theta. It also stands for **l**esspar **es**timates **s**parse **par**ameters and **Les**lie **s**nacks **par**ameters.  
+**lesspar** also stands for **Les**lie **s**nacks **par**ameters.  
 
 # References
 
