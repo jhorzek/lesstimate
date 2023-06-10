@@ -6,19 +6,47 @@
 
 namespace lessSEM
 {
-
+    /**
+     * @brief tuning parameters for the scad penalty optimized with glmnet
+     *
+     */
     class tuningParametersScadGlmnet
     {
     public:
-        arma::rowvec weights;
-        double lambda;
-        double theta;
+        arma::rowvec weights; ///> provide parameter-specific weights (e.g., for adaptive lasso)
+        double lambda;        ///> lambda value >= 0
+        double theta;         ///> theta value of the cappedL1 penalty > 0
     };
 
-    // the glmnet penalty allows for vectors of alpha and lambda
+    /**
+     * @brief scad penalty for glmnet
+     *
+     * The penalty function is given by:
+     * $$p( x_j) = \begin{cases}
+     * \lambda |x_j| & \text{if } |x_j| \leq \theta\\
+     * \frac{-x_j^2 + 2\theta\lambda |x_j| - \lambda^2}{2(\theta -1)} &
+     * \text{if } \lambda < |x_j| \leq \lambda\theta \\
+     * (\theta + 1) \lambda^2/2 & \text{if } |x_j| \geq \theta\lambda\\
+     * $$
+     * where $\theta > 2$.
+     *
+     * scad regularization:
+     *
+     * * Fan, J., & Li, R. (2001). Variable selection via nonconcave penalized
+     * likelihood and its oracle properties. Journal of the American Statistical Association,
+     * 96(456), 1348–1360. https://doi.org/10.1198/016214501753382273
+     */
     class penaltySCADGlmnet : public penalty<tuningParametersScadGlmnet>
     {
     public:
+        /**
+         * @brief Get the value of the penalty function
+         *
+         * @param parameterValues current parameter values
+         * @param parameterLabels names of the parameters
+         * @param tuningParameters values of the tuning parmameters
+         * @return double
+         */
         double getValue(const arma::rowvec &parameterValues,
                         const stringVector &parameterLabels,
                         const tuningParametersScadGlmnet &tuningParameters)
@@ -65,23 +93,23 @@ namespace lessSEM
             return penalty;
         }
 
-        // subproblemValue
-        //
-        // glmnet uses a combination of inner and outer iterations. Within the inner iteration, a
-        // subproblem is solved for a single parameter. The scad penalty is non-convex which
-        // means that there may be local minima in the subproblem. However, because the function is
-        // convex within regions, we can find the minimum within each region and then compare the results
-        // to find the global minimum. To this end, we need the function value of the subproblem. This
-        // is computed here.
-        // @param parameterValue_j parameter value from the outer iteration for parameter j
-        // @param z update for parameter j in current inner iteration
-        // @param g_j gradient value from the outer iteration for parameter j
-        // @param d_j direction value from the inner iteration for parameter j
-        // @param hessianXdirection_j product of hessian and direction parameter value from the outer iteration for parameter j
-        // @param H_jj row j, col j of Hessian matrix
-        // @param lambda tuning parameter lambda
-        // @param theta tuning parameter theta
-        // @return fit value (double)
+        /**
+         * @brief glmnet uses a combination of inner and outer iterations. Within the inner iteration, a
+         * subproblem is solved for a single parameter. The scad penalty is non-convex which
+         * means that there may be local minima in the subproblem. However, because the function is
+         * convex within regions, we can find the minimum within each region and then compare the results
+         * to find the global minimum. To this end, we need the function value of the subproblem. This
+         * is computed here.
+         * @param parameterValue_j parameter value from the outer iteration for parameter j
+         * @param z update for parameter j in current inner iteration
+         * @param g_j gradient value from the outer iteration for parameter j
+         * @param d_j direction value from the inner iteration for parameter j
+         * @param hessianXdirection_j product of hessian and direction parameter value from the outer iteration for parameter j
+         * @param H_jj row j, col j of Hessian matrix
+         * @param lambda tuning parameter lambda
+         * @param theta tuning parameter theta
+         * @return fit value (double)
+         */
         double subproblemValue(
             const double parameterValue_j,
             const double z,
@@ -110,16 +138,18 @@ namespace lessSEM
             error("This should not have happened... Scad ran into issues");
         }
 
-        // getZ
-        //
-        // computes the step direction for a single parameter j in the inner
-        // iterations of the lasso penalty.
-        // @param d_j gradient of the smooth part for parameter j
-        // @param H_jj Hessian in row and column j
-        // @param hessianXdirection_j element j from product of Hessian and direction
-        // @param alpha tuning parameter alpha
-        // @param lambda tuning parameter lambda
-        // @param weight weight given to the penalty of this parameter (relevant in adaptive lasso)
+        /**
+         * @brief computes the step direction for a single parameter j in the inner
+         * iterations of the lasso penalty.
+         *
+         * @param whichPar index of parameter j
+         * @param parameters_kMinus1 parameter values at previous iteration
+         * @param gradient gradients of fit function
+         * @param stepDirection step direction
+         * @param Hessian Hessian matrix
+         * @param tuningParameters tuning parameters
+         * @return double step direction for parameter j
+         */
         double getZ(
             unsigned int whichPar,
             const arma::rowvec &parameters_kMinus1,

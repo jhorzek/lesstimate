@@ -7,14 +7,33 @@
 
 namespace lessSEM
 {
-    // the glmnet penalty allows for vectors of alpha and lambda
+    /**
+     * @brief lasso penalty for glmnet
+     * 
+     * The penalty function is given by:
+     * $$p( x_j) = \lambda |x_j|$$
+     * Lasso regularization will set parameters to zero if $\lambda$ is large enough
+     *
+     * Lasso regularization:
+     *
+     * * Tibshirani, R. (1996). Regression shrinkage and selection via the lasso. Journal of the Royal Statistical
+     * Society. Series B (Methodological), 58(1), 267–288.
+     */
     class penaltyLASSOGlmnet : public penalty<tuningParametersEnetGlmnet>
     {
     public:
+        /**
+         * @brief Get the value of the penalty function
+         *
+         * @param parameterValues current parameter values
+         * @param parameterLabels names of the parameters
+         * @param tuningParameters values of the tuning parmameters
+         * @return double
+         */
         double getValue(const arma::rowvec &parameterValues,
                         const stringVector &parameterLabels,
-                        const tuningParametersEnetGlmnet &tuningParameters) 
-                        override
+                        const tuningParametersEnetGlmnet &tuningParameters)
+            override
         {
 
             double penalty = 0.0;
@@ -33,22 +52,22 @@ namespace lessSEM
             return penalty;
         }
 
-        // getZ
-        //
-        // computes the step direction for a single parameter j in the inner
-        // iterations of the lasso penalty.
-        // @param d_j gradient of the smooth part for parameter j
-        // @param H_jj Hessian in row and column j
-        // @param hessianXdirection_j element j from product of Hessian and direction
-        // @param alpha tuning parameter alpha
-        // @param lambda tuning parameter lambda
-        // @param weight weight given to the penalty of this parameter (relevant in adaptive lasso)
+        /**
+         * @brief computes the step direction for a single parameter j in the inner
+         * iterations of the lasso penalty.
+         * @param d_j gradient of the smooth part for parameter j
+         * @param H_jj Hessian in row and column j
+         * @param hessianXdirection_j element j from product of Hessian and direction
+         * @param alpha tuning parameter alpha
+         * @param lambda tuning parameter lambda
+         * @param weight weight given to the penalty of this parameter
+         */
         double getZ(
             unsigned int whichPar,
-            const arma::rowvec& parameters_kMinus1,
-            const arma::rowvec& gradient,
-            const arma::rowvec& stepDirection,
-            const arma::mat& Hessian,
+            const arma::rowvec &parameters_kMinus1,
+            const arma::rowvec &gradient,
+            const arma::rowvec &stepDirection,
+            const arma::mat &Hessian,
             const tuningParametersEnetGlmnet &tuningParameters)
         {
 
@@ -85,9 +104,17 @@ namespace lessSEM
             }
         }
 
-        arma::rowvec getSubgradients(const arma::rowvec& parameterValues,
-                                     const arma::rowvec& gradients,
-                                     const tuningParametersEnetGlmnet& tuningParameters)
+        /**
+         * @brief Get the subgradients of the penalty function
+         *
+         * @param parameterValues current parameter values
+         * @param parameterLabels names of the parameters
+         * @param tuningParameters values of the tuning parmameters
+         * @return arma::rowvec
+         */
+        arma::rowvec getSubgradients(const arma::rowvec &parameterValues,
+                                     const arma::rowvec &gradients,
+                                     const tuningParametersEnetGlmnet &tuningParameters)
         {
 
             arma::rowvec subgradients = gradients;

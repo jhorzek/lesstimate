@@ -28,43 +28,39 @@
 namespace lessSEM
 {
 
-  // convergenceCriteriaBFGS
-  //
-  // Specifies the convergence criteria that are currently available for the BFGS optimizer.
-  // The optimization stops if the specified convergence criterion is met.
-  //
-  // GLMNET_: Uses the convergence criterion outlined in Yuan et al. (2012) for GLMNET. Note
-  // that in case of BFGS, this will be identical to using the Armijo condition.
-  // fitChange_: Uses the change in fit from one iteration to the next.
-  // gradients_: Uses the gradients; if all are (close to) zero, the minimum is found
+  /**
+   * Specifies the convergence criteria that are currently available for the BFGS optimizer. The optimization stops if the specified convergence criterion is met.
+   */
   enum convergenceCriteriaBFGS
   {
-    GLMNET_,
-    fitChange_,
-    gradients_
+    GLMNET_,    /** Uses the convergence criterion outlined in Yuan et al. (2012) for GLMNET. Note that in case of BFGS, this will be identical to using the Armijo condition.*/
+    fitChange_, /** Uses the change in fit from one iteration to the next.*/
+    gradients_  /** Uses the gradients; if all are (close to) zero, the minimum is found*/
   };
   const std::vector<std::string> convergenceCriteriaBFGS_txt = {
       "GLMNET_",
       "fitChange_",
       "gradients_"};
 
-  // controlBFGS
-  //
-  // Allows you to adapt the optimizer settings for the BFGS optimizer
-  //
-  // @param initialHessian initial Hessian matrix fo the optimizer.
-  // @param stepSize Initial stepSize of the outer iteration (theta_{k+1} = theta_k + stepSize * Stepdirection)
-  // @param sigma only relevant when lineSearch = 'GLMNET'. Controls the sigma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421.
-  // @param gamma Controls the gamma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421. Defaults to 0.
-  // @param maxIterOut Maximal number of outer iterations
-  // @param maxIterIn Maximal number of inner iterations
-  // @param maxIterLine Maximal number of iterations for the line search procedure
-  // @param breakOuter Stopping criterion for outer iterations
-  // @param breakInner Stopping criterion for inner iterations
-  // @param convergenceCriterion which convergence criterion should be used for the outer iterations? possible are 0 = GLMNET, 1 = fitChange, 2 = gradients.
-  // Note that in case of gradients and GLMNET, we divide the gradients (and the Hessian) of the log-Likelihood by N as it would otherwise be
-  // considerably more difficult for larger sample sizes to reach the convergence criteria.
-  // @param verbose 0 prints no additional information, > 0 prints GLMNET iterations
+  /**
+   * @struct controlBFGS
+   *
+   * @brief Allows you to adapt the optimizer settings for the BFGS optimizer
+   *
+   * @var initialHessian initial Hessian matrix fo the optimizer.
+   * @var stepSize Initial stepSize of the outer iteration (theta_{k+1} = theta_k + stepSize * Stepdirection)
+   * @var sigma only relevant when lineSearch = 'GLMNET'. Controls the sigma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https:*doi.org/10.1145/2020408.2020421.
+   * @var gamma Controls the gamma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421. Defaults to 0.
+   * @var maxIterOut Maximal number of outer iterations
+   * @var maxIterIn Maximal number of inner iterations
+   * @var maxIterLine Maximal number of iterations for the line search procedure
+   * @var breakOuter Stopping criterion for outer iterations
+   * @var breakInner Stopping criterion for inner iterations
+   * @var convergenceCriterion which convergence criterion should be used for the outer iterations? possible are 0 = GLMNET, 1 = fitChange, 2 = gradients.
+   * Note that in case of gradients and GLMNET, we divide the gradients (and the Hessian) of the log-Likelihood by N as it would otherwise be
+   * considerably more difficult for larger sample sizes to reach the convergence criteria.
+   * @var verbose 0 prints no additional information, > 0 prints GLMNET iterations
+   */
   struct controlBFGS
   {
     const arma::mat initialHessian;
@@ -82,26 +78,29 @@ namespace lessSEM
     // is printed.
   };
 
-  // bfgsLineSearch
-  //
-  // Given a step direction "direction", the line search procedure will find an adequate
-  // step length s in this direction. The new parameter values are then given by
-  // parameters_k = parameters_kMinus1 + s*direction
-  // @param model_ the model object derived from the model class in model.h
-  // @param smoothPenalty a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
-  // @param parameters_kMinus1 parameter estimates from previous iteration k-1
-  // @param parameterLabels names of the parameters
-  // @param direction step direction
-  // @param fit_kMinus1 fit from previous iteration
-  // @param gradients_kMinus1 gradients from previous iteration
-  // @param Hessian_kMinus1 Hessian from previous iteration
-  // @param tuningParameters tuning parameters for the smoothPenalty function
-  // @param stepSize Initial stepSize of the outer iteration (theta_{k+1} = theta_k + stepSize * Stepdirection)
-  // @param sigma only relevant when lineSearch = 'GLMNET'. Controls the sigma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421.
-  // @param gamma Controls the gamma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421. Defaults to 0.
-  // @param maxIterLine Maximal number of iterations for the line search procedure
-  // @param verbose 0 prints no additional information, > 0 prints GLMNET iterations
-  // @return vector with updated parameters (parameters_k)
+  /**
+   * @brief   * Given a step direction "direction", the line search procedure will find an adequate
+   * step length s in this direction. The new parameter values are then given by
+   * parameters_k = parameters_kMinus1 + s*direction
+   *
+   * @param model_ the model object derived from the model class in model.h
+   * @param smoothPenalty a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
+   * @param parameters_kMinus1 parameter estimates from previous iteration k-1
+   * @param parameterLabels names of the parameters
+   * @param direction step direction
+   * @param fit_kMinus1 fit from previous iteration
+   * @param gradients_kMinus1 gradients from previous iteration
+   * @param Hessian_kMinus1 Hessian from previous iteration
+   * @param tuningParameters tuning parameters for the smoothPenalty function
+   * @param stepSize Initial stepSize of the outer iteration (theta_{k+1} = theta_k + stepSize * Stepdirection)
+   * @param sigma only relevant when lineSearch = 'GLMNET'. Controls the sigma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012).
+   * An improved GLMNET for l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421.
+   * @param gamma Controls the gamma parameter in Yuan, G.-X., Ho, C.-H., & Lin, C.-J. (2012). An improved GLMNET for
+   * l1-regularized logistic regression. The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.1145/2020408.2020421. Defaults to 0.
+   * @param maxIterLine Maximal number of iterations for the line search procedure
+   * @param verbose 0 prints no additional information, > 0 prints GLMNET iterations
+   * @return vector with updated parameters (parameters_k)
+   */
   template <typename T> // T is the type of the tuning parameters
   inline arma::rowvec bfgsLineSearch(
       model &model_,
@@ -247,15 +246,16 @@ namespace lessSEM
   // the use of Rcpp::NumericVectors that combine values and labels similar to an R vector. Thus, interfacing to this
   // second function call can be easier when coming from R.
 
-  // bfgsOptim
-  //
-  // Optimize a model using the BFGS procedure.
-  // @param model_ the model object derived from the model class in model.h
-  // @param startingValuesRcpp an Rcpp numeric vector with starting values
-  // @param smoothPenalty_ a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
-  // @param tuningParameters tuning parameters for the smoothPenalty function
-  // @param control_ settings for the BFGS optimizer. Must be of struct controlBFGS. This can be created with controlBFGS.
-  // @return fit result
+  /**
+   * @brief Optimize a model using the BFGS procedure.
+   *
+   * @param model_ the model object derived from the model class in model.h
+   * @param startingValuesRcpp an Rcpp numeric vector with starting values
+   * @param smoothPenalty_ a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
+   * @param tuningParameters tuning parameters for the smoothPenalty function
+   * @param control_ settings for the BFGS optimizer. Must be of struct controlBFGS. This can be created with controlBFGS.
+   * @return fit result
+   */
   template <typename T> // T is the type of the tuning parameters
   inline lessSEM::fitResults bfgsOptim(model &model_,
                                        numericVector startingValuesRcpp,
@@ -471,16 +471,18 @@ namespace lessSEM
 
   } // end bfgs
 
-  // bfgsOptim
-  //
-  // Optimize a model using the BFGS procedure.
-  // @param model_ the model object derived from the model class in model.h
-  // @param startingValues an arma::rowvec numeric vector with starting values
-  // @param parameterLabels a lessSEM::stringVector with labels for parameters
-  // @param smoothPenalty_ a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
-  // @param tuningParameters tuning parameters for the smoothPenalty function
-  // @param control_ settings for the BFGS optimizer. Must be of struct controlBFGS. This can be created with controlBFGS.
-  // @return fit result
+  /**
+   * @brief Optimize a model using the BFGS procedure.
+   *
+   * @tparam T type of the tuning parameters
+   * @param model_ the model object derived from the model class in model.h
+   * @param startingValues an arma::rowvec numeric vector with starting values
+   * @param parameterLabels a lessSEM::stringVector with labels for parameters
+   * @param smoothPenalty_ a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
+   * @param tuningParameters tuning parameters for the smoothPenalty function
+   * @param control_ settings for the BFGS optimizer. Must be of struct controlBFGS. This can be created with controlBFGS.
+   * @return fit result
+   */
   template <typename T> // T is the type of the tuning parameters
   inline lessSEM::fitResults bfgsOptim(model &model_,
                                        arma::rowvec startingValues,
