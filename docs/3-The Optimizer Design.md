@@ -1,7 +1,5 @@
 # The Optimizer Design
 
----
-
 Note: We will not cover the optimizers themselves; here, we recommend
 reading the following articles:
 
@@ -16,7 +14,6 @@ reading the following articles:
 * Gong, P., Zhang, C., Lu, Z., Huang, J., & Ye, J. (2013). A general iterative shrinkage and thresholding algorithm for non-convex regularized optimization problems. Proceedings of the 30th International Conference on Machine Learning, 28(2)(2), 37–45.
 * Parikh, N., & Boyd, S. (2013). Proximal Algorithms. Foundations and Trends in Optimization, 1(3), 123–231.
 
----
 
 ## The Fitting Function
 
@@ -136,7 +133,9 @@ Note how the gradients of $l(\pmb\theta)$ and $s(\pmb\theta,\pmb{t}_s)$ are comb
 Besides the glmnet optimizer, we also implemented variants of ista. These are
 based on the publications mentioned above. The fitting function is again given
 by 
+
 $$f(\pmb{\theta}) = \underbrace{l(\pmb\theta) + s(\pmb\theta,\pmb{t}_s)}_{\text{differentiable}} + \underbrace{p(\pmb\theta,\pmb{t}_p)}_{\text{non-differentiable}}$$
+
 In the 
 following, we will build a lot on what we've already discussed regarding the 
 glmnet optimizer above. 
