@@ -6,7 +6,6 @@ Optimize a model using the BFGS optimizer. This optimizer does **not** support n
 
 ### Version 1:
 
-
 - **param** model_: the model object derived from the model class in model.h
 - **param** startingValuesRcpp: an Rcpp numeric vector with starting values
 - **param** smoothPenalty_: a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
@@ -16,7 +15,7 @@ Optimize a model using the BFGS optimizer. This optimizer does **not** support n
 
 ### Version 2
 
- @tparam T type of the tuning parameters
+- **T-param** T: type of the tuning parameters
 - **param** model_: the model object derived from the model class in model.h
 - **param** startingValues: an arma::rowvec numeric vector with starting values
 - **param** parameterLabels: a lessSEM::stringVector with labels for parameters

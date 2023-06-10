@@ -75,9 +75,9 @@ information on each iteration. This can be set with the controlOptimizer - argum
 
 ## glmnet
 
- Optimize a model using the glmnet procedure.
+Optimize a model using the glmnet procedure.
 
- ### Version 1
+### Version 1
 
 
 - **T-param** nonsmoothPenalty: class of type nonsmoothPenalty (e.g., lasso, scad, lsp)
