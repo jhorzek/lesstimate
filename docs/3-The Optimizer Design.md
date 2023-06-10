@@ -26,6 +26,7 @@ part and a non-differentiable part. To be more specific, the fitting function
 is given by:
 
 $$f(\pmb{\theta}) = \underbrace{l(\pmb\theta) + s(\pmb\theta,\pmb{t}_s)}_{\text{differentiable}} + \underbrace{p(\pmb\theta,\pmb{t}_p)}_{\text{non-differentiable}}$$
+
 where $l(\pmb\theta)$ is the unregularized fitting function 
 (e.g., the -2log-likelihood) in the SEMs implemented in **lessSEM**. 
 $s(\pmb\theta,\pmb{t}_s)$ is a differentiable (smooth) penalty function 
@@ -39,6 +40,7 @@ penalty functions can use different tuning parameters.
 
 A prototypical example for fitting functions of the form defined above is the 
 elastic net. Here, 
+
 $$f(\pmb{\theta}) = \underbrace{l(\pmb\theta) + (1-\alpha)\lambda \sum_j\theta_j^2}_{\text{differentiable}} + \underbrace{\alpha\lambda\sum_j| \theta_j|}_{\text{non-differentiable}}$$
 
 The elastic net is a combination of a ridge penalty and a lasso penalty. Note
@@ -51,7 +53,7 @@ This function is called as follows:
 
 
 
-```r
+```
 inline lessSEM::fitResults glmnet(model& model_, 
                                   numericVector startingValuesRcpp,
                                   penaltyLASSOGlmnet& penalty_,
@@ -142,7 +144,7 @@ glmnet optimizer above.
 First, let's have a look at the ista function;
 
 
-```r
+```
 template<typename T, typename U> // T is the type of the tuning parameters
 inline lessSEM::fitResults ista(
     model& model_, 
