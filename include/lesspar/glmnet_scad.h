@@ -127,12 +127,14 @@ namespace lessSEM
         /**
          * @brief computes the step direction for a single parameter j in the inner
          * iterations of the lasso penalty.
-         * @param d_j gradient of the smooth part for parameter j
-         * @param H_jj Hessian in row and column j
-         * @param hessianXdirection_j element j from product of Hessian and direction
-         * @param alpha tuning parameter alpha
-         * @param lambda tuning parameter lambda
-         * @param weight weight given to the penalty of this parameter
+         *
+         * @param whichPar index of parameter j
+         * @param parameters_kMinus1 parameter values at previous iteration
+         * @param gradient gradients of fit function
+         * @param stepDirection step direction
+         * @param Hessian Hessian matrix
+         * @param tuningParameters tuning parameters
+         * @return double step direction for parameter j
          */
         double getZ(
             unsigned int whichPar,
