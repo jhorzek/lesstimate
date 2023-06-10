@@ -2,7 +2,7 @@
 
 > A longer documentation of the library can be found at https://jhorzek.github.io/lesspar/.
 
-**lesspar** (**l**esspar **es**timates **s**parse **par**ameters) is a C++ header-only library that lets you combine statistical models such linear regression with state of the art penalty functions (e.g., lasso, elastic net, scad). That is, with **lesspar** you can add regularization and variable selection procedures to your existing modeling framework.
+**lesspar** (**l**esspar **es**timates **s**parse **par**ameters) is a C++ header-only library that lets you combine statistical models such linear regression with state of the art penalty functions (e.g., lasso, elastic net, scad). With **lesspar** you can add regularization and variable selection procedures to your existing modeling framework. It is currently used in [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models.
 
 ## Features 
 
@@ -31,6 +31,95 @@ A thorough introduction to **lesspar** and its use in R or C++ can be found in t
 We also provide a [template for using **lesspar** in R](https://github.com/jhorzek/lessparTemplateR) and [template for using **lesspar** in C++](https://github.com/jhorzek/lessparTemplateCpp). Finally, you will find another example for including **lesspar** in R in the package [**lessLM**](https://github.com/jhorzek/lessLM). We recommend that you use the [simplified interfaces](https://github.com/jhorzek/lesspar/blob/main/include/simplified_interfaces.h) to get started. 
 
 **lesspar** also stands for **Les**lie **s**nacks **par**ameters.  
+
+## Example
+
+The following code demonstrates the use of **lesspar** with regularized linear regressions. A longer step-by-step introduction including installation of **lesspar** is provided in the [documentation](https://jhorzek.github.io/lesspar/).
+
+```
+#include <armadillo>
+#include "lesspar.h"
+
+// Implement linear regressions. You model must inherit from lesspar::model
+// and override the fit and gradients function.
+class linearRegressionModel : public lesspar::model
+{
+public:
+    double fit(arma::rowvec b, lesspar::stringVector labels) override
+    {
+        // compute sum of squared errors
+        arma::mat sse = (arma::trans(y - X * b.t()) * (y - X * b.t())) / (2.0 * y.n_elem);
+        return (sse(0, 0));
+    }
+
+    arma::rowvec gradients(arma::rowvec b, lessSEM::stringVector labels) override
+    {
+        // compute gradients of sum of squared errors
+        arma::rowvec grad = (arma::trans(-2.0 * X.t() * y + 2.0 * X.t() * X * b.t())) * (.5 / y.n_rows);
+        return (grad);
+    }
+
+    // linear regression requires dependent variables y and design matrix X:
+    const arma::colvec y;
+    const arma::mat X;
+
+    // constructor
+    linearRegressionModel(arma::colvec y_, arma::mat X_) : y(y_), X(X_){};
+};
+
+int main()
+{
+    // examples for design matrix and dependent variable:
+    arma::mat X = {{1.00, -0.70, -0.86},
+                   {1.00, -1.20, -2.10},
+                   {1.00, -0.15, 1.13},
+                   {1.00, -0.50, -1.50},
+                   {1.00, 0.83, 0.44},
+                   {1.00, -1.52, -0.72},
+                   {1.00, 1.40, -1.30},
+                   {1.00, -0.60, -0.59},
+                   {1.00, -1.10, 2.00},
+                   {1.00, -0.96, -0.20}};
+
+    arma::colvec y = {{0.56},
+                      {-0.32},
+                      {0.01},
+                      {-0.09},
+                      {0.18},
+                      {-0.11},
+                      {0.62},
+                      {0.72},
+                      {0.52},
+                      {0.12}};
+
+    // initialize model
+    linearRegressionModel linReg(y, X);
+
+    // To use the optimizers, you will need to
+    // (1) specify starting values and names for the parameters
+    arma::rowvec startingValues(3);
+    startingValues.fill(0.0);
+    std::vector<std::string> labels{"b0", "b1", "b2"};
+    lessSEM::stringVector parameterLabels(labels);
+
+    // (2) specify the penalty to be used for each of the parameters:
+    std::vector<std::string> penalty{"none", "lasso", "lasso"};
+
+    // (3) specify the tuning parameters of your penalty for
+    // each parameter:
+    arma::rowvec lambda = {{0.0, 0.2, 0.2}};
+    // theta is not used by the lasso penalty:
+    arma::rowvec theta = {{0.0, 0.0, 0.0}};
+
+    lessSEM::fitResults fitResult_ = lessSEM::fitGlmnet(
+        linReg,
+        startingValues,
+        parameterLabels,
+        penalty,
+        lambda,
+        theta);
+}
+```
 
 # References
 
