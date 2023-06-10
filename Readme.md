@@ -6,12 +6,11 @@
 
 ## Features 
 
-- **Header-only**: **lesspar** is designed as a header-only library. Adding **lesspar** to your existing project only requires including the header-files.
-- **R and C++**: **lesspar** can be used in both, *R* and *C++* libraries. We provide templates for projects in [*R*](https://github.com/jhorzek/lessparTemplateR) and [*C++*](https://github.com/jhorzek/lessparTemplateCpp).
-- **Builds on armadillo**: **lesspar** builds on the popular *C++* [**armadillo**](https://arma.sourceforge.net/docs.html) library, providing you with access to a wide range of mathematical functions to build your model.
-- **Multiple penalty functions**: **lesspar** lets you apply any of the following penalties: **ridge**, **lasso**, **adaptive lasso**, **elastic net**, **cappedL1**, **lsp**, **scad**, **mcp**. Furthermore, you can combine multiple penalties.
+- **Multiple penalty functions**: **lesspar** lets you apply any of the following penalties: ridge, lasso, adaptive lasso, elastic net, cappedL1, lsp, scad, mcp. Furthermore, you can combine multiple penalties.
 - **State of the art optimizers**: **lesspar** provides two state of the art optimizers--variants of glmnet and ista.
-- **Interface similar to ensmallen**: The optimizer interface is inspired by the optimizer library [**ensmallen**](https://ensmallen.org/). If you are already familiar with **ensmallen**, switching to **lesspar** is relatively easy.
+- **Header-only**: **lesspar** is designed as a header-only library. Include the headers and you are ready to go.
+- **Builds on armadillo**: **lesspar** builds on the popular *C++* [**armadillo**](https://arma.sourceforge.net/docs.html) library, providing you with access to a wide range of mathematical functions to create your model.
+- **R and C++**: **lesspar** can be used in both, [*R*](https://github.com/jhorzek/lessparTemplateR) and [*C++*](https://github.com/jhorzek/lessparTemplateCpp) libraries.
 
 ## Details
 
@@ -26,10 +25,7 @@ To use the optimziers, you will need two functions:
 1. a function that computes the fit value $f(\pmb\theta)$ of your model
 2. a functions that computes the gradients $\triangledown_{\pmb\theta}f(\pmb\theta)$ of the model
 
-Given these two functions, **lesspar** lets you apply any of the following penalties: **ridge**, **lasso**, **adaptive lasso**, **elastic net**, **cappedL1**, **lsp**, **scad**, **mcp**, and mixtures therof. Currently two different optimizers are implemented:
-glmnet is a quasi-Newton optimizers developed by Friedman et al. (2010) and Yuan et al. (2012). Ista is a proximal-operator based optimizer (see e.g., Gong et al., 2013). For smaller models, glmnet can be considerably faster than ista.
-Because both optimziers provide a very similar interface, sitching between them is fairly simple.
-This interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
+Given these two functions, **lesspar** lets you apply any of the aforementioned penalties with the quasi-Newton glmnet optimizer developed by Friedman et al. (2010) and Yuan et al. (2012) or variants of the proximal-operator based ista optimizer (see e.g., Gong et al., 2013). Because both optimziers provide a very similar interface, sitching between them is fairly simple. This interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
 
 A thorough introduction to **lesspar** and its use in R or C++ can be found in the [documentation](https://jhorzek.github.io/lesspar/). 
 We also provide a [template for using **lesspar** in R](https://github.com/jhorzek/lessparTemplateR) and [template for using **lesspar** in C++](https://github.com/jhorzek/lessparTemplateCpp). Finally, you will find another example for including **lesspar** in R in the package [**lessLM**](https://github.com/jhorzek/lessLM). We recommend that you use the [simplified interfaces](https://github.com/jhorzek/lesspar/blob/main/include/simplified_interfaces.h) to get started. 
