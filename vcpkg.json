@@ -1,7 +1,7 @@
 {
-  "name": "lesspar",
+  "name": "lesstimate",
   "version-string": "0.1.0",
-  "description": "lesspar (lesspar estimates sparse parameters) Provides optimizers for regularized models such as regularized linear regression or regularized structural equation models.",
+  "description": "lesstimate (lesstimate estimates sparse estimates) Provides optimizers for regularized models such as regularized linear regression or regularized structural equation models.",
   "dependencies": [
     "armadillo"
   ]
