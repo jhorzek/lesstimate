@@ -6,7 +6,7 @@
 namespace lessSEM
 {
   /**
-   * @brief model is the base class used in every optimizer implemented in lesspar.
+   * @brief model is the base class used in every optimizer implemented in lesstimate.
    * The user specified model should inherit from the model class and must implement
    * the two methods defined therein
    */
