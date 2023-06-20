@@ -15,15 +15,15 @@ The Journal of Machine Learning Research, 13, 1999–2030. https://doi.org/10.11
 
 ## fitGlmnet
 
-We provide two optimizer interfaces: One uses a combination of arma::rowvec and lessSEM::stringVector for starting
+We provide two optimizer interfaces: One uses a combination of arma::rowvec and less::stringVector for starting
 values and parameter labels respectively. This interface is consistent with the fit and gradient function of the
-`lessSEM::model`-class. Alternatively, a numericVector can be passed to the optimizers. This design is rooted in
+`less::model`-class. Alternatively, a numericVector can be passed to the optimizers. This design is rooted in
 the use of Rcpp::NumericVectors that combine values and labels similar to an R vector. Thus, interfacing to this
 second function call can be easier when coming from R.
 
 ### Version 1
 
-- **param** userModel: your model. Must inherit from lessSEM::model!
+- **param** userModel: your model. Must inherit from less::model!
 - **param** startingValues: numericVector with initial starting values. This
 vector can have names.
 - **param** penalty: vector with strings indicating the penalty for each parameter.
@@ -49,9 +49,9 @@ information on each iteration. This can be set with the controlOptimizer - argum
 
 ### Version 2
 
-- **param** userModel: your model. Must inherit from lessSEM::model!
+- **param** userModel: your model. Must inherit from less::model!
 - **param** startingValues: an arma::rowvec numeric vector with starting values
-- **param** parameterLabels: a lessSEM::stringVector with labels for parameters
+- **param** parameterLabels: a less::stringVector with labels for parameters
 - **param** penalty: vector with strings indicating the penalty for each parameter.
 Currently supported are "none", "cappedL1", "lasso", "lsp", "mcp", and "scad".
 (e.g., {"none", "scad", "scad", "lasso", "none"}). If only one value is provided,
@@ -131,8 +131,8 @@ argument should not be used. Instead, pass the initial Hessian as shown above
 - `maxIterLine`: an `int` specifying the maximal number of iterations for the line search procedure
 - `breakOuter`: a `double` specyfing the stopping criterion for outer iterations
 - `breakInner`: a `double` specyfing the stopping criterion for inner iterations
-- `convergenceCriterion`: a `convergenceCriteriaGlmnet` specifying which convergence criterion should be used for the outer iterations. Possible are `lessSEM::GLMNET`, `lessSEM::fitChange`,
-and `lessSEM::gradients`. 
+- `convergenceCriterion`: a `convergenceCriteriaGlmnet` specifying which convergence criterion should be used for the outer iterations. Possible are `less::GLMNET`, `less::fitChange`,
+and `less::gradients`. 
 - `verbose`: an `int`, where 0 prints no additional information, > 0 prints GLMNET iterations
 
 ## Penalties

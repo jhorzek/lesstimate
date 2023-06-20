@@ -1,6 +1,6 @@
-site_name: lesspar
+site_name: lesstimate
 
-repo_url: https://github.com/jhorzek/lesspar
+repo_url: https://github.com/jhorzek/lesstimate
 
 nav:
     - Home: 'index.md'
@@ -10,7 +10,7 @@ nav:
         - 'Optimizer design': '03-The Optimizer Design.md'
     - 'Code Documentation':
         - 'Model': '04-Model.md'
-        - 'lesspar types': '05-lesspar_types.md'
+        - 'lesstimate types': '05-lesstimate_types.md'
         - 'penalty types': '06-Penalty type.md'
         - 'GLMNET optimizer': '07-GLMNET.md'
         - 'ISTA optimizer': '08-ISTA.md'

@@ -1,20 +1,20 @@
-# lesspar
+# lesstimate
 
-**lesspar** (**l**esspar **es**timates **s**parse **par**ameters) is a C++ header-only library that lets you combine statistical models such linear regression with state of the art penalty functions (e.g., lasso, elastic net, scad). With **lesspar** you can add regularization and variable selection procedures to your existing modeling framework. It is currently used in [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models.
+**lesstimate** (**l**esstimate **es**timates **s**parse es**timate**s) is a C++ header-only library that lets you combine statistical models such linear regression with state of the art penalty functions (e.g., lasso, elastic net, scad). With **lesstimate** you can add regularization and variable selection procedures to your existing modeling framework. It is currently used in [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models.
 
 ## Features 
 
-- **Multiple penalty functions**: **lesspar** lets you apply any of the following penalties: ridge, lasso, adaptive lasso, elastic net, cappedL1, lsp, scad, mcp. Furthermore, you can combine multiple penalties.
-- **State of the art optimizers**: **lesspar** provides two state of the art optimizers--variants of glmnet and ista.
-- **Header-only**: **lesspar** is designed as a header-only library. Include the headers and you are ready to go.
-- **Builds on armadillo**: **lesspar** builds on the popular *C++* [**armadillo**](https://arma.sourceforge.net/docs.html) library, providing you with access to a wide range of mathematical functions to create your model.
-- **R and C++**: **lesspar** can be used in both, [*R*](https://github.com/jhorzek/lessparTemplateR) and [*C++*](https://github.com/jhorzek/lessparTemplateCpp) libraries.
+- **Multiple penalty functions**: **lesstimate** lets you apply any of the following penalties: ridge, lasso, adaptive lasso, elastic net, cappedL1, lsp, scad, mcp. Furthermore, you can combine multiple penalties.
+- **State of the art optimizers**: **lesstimate** provides two state of the art optimizers--variants of glmnet and ista.
+- **Header-only**: **lesstimate** is designed as a header-only library. Include the headers and you are ready to go.
+- **Builds on armadillo**: **lesstimate** builds on the popular *C++* [**armadillo**](https://arma.sourceforge.net/docs.html) library, providing you with access to a wide range of mathematical functions to create your model.
+- **R and C++**: **lesstimate** can be used in both, [*R*](https://github.com/jhorzek/lesstimateTemplateR) and [*C++*](https://github.com/jhorzek/lesstimateTemplateCpp) libraries.
 
 ![peanlty functions](penaltyFunctions.png)
 
 ## Details
 
-**lesspar** lets you optimize fitting functions of the form
+**lesstimate** lets you optimize fitting functions of the form
 
 $$g(\pmb\theta) = f(\pmb\theta) + p(\pmb\theta),$$
 
@@ -25,13 +25,11 @@ To use the optimziers, you will need two functions:
 1. a function that computes the fit value $f(\pmb\theta)$ of your model
 2. a functions that computes the gradients $\triangledown_{\pmb\theta}f(\pmb\theta)$ of the model
 
-Given these two functions, **lesspar** lets you apply any of the aforementioned penalties with the quasi-Newton glmnet optimizer developed by Friedman et al. (2010) and Yuan et al. (2012) or variants of the proximal-operator based ista optimizer (see e.g., Gong et al., 2013). Because both optimziers provide a very similar interface, switching between them is fairly simple. This interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
+Given these two functions, **lesstimate** lets you apply any of the aforementioned penalties with the quasi-Newton glmnet optimizer developed by Friedman et al. (2010) and Yuan et al. (2012) or variants of the proximal-operator based ista optimizer (see e.g., Gong et al., 2013). Because both optimziers provide a very similar interface, switching between them is fairly simple. This interface is inspired by the [**ensmallen**](https://ensmallen.org/) library. 
 
-**lesspar** also stands for **Les**lie **s**nacks **par**ameters.  
-
-**lesspar** was mainly developed to be used in [**lessSEM**](https://jhorzek.github.io/lessSEM/), an 
+**lesstimate** was mainly developed to be used in [**lessSEM**](https://jhorzek.github.io/lessSEM/), an 
 R package for regularized Structural Equation Models. However, the library can also be used from C++.
-**lesspar** builds heavily on the **RcppAdmadillo** (Eddelbuettel et al., 2014) and **armadillo** (Sanderson et al., 2016) 
+**lesstimate** builds heavily on the **RcppAdmadillo** (Eddelbuettel et al., 2014) and **armadillo** (Sanderson et al., 2016) 
 libraries. The optimizer interface is inspired by the **ensmallen** library (Curtin et al., 2021).
 
 
