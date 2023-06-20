@@ -1,30 +1,30 @@
 # Getting Started
 
 === "R"
-    All steps outlined in the following are provided in the template for R packages using **lesspar**. The C++ code can be found [in the src directory of the package](https://github.com/jhorzek/lessparTemplateR/blob/main/src/example.cpp).
+    All steps outlined in the following are provided in the template for R packages using **lesstimate**. The C++ code can be found [in the src directory of the package](https://github.com/jhorzek/lesstimateTemplateR/blob/main/src/example.cpp).
 
 === "C++"
-    All steps outlined in the following are provided in the template for C++ packages using **lesspar**. The C++ code can be found [in the linear_regression.cpp file of the package](https://github.com/jhorzek/lessparTemplateCpp/blob/main/linear_regression.cpp).
+    All steps outlined in the following are provided in the template for C++ packages using **lesstimate**. The C++ code can be found [in the linear_regression.cpp file of the package](https://github.com/jhorzek/lesstimateTemplateCpp/blob/main/linear_regression.cpp).
 
 
-**lesspar** was initially a sub-folder of the **lessSEM** package. Therefore,
+**lesstimate** was initially a sub-folder of the **lessSEM** package. Therefore,
 the default is currently to still assume that you are using the library in an R package.
-In the [common_headers.h](https://github.com/jhorzek/lesspar/blob/f8aa3169da617ca2d6afbd330e1fb5395ba40898/include/common_headers.h#L8)-file, 
-you will find a variable called `USE_R`. If this variable is set to 1 (default), **lesspar**
+In the [common_headers.h](https://github.com/jhorzek/lesstimate/blob/f8aa3169da617ca2d6afbd330e1fb5395ba40898/include/common_headers.h#L8)-file, 
+you will find a variable called `USE_R`. If this variable is set to 1 (default), **lesstimate**
 is setup to be used from R. If `USE_R` is set to zero, the library no longer relies on the R packages
 **Rcpp** (Eddelbuettel et al., 2011) or **RcppArmadillo** (Eddelbuettel et al., 2014). The library can now be used in 
 C++ projects as long as the [**armadillo**](https://arma.sourceforge.net/) (Sanderson et al., 2016)
-library is installed. These settings are implemented in the [lessparConfig.cmake](https://github.com/jhorzek/lesspar/blob/b952a8509f388f2284450414bc781a9114c98243/lessparConfig.cmake)-file included
+library is installed. These settings are implemented in the [lesstimateConfig.cmake](https://github.com/jhorzek/lesstimate/blob/b952a8509f388f2284450414bc781a9114c98243/lesstimateConfig.cmake)-file included
 in the project.
 
-## Interfacing to **lesspar**
+## Interfacing to **lesstimate**
 
-As outlined in the introduction, the optimizers in **lesspar** minimize functions
+As outlined in the introduction, the optimizers in **lesstimate** minimize functions
 of the form 
 $$g(\pmb\theta) = f(\pmb\theta) + p(\pmb\theta)$$
 where $f(\pmb\theta)$ is (twice) continously differentiable with respect to $\theta$ and $p(\pmb\theta)$
 is a non-differentiable penalty function (e.g., lasso or scad).
-To use **lesspar** for your project, you will need two functions.
+To use **lesstimate** for your project, you will need two functions.
 First, a function that computes $f(\pmb\theta)$, the value of your un-
 regularized objective function. Second, a function that computes 
 $\triangledown_{\pmb\theta} f(\pmb\theta)$, the gradient vector of your
@@ -102,9 +102,9 @@ provide a good starting point for the bfgs updates using this Hessian.
 
 ### Step 3: Creating a model object
 
-**lesspar** assumes that you pass a model-object to the optimizers. This model 
-object ist implemented in the [`lessSEM::model`-class](https://github.com/jhorzek/lesspar/blob/main/include/model.h).
-Therefore, we have to create a custom class that inherits from `lessSEM::model` and 
+**lesstimate** assumes that you pass a model-object to the optimizers. This model 
+object ist implemented in the [`less::model`-class](https://github.com/jhorzek/lesstimate/blob/main/include/model.h).
+Therefore, we have to create a custom class that inherits from `less::model` and 
 implements our linear regression using the functions defined above. 
 
 === "R"
@@ -114,32 +114,31 @@ implements our linear regression using the functions defined above.
     ```
 
 === "C++"
-    We recommend setting up **lesspar** with CMake. You will find an example [here](https://github.com/jhorzek/lessparTemplateCpp).
+    We recommend setting up **lesstimate** with CMake. You will find an example [here](https://github.com/jhorzek/lesstimateTemplateCpp).
     ```
-    #include <include/lesspar.h>
+    #include <include/lesstimate.h>
     ```
 
 ```
-// IMPORTANT: The library is called lesspar, but
-// because it was initially a sub-folder of lessSEM, the
-// namespace is still called lessSEM. However, you can
-// also use the lesspar namespace which just copies lessSEM.
+// IMPORTANT: The library is called lesstimate, but
+// because it was initially a sub-folder of lessSEM, there
+// are two namespaces that are identical: less and lessSEM.
 
-class linearRegressionModel : public lessSEM::model
+class linearRegressionModel : public less::model
 {
 
 public:
-  // the lessSEM::model class has two methods: "fit" and "gradients".
+  // the less::model class has two methods: "fit" and "gradients".
   // Both of these methods must follow a fairly strict framework.
   // First: They must receive exactly two arguments:
   //        1) an arma::rowvec with current parameter values
   //        2) an Rcpp::StringVector with current parameter labels
   //          (NOTE: the lessSEM package currently does not make use of these
   //          labels. This is just for future use. If you don't want to use 
-  //          the labels, just pass any lessSEM::stringVector you want).
-  //          if you are using R, a lessSEM::stringVector is just an 
+  //          the labels, just pass any less::stringVector you want).
+  //          if you are using R, a less::stringVector is just an 
   //	      Rcpp::StringVector. Otherwise it is a custom vector. that can
-  //	      be created with lessSEM::stringVector myVector(numberofParameters).
+  //	      be created with less::stringVector myVector(numberofParameters).
   // Second:
   //        1) fit must return a double (e.g., the -2-log-likelihood)
   //        2) gradients must return an arma::rowvec with the gradients. It is
@@ -149,14 +148,14 @@ public:
   //           derivative with respect to the first parameter passed to 
   //           the function).
 
-  double fit(arma::rowvec b, lessSEM::stringVector labels) override
+  double fit(arma::rowvec b, less::stringVector labels) override
   {
     // NOTE: In sumSquaredError we assumed that b was a column-vector. We
     //  have to transpose b to make things work
     return (sumSquaredError(b.t(), y, X));
   }
 
-  arma::rowvec gradients(arma::rowvec b, lessSEM::stringVector labels) override
+  arma::rowvec gradients(arma::rowvec b, less::stringVector labels) override
   {
     // NOTE: In sumSquaredErrorGradients we assumed that b was a column-vector. We
     //  have to transpose b to make things work
@@ -224,12 +223,12 @@ and two predictors.
 arma::rowvec startingValues(3);
 startingValues.fill(0.0);
 ```
-**lesspar** also expects labels for these parameters. The labels are stored in an object of
-class `lessSEM::stringVector`:
+**lesstimate** also expects labels for these parameters. The labels are stored in an object of
+class `less::stringVector`:
 
 === "R"
 
-    When using R, `lessSEM::stringVector` is identical to `Rcpp::StringVector`.
+    When using R, `less::stringVector` is identical to `Rcpp::StringVector`.
     ``` r
     Rcpp::StringVector parameterLabels(3);
     parameterLabels[0] = "b0";
@@ -241,7 +240,7 @@ class `lessSEM::stringVector`:
 
     ``` c++
     std::vector<std::string> labels {"b0", "b1", "b2"};
-    lessSEM::stringVector parameterLabels(labels);
+    less::stringVector parameterLabels(labels);
     ```
 
 Now we have to specify the values for our tuning parameters. These
@@ -294,7 +293,7 @@ Having specified the penalty and the tuning values, we can now use the optimizer
      improve the optimization considerably. For simplicity, we won't do this here.
 
     ``` c++
-    lessSEM::fitResults fitResult_ = lessSEM::fitGlmnet(
+    less::fitResults fitResult_ = less::fitGlmnet(
 	      linReg,
 	      startingValues,
 	      parameterLabels,
@@ -310,7 +309,7 @@ Having specified the penalty and the tuning values, we can now use the optimizer
 === "ista"
 
     ``` c++
-    lessSEM::fitResults fitResult_ = lessSEM::fitIsta(
+    less::fitResults fitResult_ = less::fitIsta(
       	linReg,
       	startingValues,
       	parameterLabels,
@@ -352,17 +351,17 @@ argument. Depending on the optimizer used, different settings can be adapted.
     - `maxIterLine`: an `int` specifying the maximal number of iterations for the line search procedure
     - `breakOuter`: a `double` specyfing the stopping criterion for outer iterations
     - `breakInner`: a `double` specyfing the stopping criterion for inner iterations
-    - `convergenceCriterion`: a `convergenceCriteriaGlmnet` specifying which convergence criterion should be used for the outer iterations. Possible are `lessSEM::GLMNET`, `lessSEM::fitChange`,
-    and `lessSEM::gradients`. 
+    - `convergenceCriterion`: a `convergenceCriteriaGlmnet` specifying which convergence criterion should be used for the outer iterations. Possible are `less::GLMNET`, `less::fitChange`,
+    and `less::gradients`. 
     - `verbose`: an `int`, where 0 prints no additional information, > 0 prints GLMNET iterations
 
     ``` c++
     // First, create a new instance of class controlGLMNET:
-    lessSEM::controlGLMNET controlOptimizer = lessSEM::controlGlmnetDefault();
+    less::controlGLMNET controlOptimizer = less::controlGlmnetDefault();
     // Next, adapt the settings:
     controlOptimizer.maxIterOut = 1000;
     // pass the argument to the fitGlmnet function:
-    lessSEM::fitResults fitResult_ = lessSEM::fitGlmnet(
+    less::fitResults fitResult_ = less::fitGlmnet(
 	      linReg,
 	      startingValues,
 	      parameterLabels,
@@ -388,20 +387,20 @@ argument. Depending on the optimizer used, different settings can be adapted.
     - `maxIterIn`: an `int` specifying the maximal number of inner iterations
     - `breakOuter`: a `double` specyfing the stopping criterion for outer iterations
     - `breakInner`: a `double` specyfing the stopping criterion for inner iterations
-    - `convCritInner`: a `convCritInnerIsta` that specifies the inner breaking condition. Can be set to `lessSEM::istaCrit` (see Beck & Teboulle (2009);
-     Remark 3.1 on p. 191 (ISTA with backtracking)) or `lessSEM::gistCrit` (see Gong et al., 2013; Equation 3) 
+    - `convCritInner`: a `convCritInnerIsta` that specifies the inner breaking condition. Can be set to `less::istaCrit` (see Beck & Teboulle (2009);
+     Remark 3.1 on p. 191 (ISTA with backtracking)) or `less::gistCrit` (see Gong et al., 2013; Equation 3) 
     - `sigma`: a `double` in (0,1) that is used by the gist convergence criterion. Larger sigma enforce larger improvement in fit
-    - `stepSizeIn`: a `stepSizeInheritance` that specifies how step sizes should be carried forward from iteration to iteration. `lessSEM::initial`: resets the step size to L0 in each iteration, `lessSEM::istaStepInheritance`: takes the previous step size as initial value for the next iteration, `lessSEM::barzilaiBorwein`: uses the Barzilai-Borwein procedure, `lessSEM::stochasticBarzilaiBorwein`: uses the Barzilai-Borwein procedure, but sometimes resets the step size; this can help when the optimizer is caught in a bad spot.
+    - `stepSizeIn`: a `stepSizeInheritance` that specifies how step sizes should be carried forward from iteration to iteration. `less::initial`: resets the step size to L0 in each iteration, `less::istaStepInheritance`: takes the previous step size as initial value for the next iteration, `less::barzilaiBorwein`: uses the Barzilai-Borwein procedure, `less::stochasticBarzilaiBorwein`: uses the Barzilai-Borwein procedure, but sometimes resets the step size; this can help when the optimizer is caught in a bad spot.
     - `sampleSize`: an `int` that can be used to scale the fitting function down if the fitting function depends on the sample size
     - `verbose`: an `int`, where 0 prints no additional information, > 0 prints GLMNET iterations
 
     ``` c++
     // First, create a new instance of class controlIsta:
-    lessSEM::controlIsta controlOptimizer = lessSEM::controlIstaDefault();
+    less::controlIsta controlOptimizer = less::controlIstaDefault();
     // Next, adapt the settings:
     controlOptimizer.maxIterOut = 1000;
     // pass the argument to the fitIsta function:
-    lessSEM::fitResults fitResult_ = lessSEM::fitIsta(
+    less::fitResults fitResult_ = less::fitIsta(
       	linReg,
       	startingValues,
       	parameterLabels,
@@ -415,8 +414,8 @@ argument. Depending on the optimizer used, different settings can be adapted.
 
 ## Specialized interfaces
 
-If you are only interested in one specific penalty function (e.g., lasso), it can be beneficial to use the specialized interfaces provided by **lesspar**.
-These can be faster because **lesspar** no longer has to check which penalty is used for which parameter. That said, the specialized interface takes 
+If you are only interested in one specific penalty function (e.g., lasso), it can be beneficial to use the specialized interfaces provided by **lesstimate**.
+These can be faster because **lesstimate** no longer has to check which penalty is used for which parameter. That said, the specialized interface takes 
 some more time to set up and is less flexible than the simplified interface used above.
 
 To use the specialized interface, we have to define the penalties we want to use. In general,
@@ -428,14 +427,14 @@ the elastic net below as this penalty combines a ridge and a lasso penalty.
     
     ``` c++
     // Specify the penalties we want to use:
-    lessSEM::penaltyLASSOGlmnet lasso;
-    lessSEM::penaltyRidgeGlmnet ridge;
+    less::penaltyLASSOGlmnet lasso;
+    less::penaltyRidgeGlmnet ridge;
     // Note that we used the glmnet variants of lasso and ridge. The reason
     // for this is that the glmnet implementation allows for parameter-specific
     // lambda and alpha values while the current ista implementation does not.
     
     // These penalties take tuning parameters of class tuningParametersEnetGlmnet
-    lessSEM::tuningParametersEnetGlmnet tp;
+    less::tuningParametersEnetGlmnet tp;
     
     // We have to specify alpha and lambda. Here, different values can 
     // be specified for each parameter:
@@ -456,10 +455,10 @@ the elastic net below as this penalty combines a ridge and a lasso penalty.
     // to optimize this model, we have to pass it to
     // the glmnet function:
     
-    lessSEM::fitResults lmFit = lessSEM::glmnet(
+    less::fitResults lmFit = less::glmnet(
         linReg, // the first argument is our model
         startingValues, // arma::rowvec with starting values
-        parameterLabels, // lessSEM::stringVector with labels
+        parameterLabels, // less::stringVector with labels
         lasso, // non-smooth penalty
         ridge, // smooth penalty
         tp//,    // tuning parameters
@@ -479,12 +478,12 @@ the elastic net below as this penalty combines a ridge and a lasso penalty.
     //    for lasso).
     // 2) THE SMOOTH PENALTY (RIDGE) AND THE LASSO PENALTY MUST HAVE SEPARATE 
     //    TUNING PARMAMETERS.
-    lessSEM::proximalOperatorLasso proxOp; // HERE, WE DEFINE THE PROXIMAL OPERATOR
-    lessSEM::penaltyLASSO lasso; 
-    lessSEM::penaltyRidge ridge;
+    less::proximalOperatorLasso proxOp; // HERE, WE DEFINE THE PROXIMAL OPERATOR
+    less::penaltyLASSO lasso; 
+    less::penaltyRidge ridge;
     // BOTH, LASSO AND RIDGE take tuning parameters of class tuningParametersEnet
-    lessSEM::tuningParametersEnet tpLasso;
-    lessSEM::tuningParametersEnet tpRidge;
+    less::tuningParametersEnet tpLasso;
+    less::tuningParametersEnet tpRidge;
 
     // We have to specify alpha and lambda. Here, the same value is used
     // for each parameter:
@@ -505,10 +504,10 @@ the elastic net below as this penalty combines a ridge and a lasso penalty.
 
     // to optimize this model, we have to pass it to the ista function:
       
-    lessSEM::fitResults lmFit = lessSEM::ista(
+    less::fitResults lmFit = less::ista(
       linReg, // the first argument is our model
       startingValues, // arma::rowvec with starting values
-      parameterLabels, // lessSEM::stringVector with labels
+      parameterLabels, // less::stringVector with labels
       proxOp, // proximal opertator
       lasso, // our lasso penalty
       ridge, // our ridge penalty

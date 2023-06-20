@@ -14,11 +14,11 @@ Conference on Machine Learning, 28(2)(2), 37–45.
 
 ## fitIsta
 
- We provide two optimizer interfaces: One uses a combination of arma::rowvec and lessSEM::stringVector for starting values and parameter labels respectively. This interface is consistent with the fit and gradient function of the `lessSEM::model`-class. Alternatively, a numericVector can be passed to the optimizers. This design is rooted in the use of Rcpp::NumericVectors that combine values and labels similar to an R vector. Thus, interfacing to this second function call can be easier when coming from R.
+ We provide two optimizer interfaces: One uses a combination of arma::rowvec and less::stringVector for starting values and parameter labels respectively. This interface is consistent with the fit and gradient function of the `less::model`-class. Alternatively, a numericVector can be passed to the optimizers. This design is rooted in the use of Rcpp::NumericVectors that combine values and labels similar to an R vector. Thus, interfacing to this second function call can be easier when coming from R.
 
 ### Version 1
 
-- **param** userModel: your model. Must inherit from lessSEM::model!
+- **param** userModel: your model. Must inherit from less::model!
 - **param** startingValues: numericVector with initial starting values. This
  vector can have names.
 - **param** penalty: vector with strings indicating the penalty for each parameter.
@@ -43,9 +43,9 @@ Conference on Machine Learning, 28(2)(2), 37–45.
 
 ### Version 2
 
-- **param** userModel: your model. Must inherit from lessSEM::model!
+- **param** userModel: your model. Must inherit from less::model!
 - **param** startingValues: an arma::rowvec numeric vector with starting values
-- **param** parameterLabels: a lessSEM::stringVector with labels for parameters
+- **param** parameterLabels: a less::stringVector with labels for parameters
 - **param** penalty: vector with strings indicating the penalty for each parameter.
 Currently supported are "none", "cappedL1", "lasso", "lsp", "mcp", and "scad".
 (e.g., {"none", "scad", "scad", "lasso", "none"}). If only one value is provided,
@@ -88,7 +88,7 @@ Implements (variants of) the ista optimizer.
 
 - **param** model_: the model object derived from the model class in model.h
 - **param** startingValues: an arma::rowvec numeric vector with starting values
-- **param** parameterLabels: a lessSEM::stringVector with labels for parameters
+- **param** parameterLabels: a less::stringVector with labels for parameters
 - **param** proximalOperator_: a proximal operator for the penalty function
 - **param** penalty_: a penalty derived from the penalty class in penalty.h
 - **param** smoothPenalty_: a smooth penalty derived from the smoothPenalty class in smoothPenalty.h
@@ -113,10 +113,10 @@ Foundations and Trends in Optimization, 1(3), 123–231., p. 152)
 - `maxIterIn`: an `int` specifying the maximal number of inner iterations
 - `breakOuter`: a `double` specyfing the stopping criterion for outer iterations
 - `breakInner`: a `double` specyfing the stopping criterion for inner iterations
-- `convCritInner`: a `convCritInnerIsta` that specifies the inner breaking condition. Can be set to `lessSEM::istaCrit` (see Beck & Teboulle (2009);
- Remark 3.1 on p. 191 (ISTA with backtracking)) or `lessSEM::gistCrit` (see Gong et al., 2013; Equation 3) 
+- `convCritInner`: a `convCritInnerIsta` that specifies the inner breaking condition. Can be set to `less::istaCrit` (see Beck & Teboulle (2009);
+ Remark 3.1 on p. 191 (ISTA with backtracking)) or `less::gistCrit` (see Gong et al., 2013; Equation 3) 
 - `sigma`: a `double` in (0,1) that is used by the gist convergence criterion. Larger sigma enforce larger improvement in fit
-- `stepSizeIn`: a `stepSizeInheritance` that specifies how step sizes should be carried forward from iteration to iteration. `lessSEM::initial`: resets the step size to L0 in each iteration, `lessSEM::istaStepInheritance`: takes the previous step size as initial value for the next iteration, `lessSEM::barzilaiBorwein`: uses the Barzilai-Borwein procedure, `lessSEM::stochasticBarzilaiBorwein`: uses the Barzilai-Borwein procedure, but sometimes resets the step size; this can help when the optimizer is caught in a bad spot.
+- `stepSizeIn`: a `stepSizeInheritance` that specifies how step sizes should be carried forward from iteration to iteration. `less::initial`: resets the step size to L0 in each iteration, `less::istaStepInheritance`: takes the previous step size as initial value for the next iteration, `less::barzilaiBorwein`: uses the Barzilai-Borwein procedure, `less::stochasticBarzilaiBorwein`: uses the Barzilai-Borwein procedure, but sometimes resets the step size; this can help when the optimizer is caught in a bad spot.
 - `sampleSize`: an `int` that can be used to scale the fitting function down if the fitting function depends on the sample size
 - `verbose`: an `int`, where 0 prints no additional information, > 0 prints GLMNET iterations
 

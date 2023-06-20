@@ -1,5 +1,5 @@
 #include <armadillo>
-#include <include/lesspar.h>
+#include <include/lesstimate.h>
 
 double sumSquaredError(
     arma::colvec b, // the parameter vector
@@ -40,25 +40,25 @@ arma::rowvec sumSquaredErrorGradients(
 }
 
 
-// IMPORTANT: The library is calles lesspar, but
-// because it was initially a sub-folder of lessSEM, the
-// namespace is still called lessSEM.
+// IMPORTANT: The library is called lesstimate, but
+// because it was initially a sub-folder of lessSEM, there
+// are two namespaces that are identical: less and lessSEM.
 
-class linearRegressionModel : public lessSEM::model
+class linearRegressionModel : public less::model
 {
 
 public:
-  // the lessSEM::model class has two methods: "fit" and "gradients".
+  // the less::model class has two methods: "fit" and "gradients".
   // Both of these methods must follow a fairly strict framework.
   // First: They must receive exactly two arguments:
   //        1) an arma::rowvec with current parameter values
   //        2) an Rcpp::StringVector with current parameter labels
   //          (NOTE: the lessSEM package currently does not make use of these
   //          labels. This is just for future use. If you don't want to use 
-  //          the labels, just pass any lessSEM::stringVector you want).
-  //          if you are using R, a lessSEM::stringVector is just an 
+  //          the labels, just pass any less::stringVector you want).
+  //          if you are using R, a less::stringVector is just an 
   //          Rcpp::StringVector. Otherwise it is a custom vector. that can
-  //          be created with lessSEM::stringVector myVector(numberofParameters).
+  //          be created with less::stringVector myVector(numberofParameters).
   // Second:
   //        1) fit must return a double (e.g., the -2-log-likelihood)
   //        2) gradients must return an arma::rowvec with the gradients. It is
@@ -68,14 +68,14 @@ public:
   //           derivative with respect to the first parameter passed to 
   //           the function).
 
-  double fit(arma::rowvec b, lessSEM::stringVector labels) override
+  double fit(arma::rowvec b, less::stringVector labels) override
   {
     // NOTE: In sumSquaredError we assumed that b was a column-vector. We
     //  have to transpose b to make things work
     return (sumSquaredError(b.t(), y, X));
   }
 
-  arma::rowvec gradients(arma::rowvec b, lessSEM::stringVector labels) override
+  arma::rowvec gradients(arma::rowvec b, less::stringVector labels) override
   {
     // NOTE: In sumSquaredErrorGradients we assumed that b was a column-vector. We
     //  have to transpose b to make things work
@@ -125,7 +125,7 @@ int main()
     startingValues.fill(0.0);
 
     std::vector<std::string> labels{"b0", "b1", "b2"};
-    lessSEM::stringVector parameterLabels(labels);
+    less::stringVector parameterLabels(labels);
 
     // penalty: We don't penalize the intercept b0, but we penalize
     // b1 and b2 with lasso:
@@ -136,7 +136,7 @@ int main()
     // theta is not used by the lasso penalty:
     arma::rowvec theta = {{0.0, 0.0, 0.0}};
 
-    lessSEM::fitResults fitResultGlmnet = lessSEM::fitGlmnet(
+    less::fitResults fitResultGlmnet = less::fitGlmnet(
         linReg,
         startingValues,
         parameterLabels,
@@ -150,7 +150,7 @@ int main()
     std::cout << "fit: " << fitResultGlmnet.fit << "\n";
     std::cout << "parameters: " << fitResultGlmnet.parameterValues << "\n";
 
-    lessSEM::fitResults fitResultIsta = lessSEM::fitIsta(
+    less::fitResults fitResultIsta = less::fitIsta(
         linReg,
         startingValues,
         parameterLabels,
@@ -165,11 +165,11 @@ int main()
 
     // adapt optimizer 
     // First, create a new instance of class controlGLMNET:
-    lessSEM::controlGLMNET controlOptimizerGlmnet = lessSEM::controlGlmnetDefault();
+    less::controlGLMNET controlOptimizerGlmnet = less::controlGlmnetDefault();
     // Next, adapt the settings:
     controlOptimizerGlmnet.maxIterOut = 1000;
     // pass the argument to the fitGlmnet function:
-    fitResultGlmnet = lessSEM::fitGlmnet(
+    fitResultGlmnet = less::fitGlmnet(
         linReg,
         startingValues,
         parameterLabels,
@@ -188,11 +188,11 @@ int main()
 
 
     // First, create a new instance of class controlIsta:
-    lessSEM::controlIsta controlOptimizerIsta = lessSEM::controlIstaDefault();
+    less::controlIsta controlOptimizerIsta = less::controlIstaDefault();
     // Next, adapt the settings:
     controlOptimizerIsta.maxIterOut = 1000;
     // pass the argument to the fitIsta function:
-    fitResultIsta = lessSEM::fitIsta(
+    fitResultIsta = less::fitIsta(
         linReg,
         startingValues,
         parameterLabels,
@@ -210,14 +210,14 @@ int main()
     // specialized interfaces
 
        // Specify the penalties we want to use:
-    lessSEM::penaltyLASSOGlmnet lasso;
-    lessSEM::penaltyRidgeGlmnet ridge;
+    less::penaltyLASSOGlmnet lasso;
+    less::penaltyRidgeGlmnet ridge;
     // Note that we used the glmnet variants of lasso and ridge. The reason
     // for this is that the glmnet implementation allows for parameter-specific
     // lambda and alpha values while the current ista implementation does not.
     
     // These penalties take tuning parameters of class tuningParametersEnetGlmnet
-    lessSEM::tuningParametersEnetGlmnet tp;
+    less::tuningParametersEnetGlmnet tp;
     
     // We have to specify alpha and lambda. Here, different values can 
     // be specified for each parameter:
@@ -238,10 +238,10 @@ int main()
     // to optimize this model, we have to pass it to
     // the glmnet function:
     
-    lessSEM::fitResults lmFitGlmnet = lessSEM::glmnet(
+    less::fitResults lmFitGlmnet = less::glmnet(
         linReg, // the first argument is our model
         startingValues, // arma::rowvec with starting values
-        parameterLabels, // lessSEM::stringVector with labels
+        parameterLabels, // less::stringVector with labels
         lasso, // non-smooth penalty
         ridge, // smooth penalty
         tp//,    // tuning parameters
@@ -260,12 +260,12 @@ int main()
     //    for lasso).
     // 2) THE SMOOTH PENALTY (RIDGE) AND THE LASSO PENALTY MUST HAVE SEPARATE 
     //    TUNING PARMAMETERS.
-    lessSEM::proximalOperatorLasso proxOp; // HERE, WE DEFINE THE PROXIMAL OPERATOR
-    lessSEM::penaltyLASSO lassoIsta; 
-    lessSEM::penaltyRidge ridgeIsta;
+    less::proximalOperatorLasso proxOp; // HERE, WE DEFINE THE PROXIMAL OPERATOR
+    less::penaltyLASSO lassoIsta; 
+    less::penaltyRidge ridgeIsta;
     // BOTH, LASSO AND RIDGE take tuning parameters of class tuningParametersEnet
-    lessSEM::tuningParametersEnet tpLasso;
-    lessSEM::tuningParametersEnet tpRidge;
+    less::tuningParametersEnet tpLasso;
+    less::tuningParametersEnet tpRidge;
 
     // We have to specify alpha and lambda. Here, the same value is used
     // for each parameter:
@@ -283,10 +283,10 @@ int main()
 
     // to optimize this model, we have to pass it to the ista function:
       
-    lessSEM::fitResults lmFitIsta = lessSEM::ista(
+    less::fitResults lmFitIsta = less::ista(
       linReg, // the first argument is our model
       startingValues, // arma::rowvec with starting values
-      parameterLabels, // lessSEM::stringVector with labels
+      parameterLabels, // less::stringVector with labels
       proxOp, // proximal opertator
       lassoIsta, // our lasso penalty
       ridgeIsta, // our ridge penalty

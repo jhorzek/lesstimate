@@ -1,11 +1,11 @@
-# lesspar types
+# lesstimate types
 
 ## USE_R
 
 The USE_R variable allows us to switch between the R implementation
 and C++ without R. This variable can either be passed to the compiler
 using -DUSE_R=1 or -DUSE_R=0 or by changing the value below. By default,
-lesspar will assume that you are using R and therefor set USE_R=1
+lesstimate will assume that you are using R and therefor set USE_R=1
 if the variable is not defined otherwise.
 
 

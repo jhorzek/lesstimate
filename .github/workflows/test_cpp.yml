@@ -20,11 +20,11 @@ jobs:
       run: |
         git clone https://github.com/Microsoft/vcpkg.git
         ./vcpkg/bootstrap-vcpkg.sh
-    - name: install lesspar
+    - name: install lesstimate
       run: |
         mkdir include 
         cd include
-        git clone https://github.com/jhorzek/lesspar.git
+        git clone https://github.com/jhorzek/lesstimate.git
         cd ..
     - name: copy src files
       run: |

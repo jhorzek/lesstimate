@@ -51,7 +51,7 @@ This function is called as follows:
 
 
 ```
-inline lessSEM::fitResults glmnet(model& model_, 
+inline less::fitResults glmnet(model& model_, 
                                   numericVector startingValuesRcpp,
                                   penaltyLASSOGlmnet& penalty_,
                                   penaltyRidgeGlmnet& smoothPenalty_, 
@@ -61,20 +61,20 @@ inline lessSEM::fitResults glmnet(model& model_,
 ```
 
 The first argument is a model. This model has to be created by you and must 
-inherit from the lessSEM::model class (see lessLM for an example). Most
+inherit from the less::model class (see lessLM for an example). Most
 importantly, this model must provide means to get the value of the first 
 part of the fitting function: $l(\pmb\theta)$. It must also provide means
 to compute the gradients of your fitting function.
 
-The next argument are the starting values which are given as an numericVector. If you are using R, this is an Rcpp::NumericVector, in C++ a lessSEM::numericVector. This type is chosen because it can have labels 
-and in its current implementation **lesspar** expects that you give 
+The next argument are the starting values which are given as an numericVector. If you are using R, this is an Rcpp::NumericVector, in C++ a less::numericVector. This type is chosen because it can have labels 
+and in its current implementation **lesstimate** expects that you give 
 all your startingValues names.
 
 Now come the actual penalty functions. The first one is the non-differentiable
 penalty: the lasso $p(\pmb\theta)$. This must be an object of class penaltyLASSOGlmnet
-which can be created with `lessSEM::penaltyLASSOGlmnet()`'. Next comes the differentiable
+which can be created with `less::penaltyLASSOGlmnet()`'. Next comes the differentiable
 ridge penalty which must be of class `penaltyRidgeGlmnet` and can be created with 
-`lessSEM::penaltyRidgeGlmnet`. 
+`less::penaltyRidgeGlmnet`. 
 
 Now, the tuning parameters deviate a bit from what we discussed before. We said
 that the differentiable and the non-differentiable penalty functions will each
@@ -103,7 +103,7 @@ follows:
 
 
 ```
-lessSEM::controlGLMNET myControlObject = lessSEM::controlGlmnetDefault();
+less::controlGLMNET myControlObject = less::controlGlmnetDefault();
 ```
 
 Now, you can tweak each element of myControlObject; e.g.,
@@ -145,7 +145,7 @@ First, let's have a look at the ista function;
 
 ```
 template<typename T, typename U> // T is the type of the tuning parameters
-inline lessSEM::fitResults ista(
+inline less::fitResults ista(
     model& model_, 
     numericVector startingValuesRcpp,
     proximalOperator<T>& proximalOperator_, // proximalOperator takes the tuning parameters
@@ -180,20 +180,20 @@ function $l(\pmb\theta)$.
 Now, for the non-differentiable part $p(\pmb\theta,\pmb p_s)$, the ista optimizer uses so-called proximal
 operators. The details are beyond the scope here, but Parikh et al. (2013) provide
 a very good overview of these algorithms. To make things work with ista, we
-must pass such a proximal operator to the optimizer. Within **lesspar**, we
+must pass such a proximal operator to the optimizer. Within **lesstimate**, we
 have prepared a few of these proximal operators for well-known penalty functions.
 Additionally, we need a function which returns the actual
 penalty value. This is the penalty object in the function call. Finally, the 
 penalty $p(\pmb\theta,\pmb t_p)$ gets its tuning parameters $\pmb t_p$. This
 is the `tuningParameters` object above. To make things more concrete, let's look
-at the elastic net again. In this case, penalty would be of class `lessSEM::penaltyLASSO` and the proximal operator of type `lessSEM::proximalOperatorLasso`.
+at the elastic net again. In this case, penalty would be of class `less::penaltyLASSO` and the proximal operator of type `less::proximalOperatorLasso`.
 The tuning parameters would again be $\alpha$ and $\lambda$ (and the
 weights vector).
 
-Note that many of the penalty function implemented in **lesspar** are
+Note that many of the penalty function implemented in **lesstimate** are
 typically not combined with a smooth penalty (e.g., scad, mcp, ...). In this
 case, you must still pass a smoothPenalty object to ista. To this end,
-we created the `lessSEM::noSmoothPenalty` class which can be used instead of
+we created the `less::noSmoothPenalty` class which can be used instead of
 a smooth penalty like ridge. 
 
 Finally, there is the control argument. This argument lets us fine tune the 
@@ -202,7 +202,7 @@ follows:
 
 
 ```
-lessSEM::control myControlObject = lessSEM::controlDefault();
+less::control myControlObject = less::controlDefault();
 ```
 
 Now, you can tweak each element of myControlObject; e.g.,
