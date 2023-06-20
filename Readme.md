@@ -49,7 +49,7 @@ public:
         return (sse(0, 0));
     }
 
-    arma::rowvec gradients(arma::rowvec b, lessSEM::stringVector labels) override
+    arma::rowvec gradients(arma::rowvec b, less::stringVector labels) override
     {
         // compute gradients of sum of squared errors
         arma::rowvec grad = (arma::trans(-2.0 * X.t() * y + 2.0 * X.t() * X * b.t())) * (.5 / y.n_rows);
@@ -97,7 +97,7 @@ int main()
     arma::rowvec startingValues(3);
     startingValues.fill(0.0);
     std::vector<std::string> labels{"b0", "b1", "b2"};
-    lessSEM::stringVector parameterLabels(labels);
+    less::stringVector parameterLabels(labels);
 
     // (2) specify the penalty to be used for each of the parameters:
     std::vector<std::string> penalty{"none", "lasso", "lasso"};
@@ -108,7 +108,7 @@ int main()
     // theta is not used by the lasso penalty:
     arma::rowvec theta = {{0.0, 0.0, 0.0}};
 
-    lessSEM::fitResults fitResult_ = lessSEM::fitGlmnet(
+    less::fitResults fitResult_ = less::fitGlmnet(
         linReg,
         startingValues,
         parameterLabels,
