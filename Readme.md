@@ -2,7 +2,7 @@
 
 > A longer documentation of the library can be found at https://jhorzek.github.io/lesstimate/.
 
-**lesstimate** (**l**lesstimate **es**timates **s**parse es**timate**s) is a C++ header-only library that lets you combine statistical models such linear regression with state of the art penalty functions (e.g., lasso, elastic net, scad). With **lesstimate** you can add regularization and variable selection procedures to your existing modeling framework. It is currently used in [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models.
+**lesstimate** (**l**esstimate **es**timates **s**parse es**timate**s) is a C++ header-only library that lets you combine statistical models such linear regression with state of the art penalty functions (e.g., lasso, elastic net, scad). With **lesstimate** you can add regularization and variable selection procedures to your existing modeling framework. It is currently used in [**lessSEM**](https://github.com/jhorzek/lessSEM) to regularize structural equation models.
 
 ## Features 
 
