@@ -19,7 +19,7 @@ nav:
 
 theme:
   name: material
-  logo: lesstimate_logo.svg
+  logo: lesstimate_logo.png
   palette:
     scheme: slate
   
