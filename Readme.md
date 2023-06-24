@@ -1,4 +1,4 @@
-# lesstimate <img src="lesstimate_logo.svg" align="right" height="139" />
+# lesstimate <img src="lesstimate_logo.png" align="right" height="139" />
 
 > A longer documentation of the library can be found at https://jhorzek.github.io/lesstimate/.
 
