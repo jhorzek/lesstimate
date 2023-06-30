@@ -1,5 +1,6 @@
 #ifndef MIXEDPENALTY_GLMNET_H
 #define MIXEDPENALTY_GLMNET_H
+#include <memory>
 #include "common_headers.h"
 
 #include "penalty.h"
@@ -30,16 +31,287 @@ namespace lessSEM
     arma::rowvec weights;                  ///> provide parameter-specific weights (e.g., for adaptive lasso)
   };
 
-  // The following is going to be a lot of copy paste from the specific penalty
-  // functions. Until I've found a better way to
 
   /**
-   * @brief mixed penalty for glmnet optimizer
-   *
-   */
-  class penaltyMixedGlmnet : public penalty<tuningParametersMixedGlmnet>
-  {
+  * @brief base class for mixed penalty for glmnet optimizer
+  *
+  */
+  class penaltyMixedGlmnetBase{
   public:
+    
+    /**
+     * @brief Get the value of the penalty function
+     *
+     * @param parameterValues current parameter values
+     * @param parameterLabels names of the parameters
+     * @param tuningParameters values of the tuning parmameters
+     * @return double
+     */
+    virtual double getValue(const arma::rowvec &parameterValues,
+                            const stringVector &parameterLabels,
+                            const tuningParametersMixedGlmnet &tuningParameters);
+    
+    /**
+     * @brief computes the step direction for a single parameter j in the inner
+     * iterations of the lasso penalty.
+     *
+     * @param whichPar index of parameter j
+     * @param parameters_kMinus1 parameter values at previous iteration
+     * @param gradient gradients of fit function
+     * @param stepDirection step direction
+     * @param Hessian Hessian matrix
+     * @param tuningParameters tuning parameters
+     * @return double step direction for parameter j
+     */
+    virtual double getZ(
+        unsigned int whichPar,
+        const arma::rowvec &parameters_kMinus1,
+        const arma::rowvec &gradient,
+        const arma::rowvec &stepDirection,
+        const arma::mat &Hessian,
+        const tuningParametersMixedGlmnet &tuningParameters);
+    
+    
+    /**
+     * @brief Get the subgradients of the penalty function
+     *
+     * @param parameterValues current parameter values
+     * @param parameterLabels names of the parameters
+     * @param tuningParameters values of the tuning parmameters
+     * @return arma::rowvec
+     */
+    arma::rowvec getSubgradients(const arma::rowvec &parameterValues,
+                                 const arma::rowvec &gradients,
+                                 const tuningParametersMixedGlmnet &tuningParameters)
+    {
+      error("Subgradients are not yet implemented for mixedPenalty");
+    }
+    
+    /**
+     * @brief Check the dimensions of the tuning parameters
+     *
+     * @return throws error in case of false dimensions
+     */
+    void checkDimensions(const tuningParametersMixedGlmnet &tuningParameters){
+      if(!checked){
+        // check the dimensions on the first call
+        if(tuningParameters.alpha.n_elem > 0)
+          error("Incorrect length of tuning parameters");
+        if(tuningParameters.lambda.n_elem > 0)
+          error("Incorrect length of tuning parameters");
+        if(tuningParameters.weights.n_elem > 0)
+          error("Incorrect length of tuning parameters");
+        
+        checked = true;
+      }
+    }
+    
+    bool checked = false;
+  };
+  
+  // implementations
+  class penaltyMixedGlmnetNone: public penaltyMixedGlmnetBase{
+    
+    double getValue(const arma::rowvec &parameterValues,
+                    const stringVector &parameterLabels,
+                    const tuningParametersMixedGlmnet &tuningParameters) override {
+                      return(0.0);
+                    }
+    
+    double getZ(
+        unsigned int whichPar,
+        const arma::rowvec &parameters_kMinus1,
+        const arma::rowvec &gradient,
+        const arma::rowvec &stepDirection,
+        const arma::mat &Hessian,
+        const tuningParametersMixedGlmnet &tuningParameters) override{
+          
+          arma::colvec hessianXdirection = Hessian * arma::trans(stepDirection);
+          double hessianXdirection_j = arma::as_scalar(hessianXdirection.row(whichPar));
+          double H_jj = arma::as_scalar(Hessian.row(whichPar).col(whichPar));
+          double g_j = arma::as_scalar(gradient.col(whichPar));
+          
+          return (-(g_j + hessianXdirection_j) / H_jj);
+          
+        }
+  };
+  
+  
+  class penaltyMixedGlmnetCappedL1: public penaltyMixedGlmnetBase{
+    penaltyCappedL1Glmnet pen;
+    tuningParametersCappedL1Glmnet tp;
+    
+    double getValue(const arma::rowvec &parameterValues,
+                    const stringVector &parameterLabels,
+                    const tuningParametersMixedGlmnet &tuningParameters) override {
+                      tp.lambda = tuningParameters.lambda(0);
+                      tp.theta = tuningParameters.theta(0);
+                      tp.weights = tuningParameters.weights(0);
+                      return(pen.getValue(parameterValues, parameterLabels, tp));
+                    }
+    
+    double getZ(
+        unsigned int whichPar,
+        const arma::rowvec &parameters_kMinus1,
+        const arma::rowvec &gradient,
+        const arma::rowvec &stepDirection,
+        const arma::mat &Hessian,
+        const tuningParametersMixedGlmnet &tuningParameters) override{
+          
+          tp.lambda = tuningParameters.lambda(whichPar);
+          tp.theta = tuningParameters.theta(whichPar);
+          tp.weights = tuningParameters.weights;
+          
+          return(pen.getZ(whichPar,
+                          parameters_kMinus1,
+                          gradient,
+                          stepDirection,
+                          Hessian,
+                          tp));
+        }
+  };
+  
+  class penaltyMixedGlmnetLasso: public penaltyMixedGlmnetBase{
+    penaltyLASSOGlmnet pen;
+    tuningParametersEnetGlmnet tp;
+    
+    double getValue(const arma::rowvec &parameterValues,
+                    const stringVector &parameterLabels,
+                    const tuningParametersMixedGlmnet &tuningParameters) override {
+                      tp.alpha = tuningParameters.alpha(0);
+                      tp.lambda = tuningParameters.lambda(0);
+                      tp.weights = tuningParameters.weights(0);
+                      return(pen.getValue(parameterValues, parameterLabels, tp));
+                    }
+    
+    double getZ(
+        unsigned int whichPar,
+        const arma::rowvec &parameters_kMinus1,
+        const arma::rowvec &gradient,
+        const arma::rowvec &stepDirection,
+        const arma::mat &Hessian,
+        const tuningParametersMixedGlmnet &tuningParameters) override{
+          
+          tp.alpha = tuningParameters.alpha;
+          tp.lambda = tuningParameters.lambda;
+          tp.weights = tuningParameters.weights;
+          
+          return(pen.getZ(whichPar,
+                          parameters_kMinus1,
+                          gradient,
+                          stepDirection,
+                          Hessian,
+                          tp));
+        }
+  };
+  
+  class penaltyMixedGlmnetLsp: public penaltyMixedGlmnetBase{
+    penaltyLSPGlmnet pen;
+    tuningParametersLspGlmnet tp;
+    
+    double getValue(const arma::rowvec &parameterValues,
+                    const stringVector &parameterLabels,
+                    const tuningParametersMixedGlmnet &tuningParameters) override {
+                      tp.lambda = tuningParameters.lambda(0);
+                      tp.theta = tuningParameters.theta(0);
+                      tp.weights = tuningParameters.weights(0);
+                      return(pen.getValue(parameterValues, parameterLabels, tp));
+                    }
+    
+    double getZ(
+        unsigned int whichPar,
+        const arma::rowvec &parameters_kMinus1,
+        const arma::rowvec &gradient,
+        const arma::rowvec &stepDirection,
+        const arma::mat &Hessian,
+        const tuningParametersMixedGlmnet &tuningParameters) override{
+          
+          tp.lambda = tuningParameters.lambda(whichPar);
+          tp.theta = tuningParameters.theta(whichPar);
+          tp.weights = tuningParameters.weights;
+          
+          return(pen.getZ(whichPar,
+                          parameters_kMinus1,
+                          gradient,
+                          stepDirection,
+                          Hessian,
+                          tp));
+        }
+  };
+  
+  class penaltyMixedGlmnetMcp: public penaltyMixedGlmnetBase{
+    penaltyMcpGlmnet pen;
+    tuningParametersMcpGlmnet tp;
+    
+    double getValue(const arma::rowvec &parameterValues,
+                    const stringVector &parameterLabels,
+                    const tuningParametersMixedGlmnet &tuningParameters) override {
+                      tp.lambda = tuningParameters.lambda(0);
+                      tp.theta = tuningParameters.theta(0);
+                      tp.weights = tuningParameters.weights(0);
+                      return(pen.getValue(parameterValues, parameterLabels, tp));
+                    }
+    
+    double getZ(
+        unsigned int whichPar,
+        const arma::rowvec &parameters_kMinus1,
+        const arma::rowvec &gradient,
+        const arma::rowvec &stepDirection,
+        const arma::mat &Hessian,
+        const tuningParametersMixedGlmnet &tuningParameters) override{
+          
+          tp.lambda = tuningParameters.lambda(whichPar);
+          tp.theta = tuningParameters.theta(whichPar);
+          tp.weights = tuningParameters.weights;
+          
+          return(pen.getZ(whichPar,
+                          parameters_kMinus1,
+                          gradient,
+                          stepDirection,
+                          Hessian,
+                          tp));
+        }
+  };
+  
+  class penaltyMixedGlmnetScad: public penaltyMixedGlmnetBase{
+    penaltySCADGlmnet pen;
+    tuningParametersScadGlmnet tp;
+    
+    double getValue(const arma::rowvec &parameterValues,
+                    const stringVector &parameterLabels,
+                    const tuningParametersMixedGlmnet &tuningParameters) override {
+                      tp.lambda = tuningParameters.lambda(0);
+                      tp.theta = tuningParameters.theta(0);
+                      tp.weights = tuningParameters.weights(0);
+                      return(pen.getValue(parameterValues, parameterLabels, tp));
+                    }
+    
+    double getZ(
+        unsigned int whichPar,
+        const arma::rowvec &parameters_kMinus1,
+        const arma::rowvec &gradient,
+        const arma::rowvec &stepDirection,
+        const arma::mat &Hessian,
+        const tuningParametersMixedGlmnet &tuningParameters) override{
+          
+          tp.lambda = tuningParameters.lambda(whichPar);
+          tp.theta = tuningParameters.theta(whichPar);
+          tp.weights = tuningParameters.weights;
+          
+          return(pen.getZ(whichPar,
+                          parameters_kMinus1,
+                          gradient,
+                          stepDirection,
+                          Hessian,
+                          tp));
+        }
+  };
+  
+  class penaltyMixedGlmnet: public penalty<tuningParametersMixedGlmnet>{
+    
+  public:
+    std::vector<std::unique_ptr<penaltyMixedGlmnetBase>> penalties;
+    
     /**
      * @brief Get the value of the penalty function
      *
@@ -51,113 +323,30 @@ namespace lessSEM
     double getValue(const arma::rowvec &parameterValues,
                     const stringVector &parameterLabels,
                     const tuningParametersMixedGlmnet &tuningParameters)
-        override
+    override
     {
-
-      double penalty = 0.0;
-      arma::rowvec parameterValue(1);
-      stringVector parameterLabel(1);
-
-      // The following is really ugly, but it's easy to implement, so here we go...
-      tuningParametersCappedL1Glmnet tpCappedL1;
-      penaltyCappedL1Glmnet penCappedL1;
-
-      tuningParametersEnetGlmnet tpEnet;
-      penaltyLASSOGlmnet penLasso;
-
-      tuningParametersLspGlmnet tpLsp;
-      penaltyLSPGlmnet penLsp;
-
-      tuningParametersMcpGlmnet tpMcp;
-      penaltyMcpGlmnet penMcp;
-
-      tuningParametersScadGlmnet tpScad;
-      penaltySCADGlmnet penScad;
-
-      for (unsigned int p = 0; p < parameterValues.n_elem; p++)
-      {
-
-        penaltyType pt = tuningParameters.penaltyType_.at(p);
-
-        switch (pt)
-        {
-
-        case none:
-          break;
-
-        case cappedL1:
-
-          tpCappedL1.lambda = tuningParameters.lambda.at(p);
-          tpCappedL1.theta = tuningParameters.theta.at(p);
-          tpCappedL1.weights = tuningParameters.weights.at(p);
-
-          parameterValue.col(0) = parameterValues.col(p);
-          parameterLabel.at(0) = parameterLabels.at(p);
-
-          penalty += penCappedL1.getValue(parameterValue, parameterLabel, tpCappedL1);
-
-          break;
-
-        case lasso:
-
-          tpEnet.lambda = tuningParameters.lambda.at(p);
-          tpEnet.alpha = tuningParameters.alpha.at(p);
-          tpEnet.weights = tuningParameters.weights.at(p);
-
-          parameterValue.col(0) = parameterValues.col(p);
-          parameterLabel.at(0) = parameterLabels.at(p);
-
-          penalty += penLasso.getValue(parameterValue, parameterLabel, tpEnet);
-
-          break;
-
-        case lsp:
-
-          tpLsp.lambda = tuningParameters.lambda.at(p);
-          tpLsp.theta = tuningParameters.theta.at(p);
-          tpLsp.weights = tuningParameters.weights.at(p);
-
-          parameterValue.col(0) = parameterValues.col(p);
-          parameterLabel.at(0) = parameterLabels.at(p);
-
-          penalty += penLsp.getValue(parameterValue, parameterLabel, tpLsp);
-
-          break;
-
-        case mcp:
-
-          tpMcp.lambda = tuningParameters.lambda.at(p);
-          tpMcp.theta = tuningParameters.theta.at(p);
-          tpMcp.weights = tuningParameters.weights.at(p);
-
-          parameterValue.col(0) = parameterValues.col(p);
-          parameterLabel.at(0) = parameterLabels.at(p);
-
-          penalty += penMcp.getValue(parameterValue, parameterLabel, tpMcp);
-
-          break;
-
-        case scad:
-
-          tpScad.lambda = tuningParameters.lambda.at(p);
-          tpScad.theta = tuningParameters.theta.at(p);
-          tpScad.weights = tuningParameters.weights.at(p);
-
-          parameterValue.col(0) = parameterValues.col(p);
-          parameterLabel.at(0) = parameterLabels.at(p);
-
-          penalty += penScad.getValue(parameterValue, parameterLabel, tpScad);
-
-          break;
-
-        default:
-          error("Unknown penalty type");
-        }
+      double penVal{0.0};
+      int it = 0;
+      for(auto& pen: penalties){
+        tpSinglePenalty.alpha = tuningParameters.alpha(it);
+        tpSinglePenalty.lambda = tuningParameters.lambda(it);
+        tpSinglePenalty.theta = tuningParameters.theta(it);
+        tpSinglePenalty.weights = tuningParameters.weights(it);
+        
+        arma::rowvec parameterValue(1);
+        parameterValue(0) = parameterValues(it);
+        stringVector parameterLabel(1);
+        parameterLabel.at(0) = parameterLabels.at(it);
+        
+        penVal += pen->getValue(parameterValue,
+                                parameterLabel,
+                                tpSinglePenalty);
+        it++;
       }
-
-      return penalty;
+      
+      return(penVal);
     }
-
+    
     /**
      * @brief computes the step direction for a single parameter j in the inner
      * iterations of the lasso penalty.
@@ -178,115 +367,23 @@ namespace lessSEM
         const arma::mat &Hessian,
         const tuningParametersMixedGlmnet &tuningParameters)
     {
-      // The following is really ugly, but it's easy to implement, so here we go...
-
-      tuningParametersCappedL1Glmnet tpCappedL1;
-      penaltyCappedL1Glmnet penCappedL1;
-
-      tuningParametersEnetGlmnet tpEnet;
-      penaltyLASSOGlmnet penLasso;
-
-      tuningParametersLspGlmnet tpLsp;
-      penaltyLSPGlmnet penLsp;
-
-      tuningParametersMcpGlmnet tpMcp;
-      penaltyMcpGlmnet penMcp;
-
-      tuningParametersScadGlmnet tpScad;
-      penaltySCADGlmnet penScad;
-
-      penaltyType pt = tuningParameters.penaltyType_.at(whichPar);
-
-      switch (pt)
-      {
-
-      case none:
-      {
-        arma::colvec hessianXdirection = Hessian * arma::trans(stepDirection);
-        double hessianXdirection_j = arma::as_scalar(hessianXdirection.row(whichPar));
-        double H_jj = arma::as_scalar(Hessian.row(whichPar).col(whichPar));
-        double g_j = arma::as_scalar(gradient.col(whichPar));
-
-        return (-(g_j + hessianXdirection_j) / H_jj);
-      }
-
-      case cappedL1:
-
-        tpCappedL1.lambda = tuningParameters.lambda.at(whichPar);
-        tpCappedL1.theta = tuningParameters.theta.at(whichPar);
-        tpCappedL1.weights = tuningParameters.weights;
-
-        return (penCappedL1.getZ(
-            whichPar,
-            parameters_kMinus1,
-            gradient,
-            stepDirection,
-            Hessian,
-            tpCappedL1));
-
-      case lasso:
-
-        tpEnet.lambda = tuningParameters.lambda;
-        tpEnet.alpha = tuningParameters.alpha;
-        tpEnet.weights = tuningParameters.weights;
-
-        return (penLasso.getZ(
-            whichPar,
-            parameters_kMinus1,
-            gradient,
-            stepDirection,
-            Hessian,
-            tpEnet));
-
-      case lsp:
-
-        tpLsp.lambda = tuningParameters.lambda.at(whichPar);
-        tpLsp.theta = tuningParameters.theta.at(whichPar);
-        tpLsp.weights = tuningParameters.weights;
-
-        return (penLsp.getZ(
-            whichPar,
-            parameters_kMinus1,
-            gradient,
-            stepDirection,
-            Hessian,
-            tpLsp));
-
-      case mcp:
-
-        tpMcp.lambda = tuningParameters.lambda.at(whichPar);
-        tpMcp.theta = tuningParameters.theta.at(whichPar);
-        tpMcp.weights = tuningParameters.weights;
-
-        return (penMcp.getZ(
-            whichPar,
-            parameters_kMinus1,
-            gradient,
-            stepDirection,
-            Hessian,
-            tpMcp));
-
-      case scad:
-
-        tpScad.lambda = tuningParameters.lambda.at(whichPar);
-        tpScad.theta = tuningParameters.theta.at(whichPar);
-        tpScad.weights = tuningParameters.weights;
-
-        return (penScad.getZ(
-            whichPar,
-            parameters_kMinus1,
-            gradient,
-            stepDirection,
-            Hessian,
-            tpScad));
-
-      default:
-        error("Unknown penalty type");
-      }
-      error("Unknown penalty type");
-
-    } // end getZ
-
+      
+      tpSinglePenalty.alpha = tuningParameters.alpha;
+      tpSinglePenalty.lambda = tuningParameters.lambda;
+      tpSinglePenalty.theta = tuningParameters.theta;
+      tpSinglePenalty.weights = tuningParameters.weights;
+      
+      double z = penalties.at(whichPar)->getZ(whichPar,
+                                      parameters_kMinus1,
+                                      gradient,
+                                      stepDirection,
+                                      Hessian,
+                                      tpSinglePenalty);
+        
+      return(z);
+      
+    }
+    
     /**
      * @brief Get the subgradients of the penalty function
      *
@@ -301,7 +398,60 @@ namespace lessSEM
     {
       error("Subgradients are not yet implemented for mixedPenalty");
     }
+    
+  private:
+    // we often need the tuning parameters for a single parameter. These are
+    // stored here:
+    tuningParametersMixedGlmnet tpSinglePenalty;
+    
   };
-
-}
+  
+  void inline initializeMixedPenaltiesGlmnet(penaltyMixedGlmnet& pen, 
+                                      const std::vector<penaltyType>& penaltyTypes){
+    
+    for(penaltyType pt: penaltyTypes){
+      switch (pt)
+      {
+      case penaltyType::none:
+        {
+          std::unique_ptr<penaltyMixedGlmnetNone> currentPen = std::make_unique<penaltyMixedGlmnetNone>();
+          pen.penalties.emplace_back(std::move(currentPen));
+          break;
+        }
+      case penaltyType::cappedL1:
+        {
+          std::unique_ptr<penaltyMixedGlmnetCappedL1> currentPen = std::make_unique<penaltyMixedGlmnetCappedL1>();
+          pen.penalties.emplace_back(std::move(currentPen));
+          break;
+        }
+      case penaltyType::lasso:
+      {
+        std::unique_ptr<penaltyMixedGlmnetLasso> currentPen = std::make_unique<penaltyMixedGlmnetLasso>();
+        pen.penalties.emplace_back(std::move(currentPen));
+        break;
+      }
+      case penaltyType::lsp:
+      {
+        std::unique_ptr<penaltyMixedGlmnetLsp> currentPen = std::make_unique<penaltyMixedGlmnetLsp>();
+        pen.penalties.emplace_back(std::move(currentPen));
+        break;
+      }
+      case penaltyType::mcp:
+      {
+        std::unique_ptr<penaltyMixedGlmnetMcp> currentPen = std::make_unique<penaltyMixedGlmnetMcp>();
+        pen.penalties.emplace_back(std::move(currentPen));
+        break;
+      }
+      case penaltyType::scad:
+      {
+        std::unique_ptr<penaltyMixedGlmnetScad> currentPen = std::make_unique<penaltyMixedGlmnetScad>();
+        pen.penalties.emplace_back(std::move(currentPen));
+        break;
+      }
+      default:
+        error("Unknown penalty");
+      }
+    }
+  }
+} // end namespace
 #endif

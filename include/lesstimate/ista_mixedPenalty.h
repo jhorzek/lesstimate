@@ -1,5 +1,6 @@
 #ifndef MIXEDPENALTY_H
 #define MIXEDPENALTY_H
+#include <memory>
 #include "common_headers.h"
 
 #include "penalty_type.h"
@@ -40,369 +41,492 @@ namespace lessSEM
     std::vector<penaltyType> pt; ///> penalty type
   };
 
+/**
+ * @brief base class for proximal operator for the mixed penalty function
+ *
+ */
+class proximalOperatorMixedBase {
+public:
+  virtual arma::rowvec getParameters(const arma::rowvec &parameterValues,
+                             const arma::rowvec &gradientValues,
+                             const stringVector &parameterLabels,
+                             const double L,
+                             const tuningParametersMixedPenalty &tuningParameters);
+};
+
+class proximalOperatorMixedNone: public proximalOperatorMixedBase{
+public:
+  arma::rowvec getParameters(const arma::rowvec &parameterValues,
+                             const arma::rowvec &gradientValues,
+                             const stringVector &parameterLabels,
+                             const double L,
+                             const tuningParametersMixedPenalty &tuningParameters) override{
+                               arma::rowvec u_k = parameterValues - gradientValues / L;
+                               return(u_k);
+                             }
+};
+
+
+class proximalOperatorMixedCappedL1: public proximalOperatorMixedBase{
+public:
+  arma::rowvec getParameters(const arma::rowvec &parameterValues,
+                             const arma::rowvec &gradientValues,
+                             const stringVector &parameterLabels,
+                             const double L,
+                             const tuningParametersMixedPenalty &tuningParameters) override{
+                               
+                               tp.alpha = tuningParameters.alpha(0);
+                               tp.lambda = tuningParameters.lambda(0);
+                               tp.theta = tuningParameters.theta(0);
+                               tp.weights = tuningParameters.weights(0);
+                               
+                               return(
+                                 proxOp.getParameters(
+                                   parameterValues,
+                                   gradientValues,
+                                   parameterLabels,
+                                   L,
+                                   tp
+                                 )
+                               );
+                             }
+private: 
+  tuningParametersCappedL1 tp;
+  proximalOperatorCappedL1 proxOp;
+};
+
+class proximalOperatorMixedLasso: public proximalOperatorMixedBase{
+public:
+  arma::rowvec getParameters(const arma::rowvec &parameterValues,
+                             const arma::rowvec &gradientValues,
+                             const stringVector &parameterLabels,
+                             const double L,
+                             const tuningParametersMixedPenalty &tuningParameters) override{
+                               
+                               tp.alpha = tuningParameters.alpha(0);
+                               tp.lambda = tuningParameters.lambda(0);
+                               tp.weights = tuningParameters.weights(0);
+                               
+                               return(
+                               proxOp.getParameters(
+                                 parameterValues,
+                                 gradientValues,
+                                 parameterLabels,
+                                 L,
+                                 tp
+                               )
+                               );
+                             }
+private: 
+  tuningParametersEnet tp;
+  proximalOperatorLasso proxOp;
+};
+
+class proximalOperatorMixedLsp: public proximalOperatorMixedBase{
+public:
+  arma::rowvec getParameters(const arma::rowvec &parameterValues,
+                             const arma::rowvec &gradientValues,
+                             const stringVector &parameterLabels,
+                             const double L,
+                             const tuningParametersMixedPenalty &tuningParameters) override{
+                               
+                               tp.lambda = tuningParameters.lambda(0);
+                               tp.theta = tuningParameters.theta(0);
+                               tp.weights = tuningParameters.weights(0);
+                               
+                               return(
+                                 proxOp.getParameters(
+                                   parameterValues,
+                                   gradientValues,
+                                   parameterLabels,
+                                   L,
+                                   tp
+                                 )
+                               );
+                             }
+private: 
+  tuningParametersLSP tp;
+  proximalOperatorLSP proxOp;
+};
+
+class proximalOperatorMixedMcp: public proximalOperatorMixedBase{
+public:
+  arma::rowvec getParameters(const arma::rowvec &parameterValues,
+                             const arma::rowvec &gradientValues,
+                             const stringVector &parameterLabels,
+                             const double L,
+                             const tuningParametersMixedPenalty &tuningParameters) override{
+                               
+                               tp.lambda = tuningParameters.lambda(0);
+                               tp.theta = tuningParameters.theta(0);
+                               tp.weights = tuningParameters.weights(0);
+                               
+                               return(
+                                 proxOp.getParameters(
+                                   parameterValues,
+                                   gradientValues,
+                                   parameterLabels,
+                                   L,
+                                   tp
+                                 )
+                               );
+                             }
+private: 
+  tuningParametersMcp tp;
+  proximalOperatorMcp proxOp;
+};
+
+
+class proximalOperatorMixedScad: public proximalOperatorMixedBase{
+public:
+  arma::rowvec getParameters(const arma::rowvec &parameterValues,
+                             const arma::rowvec &gradientValues,
+                             const stringVector &parameterLabels,
+                             const double L,
+                             const tuningParametersMixedPenalty &tuningParameters) override{
+                               
+                               tp.lambda = tuningParameters.lambda(0);
+                               tp.theta = tuningParameters.theta(0);
+                               tp.weights = tuningParameters.weights(0);
+                               
+                               return(
+                                 proxOp.getParameters(
+                                   parameterValues,
+                                   gradientValues,
+                                   parameterLabels,
+                                   L,
+                                   tp
+                                 )
+                               );
+                             }
+private: 
+  tuningParametersScad tp;
+  proximalOperatorScad proxOp;
+};
+
+class proximalOperatorMixedPenalty: public proximalOperator<tuningParametersMixedPenalty> {
+public:
+  std::vector<std::unique_ptr<proximalOperatorMixedBase>> proxOps;
+  
+  virtual arma::rowvec getParameters(
+     const arma::rowvec &parameterValues,
+     const arma::rowvec &gradientValues,
+     const stringVector &parameterLabels,
+     const double L,
+     const tuningParametersMixedPenalty &tuningParameters) override {
+        
+       arma::rowvec parameterValue{0};
+       arma::rowvec gradientValue{0};
+       arma::rowvec parameters_kp1 = parameterValues;
+       
+       int it = 0;
+       for(auto& proxOp: proxOps){
+         tpSinglePenalty.alpha = tuningParameters.alpha(it);
+         tpSinglePenalty.lambda = tuningParameters.lambda(it);
+         tpSinglePenalty.theta = tuningParameters.theta(it);
+         tpSinglePenalty.weights = tuningParameters.weights(it);
+         
+         parameterValue(0) = parameterValues(it);
+         gradientValue(0) = gradientValues(it);
+         
+         parameters_kp1(it) = arma::as_scalar(proxOp->getParameters(
+                                                        parameterValue,
+                                                        gradientValue,
+                                                        parameterLabels,
+                                                        L,
+                                                        tpSinglePenalty)
+                                                );
+         it++;
+       }
+       
+       return(parameters_kp1);
+                                       
+     }
+  
+private:
+  tuningParametersMixedPenalty tpSinglePenalty;
+};
+
+/**
+ * @brief base class for mixed penalty
+ *
+ */
+class penaltyMixedPenaltyBase
+{
+public:
   /**
-   * @brief proximal operator for the mixed penalty function
+   * @brief Get the value of the penalty function
    *
+   * @param parameterValues current parameter values
+   * @param parameterLabels names of the parameters
+   * @param tuningParameters values of the tuning parmameters
+   * @return double
    */
-  class proximalOperatorMixedPenalty : public proximalOperator<tuningParametersMixedPenalty>
-  {
+  virtual double getValue(const arma::rowvec &parameterValues,
+                  const stringVector &parameterLabels,
+                  const tuningParametersMixedPenalty &tuningParameters);
+};
 
-  public:
-    /**
-     * @brief update the parameter vector
-     *
-     * @param parameterValues current parameter values
-     * @param gradientValues current gradient values
-     * @param parameterLabels parameter labels
-     * @param L step size
-     * @param tuningParameters tuning parameters of the penalty function
-     * @return arma::rowvec updated parameters
-     */
-    arma::rowvec getParameters(const arma::rowvec &parameterValues,
-                               const arma::rowvec &gradientValues,
-                               const stringVector &parameterLabels,
-                               const double L,
-                               const tuningParametersMixedPenalty &tuningParameters)
-        override
-    {
+class penaltyMixedNone: public penaltyMixedPenaltyBase{
+public:
+  double getValue(const arma::rowvec &parameterValues,
+                        const stringVector &parameterLabels,
+                        const tuningParametersMixedPenalty &tuningParameters) override{
+                               return(0.0);
+                             }
+};
 
-      arma::rowvec u_k = parameterValues - gradientValues / L;
 
-      arma::rowvec parameters_kp1(parameterValues.n_elem);
-      parameters_kp1.fill(arma::datum::nan);
+class penaltyMixedCappedL1: public penaltyMixedPenaltyBase{
+public:
+  double getValue(const arma::rowvec &parameterValues,
+                  const stringVector &parameterLabels,
+                  const tuningParametersMixedPenalty &tuningParameters) override{
+                               
+                               tp.alpha = tuningParameters.alpha(0);
+                               tp.lambda = tuningParameters.lambda(0);
+                               tp.theta = tuningParameters.theta(0);
+                               tp.weights = tuningParameters.weights(0);
+                               
+                               return(
+                                 pen.getValue(
+                                   parameterValues,
+                                   parameterLabels,
+                                   tp
+                                 )
+                               );
+                             }
+private: 
+  tuningParametersCappedL1 tp;
+  penaltyCappedL1 pen;
+};
 
-      for (unsigned int p = 0; p < parameterValues.n_elem; p++)
-      {
+class penaltyMixedLasso: public penaltyMixedPenaltyBase{
+public:
+  double getValue(const arma::rowvec &parameterValues,
+                  const stringVector &parameterLabels,
+                  const tuningParametersMixedPenalty &tuningParameters) override{
+                               
+                               tp.alpha = tuningParameters.alpha(0);
+                               tp.lambda = tuningParameters.lambda(0);
+                               tp.weights = tuningParameters.weights(0);
+                               
+                               return(
+                                 pen.getValue(
+                                   parameterValues,
+                                   parameterLabels,
+                                   tp
+                                 )
+                               );
+                             }
+private: 
+  tuningParametersEnet tp;
+  penaltyLASSO pen;
+};
 
-        if (tuningParameters.weights.at(p) == 0.0)
-        {
-          // unregularized parameter
-          parameters_kp1.at(p) = u_k.at(p);
-          continue;
+class penaltyMixedLsp: public penaltyMixedPenaltyBase{
+public:
+  double getValue(const arma::rowvec &parameterValues,
+                  const stringVector &parameterLabels,
+                  const tuningParametersMixedPenalty &tuningParameters) override{
+                               
+                               tp.lambda = tuningParameters.lambda(0);
+                               tp.theta = tuningParameters.theta(0);
+                               tp.weights = tuningParameters.weights(0);
+                               
+                               return(
+                                 pen.getValue(
+                                   parameterValues,
+                                   parameterLabels,
+                                   tp
+                                 )
+                               );
+                             }
+private: 
+  tuningParametersLSP tp;
+  penaltyLSP pen;
+};
+
+class penaltyMixedMcp: public penaltyMixedPenaltyBase{
+public:
+  double getValue(const arma::rowvec &parameterValues,
+                  const stringVector &parameterLabels,
+                  const tuningParametersMixedPenalty &tuningParameters) override{
+                               
+                               tp.lambda = tuningParameters.lambda(0);
+                               tp.theta = tuningParameters.theta(0);
+                               tp.weights = tuningParameters.weights(0);
+                               
+                               return(
+                                 pen.getValue(
+                                   parameterValues,
+                                   parameterLabels,
+                                   tp
+                                 )
+                               );
+                             }
+private: 
+  tuningParametersMcp tp;
+  penaltyMcp pen;
+};
+
+
+class penaltyMixedScad: public penaltyMixedPenaltyBase{
+public:
+  double getValue(const arma::rowvec &parameterValues,
+                  const stringVector &parameterLabels,
+                  const tuningParametersMixedPenalty &tuningParameters) override{
+                               
+                               tp.lambda = tuningParameters.lambda(0);
+                               tp.theta = tuningParameters.theta(0);
+                               tp.weights = tuningParameters.weights(0);
+                               
+                               return(
+                                 pen.getValue(
+                                   parameterValues,
+                                   parameterLabels,
+                                   tp
+                                 )
+                               );
+                             }
+private: 
+  tuningParametersScad tp;
+  penaltyScad pen;
+};
+
+class penaltyMixedPenalty: public penalty<tuningParametersMixedPenalty> {
+public:
+  std::vector<std::unique_ptr<penaltyMixedPenaltyBase>> penalties;
+  
+  double getValue(const arma::rowvec &parameterValues,
+                  const stringVector &parameterLabels,
+                  const tuningParametersMixedPenalty &tuningParameters) override{
+        
+        double penaltyValue = 0.0;
+        
+        arma::rowvec parameterValue{0};
+        arma::rowvec parameters_kp1 = parameterValues;
+        
+        int it = 0;
+        for(auto& pen: penalties){
+          tpSinglePenalty.alpha = tuningParameters.alpha(it);
+          tpSinglePenalty.lambda = tuningParameters.lambda(it);
+          tpSinglePenalty.theta = tuningParameters.theta(it);
+          tpSinglePenalty.weights = tuningParameters.weights(it);
+          
+          parameterValue(0) = parameterValues(it);
+          
+          penaltyValue += arma::as_scalar(pen->getValue(
+            parameterValue,
+            parameterLabels,
+            tpSinglePenalty)
+          );
+          it++;
         }
-
-        if (tuningParameters.pt.at(p) == cappedL1)
-        {
-
-          double lambda_i, x_1, x_2, h_1, h_2, abs_u_k;
-          int sign;
-          lambda_i = tuningParameters.alpha.at(p) *
-                     tuningParameters.lambda.at(p) *
-                     tuningParameters.weights.at(p);
-
-          sign = (u_k.at(p) > 0);
-          if (u_k.at(p) < 0)
-            sign = -1;
-
-          abs_u_k = std::abs(u_k.at(p));
-
-          x_1 = sign * std::max(abs_u_k, tuningParameters.theta.at(p));
-          x_2 = sign * std::min(tuningParameters.theta.at(p),
-                                std::max(abs_u_k - lambda_i / L, 0.0));
-          // h_1 and h_2 will always be positive. The minimum is therefore
-          // 0 which is also the value we get if either x_1 or x_2 are
-          // equivalent to the proposed parameter u_k in descend-direction.
-          // This is the case if the absolute value of the
-          // proposed parameter is above the threshold theta -> x_1 = u_k.
-          // => IF |u_k| > THETA, WE ALWAYS SELECT u_k
-          // If the proposed parameter |u_k| is below the threshold theta
-          // x_2 comes into play. x_2 is at minimum equal to theta (upper bound)
-          // and otherwise equal to std::max(abs_u_k - lambda_i/L, 0.0)
-          // which is the proximal operator of the lasso penalty
-          // => IF |u_k| > THETA, WE ALWAYS TAKE THE NORMAL LASSO UPDATE
-          h_1 = .5 * std::pow(x_1 - u_k.at(p), 2) +
-                (lambda_i / L) * std::min(std::abs(x_1), tuningParameters.theta.at(p));
-          h_2 = .5 * std::pow(x_2 - u_k.at(p), 2) +
-                (lambda_i / L) * std::min(std::abs(x_2), tuningParameters.theta.at(p));
-
-          if (h_1 <= h_2)
-          {
-            parameters_kp1.at(p) = x_1;
-          }
-          else
-          {
-            parameters_kp1.at(p) = x_2;
-          }
-
-          continue;
-        }
-
-        if (tuningParameters.pt.at(p) == lasso)
-        {
-
-          double lambda_i;
-          int sign;
-
-          lambda_i = tuningParameters.lambda.at(p) *
-                     tuningParameters.weights.at(p);
-
-          sign = (u_k.at(p) > 0);
-          if (u_k.at(p) < 0)
-            sign = -1;
-          parameters_kp1.at(p) = sign *
-                                 std::max(0.0, std::abs(u_k.at(p)) - lambda_i / L);
-
-          continue;
-        }
-
-        if (tuningParameters.pt.at(p) == lsp)
-        {
-
-          double x, abs_u_k;
-          std::vector<double> C(3, 0.0);
-          std::vector<double> xVec(3, 0.0);
-          double tempValue;
-          int sign;
-
-          abs_u_k = std::abs(u_k.at(p));
-
-          tempValue = std::pow(L, 2) *
-                          std::pow(abs_u_k - tuningParameters.theta.at(p), 2) -
-                      4.0 * L * (tuningParameters.lambda.at(p) - L * abs_u_k * tuningParameters.theta.at(p));
-
-          if (tempValue >= 0)
-          {
-            C.at(1) = std::max(
-                (L * (abs_u_k - tuningParameters.theta.at(p)) + std::sqrt(tempValue)) / (2 * L),
-                0.0);
-            C.at(2) = std::max(
-                (L * (abs_u_k - tuningParameters.theta.at(p)) - std::sqrt(tempValue)) / (2 * L),
-                0.0);
-
-            for (int c = 0; c < 3; c++)
-            {
-
-              xVec.at(c) = .5 * std::pow(C.at(c) - abs_u_k, 2) +
-                           (1.0 / L) *
-                               tuningParameters.lambda.at(p) *
-                               std::log(1.0 + C.at(c) / tuningParameters.theta.at(p));
-            }
-
-            x = C.at(std::distance(std::begin(xVec),
-                                   std::min_element(xVec.begin(), xVec.end())));
-          }
-          else
-          {
-
-            x = 0.0;
-          }
-
-          sign = (u_k.at(p) > 0);
-          if (u_k.at(p) < 0)
-            sign = -1;
-
-          parameters_kp1.at(p) = sign * x;
-
-          continue;
-        }
-
-        if (tuningParameters.pt.at(p) == mcp)
-        {
-
-          double abs_u_k, v;
-          std::vector<double> x(4, 0.0);
-          std::vector<double> h(4, 0.0);
-          int sign;
-          double thetaXlambda = tuningParameters.theta.at(p) * tuningParameters.lambda.at(p);
-
-          sign = (u_k.at(p) > 0);
-          if (u_k.at(p) < 0)
-            sign = -1;
-
-          v = 1.0 - 1.0 / (L * tuningParameters.theta.at(p)); // used repeatedly;
-          // only computed for convenience
-
-          abs_u_k = std::abs(u_k.at(p));
-
-          // Assume that x = 0
-          x.at(0) = 0.0;
-
-          // Assume that x > 0 and x <= theta*lambda
-          x.at(1) = std::min(
-              thetaXlambda,
-              u_k.at(p) / v - 1.0 / (L * v) * tuningParameters.lambda.at(p));
-
-          // Assume that x < 0 and x => - theta*lambda
-          x.at(2) = std::max(
-              -thetaXlambda,
-              u_k.at(p) / v + 1.0 / (L * v) * tuningParameters.lambda.at(p));
-
-          // Assume that |x| >  theta*lambda
-          x.at(3) = sign * std::max(
-                               thetaXlambda,
-                               abs_u_k);
-
-          for (int i = 0; i < 4; i++)
-          {
-            h.at(i) = .5 * std::pow(x.at(i) - u_k.at(p), 2) + // distance between parameters
-                      (1.0 / L) * mcpPenalty(x.at(i),
-                                             tuningParameters.lambda.at(p),
-                                             tuningParameters.theta.at(p));
-          }
-
-          parameters_kp1.at(p) = x.at(std::distance(std::begin(h),
-                                                    std::min_element(h.begin(), h.end())));
-
-          continue;
-        }
-
-        if (tuningParameters.pt.at(p) == scad)
-        {
-
-          double abs_u_k, v;
-          std::vector<double> x(4, 0.0); // to save the minima of the
-          // three different regions of the penalty function
-          std::vector<double> h(4, 0.0); // to save the function values of the
-          // four possible minima saved in x
-          int sign; // sign of u_k
-          double thetaXlambda = tuningParameters.theta.at(p) * tuningParameters.lambda.at(p);
-
-          sign = (u_k.at(p) > 0);
-          if (u_k.at(p) < 0)
-            sign = -1;
-
-          abs_u_k = std::abs(u_k.at(p));
-
-          // assume that the solution is found in
-          // |x| <= lambda. In this region, the
-          // scad penalty is identical to the lasso, so
-          // we can use the same minimizer as for the lasso
-          // with the additional bound that
-
-          // identical to Gong et al. (2013)
-          x.at(0) = sign * std::min(
-                               tuningParameters.lambda.at(p),
-                               std::max(
-                                   0.0,
-                                   abs_u_k - tuningParameters.lambda.at(p) / L));
-
-          // assume that lambda <= |u| <= theta*lambda
-          // The following differs from Gong et al. (2013)
-
-          v = 1.0 - 1.0 / (L * (tuningParameters.theta.at(p) - 1.0)); // used repeatedly;
-          // only computed for convenience
-
-          x.at(1) = std::min(
-              thetaXlambda,
-              std::max(
-                  tuningParameters.lambda.at(p),
-                  (u_k.at(p) / v) - (thetaXlambda) / (L * (tuningParameters.theta.at(p) - 1.0) * v)));
-
-          x.at(2) = std::max(
-              -thetaXlambda,
-              std::min(
-                  -tuningParameters.lambda.at(p),
-                  (u_k.at(p) / v) + (thetaXlambda) / (L * (tuningParameters.theta.at(p) - 1.0) * v)));
-
-          // assume that |u| >= lambda*theta
-          // identical to Gong et al. (2013)
-
-          x.at(3) = sign * std::max(
-                               thetaXlambda,
-                               abs_u_k);
-
-          for (int i = 0; i < 4; i++)
-          {
-            h.at(i) = .5 * std::pow(x.at(i) - u_k.at(p), 2) + // distance between parameters
-                      (1.0 / L) * scadPenalty(x.at(i), tuningParameters.lambda.at(p), tuningParameters.theta.at(p));
-          }
-
-          parameters_kp1.at(p) = x.at(std::distance(std::begin(h),
-                                                    std::min_element(h.begin(), h.end())));
-
-          continue;
-        }
-
-        error("Unknown penalty function.");
+        
+        return(penaltyValue);
+        
       }
+  
+private:
+  tuningParametersMixedPenalty tpSinglePenalty;
+};
 
-      return parameters_kp1;
-    }
-  };
-
-  /**
-   * @brief mixed penalty
-   *
-   */
-  class penaltyMixedPenalty : public penalty<tuningParametersMixedPenalty>
-  {
-  public:
-    /**
-     * @brief Get the value of the penalty function
-     *
-     * @param parameterValues current parameter values
-     * @param parameterLabels names of the parameters
-     * @param tuningParameters values of the tuning parmameters
-     * @return double
-     */
-    double getValue(const arma::rowvec &parameterValues,
-                    const stringVector &parameterLabels,
-                    const tuningParametersMixedPenalty &tuningParameters)
-        override
+void inline initializeMixedProximalOperators(proximalOperatorMixedPenalty& proxOperators, 
+                                     const std::vector<penaltyType>& penaltyTypes){
+  
+  for(penaltyType pt: penaltyTypes){
+    switch (pt)
     {
-
-      double penalty = 0.0;
-      double lambda_i;
-
-      for (unsigned int p = 0; p < parameterValues.n_elem; p++)
-      {
-        // unregularized values:
-        if (tuningParameters.weights.at(p) == 0.0)
-          continue;
-
-        switch (tuningParameters.pt.at(p))
-        {
-
-        case cappedL1:
-          lambda_i = tuningParameters.alpha.at(p) *
-                     tuningParameters.lambda.at(p) *
-                     tuningParameters.weights.at(p);
-
-          penalty += lambda_i * std::min(std::abs(parameterValues.at(p)),
-                                         tuningParameters.theta.at(p));
-
-          break;
-
-        case lasso:
-
-          lambda_i = tuningParameters.lambda.at(p) *
-                     tuningParameters.weights.at(p);
-
-          penalty += lambda_i * std::abs(parameterValues.at(p));
-          break;
-
-        case lsp:
-
-          penalty += lspPenalty(parameterValues.at(p),
-                                tuningParameters.lambda.at(p),
-                                tuningParameters.theta.at(p));
-
-          break;
-
-        case mcp:
-
-          penalty += mcpPenalty(parameterValues.at(p),
-                                tuningParameters.lambda.at(p),
-                                tuningParameters.theta.at(p));
-
-          break;
-
-        case scad:
-
-          penalty += scadPenalty(parameterValues.at(p),
-                                 tuningParameters.lambda.at(p),
-                                 tuningParameters.theta.at(p));
-
-          break;
-
-        default:
-          error("Penalty not found.");
-        }
-      }
-
-      return penalty;
+    case penaltyType::none:
+    {
+      std::unique_ptr<proximalOperatorMixedNone> currentPen = std::make_unique<proximalOperatorMixedNone>();
+      proxOperators.proxOps.emplace_back(std::move(currentPen));
+      break;
     }
-  };
+    case penaltyType::cappedL1:
+    {
+      std::unique_ptr<proximalOperatorMixedCappedL1> currentPen = std::make_unique<proximalOperatorMixedCappedL1>();
+      proxOperators.proxOps.emplace_back(std::move(currentPen));
+      break;
+    }
+    case penaltyType::lasso:
+    {
+      std::unique_ptr<proximalOperatorMixedLasso> currentPen = std::make_unique<proximalOperatorMixedLasso>();
+      proxOperators.proxOps.emplace_back(std::move(currentPen));
+      break;
+    }
+    case penaltyType::lsp:
+    {
+      std::unique_ptr<proximalOperatorMixedLsp> currentPen = std::make_unique<proximalOperatorMixedLsp>();
+      proxOperators.proxOps.emplace_back(std::move(currentPen));
+      break;
+    }
+    case penaltyType::mcp:
+    {
+      std::unique_ptr<proximalOperatorMixedMcp> currentPen = std::make_unique<proximalOperatorMixedMcp>();
+      proxOperators.proxOps.emplace_back(std::move(currentPen));
+      break;
+    }
+    case penaltyType::scad:
+    {
+      std::unique_ptr<proximalOperatorMixedScad> currentPen = std::make_unique<proximalOperatorMixedScad>();
+      proxOperators.proxOps.emplace_back(std::move(currentPen));
+      break;
+    }
+    default:
+      error("Unknown penalty");
+    }
+  }
+}
+
+void inline initializeMixedPenalties(penaltyMixedPenalty& pen, 
+                                     const std::vector<penaltyType>& penaltyTypes){
+  
+  for(penaltyType pt: penaltyTypes){
+    switch (pt)
+    {
+    case penaltyType::none:
+    {
+      std::unique_ptr<penaltyMixedNone> currentPen = std::make_unique<penaltyMixedNone>();
+      pen.penalties.emplace_back(std::move(currentPen));
+      break;
+    }
+    case penaltyType::cappedL1:
+    {
+      std::unique_ptr<penaltyMixedCappedL1> currentPen = std::make_unique<penaltyMixedCappedL1>();
+      pen.penalties.emplace_back(std::move(currentPen));
+      break;
+    }
+    case penaltyType::lasso:
+    {
+      std::unique_ptr<penaltyMixedLasso> currentPen = std::make_unique<penaltyMixedLasso>();
+      pen.penalties.emplace_back(std::move(currentPen));
+      break;
+    }
+    case penaltyType::lsp:
+    {
+      std::unique_ptr<penaltyMixedLsp> currentPen = std::make_unique<penaltyMixedLsp>();
+      pen.penalties.emplace_back(std::move(currentPen));
+      break;
+    }
+    case penaltyType::mcp:
+    {
+      std::unique_ptr<penaltyMixedMcp> currentPen = std::make_unique<penaltyMixedMcp>();
+      pen.penalties.emplace_back(std::move(currentPen));
+      break;
+    }
+    case penaltyType::scad:
+    {
+      std::unique_ptr<penaltyMixedScad> currentPen = std::make_unique<penaltyMixedScad>();
+      pen.penalties.emplace_back(std::move(currentPen));
+      break;
+    }
+    default:
+      error("Unknown penalty");
+    }
+  }
+}
 
 }
 #endif
