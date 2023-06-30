@@ -65,7 +65,7 @@ namespace lessSEM
     lambda = resizeVector(numberParameters, lambda);
     theta = resizeVector(numberParameters, theta);
 
-    auto penalties = stringPenaltyToPenaltyType(penalty);
+    std::vector<penaltyType> penalties = stringPenaltyToPenaltyType(penalty);
 
     // resize Hessian if none is provided
     if ((initialHessian.n_elem) == 1 && (numberParameters != 1))
@@ -122,6 +122,9 @@ namespace lessSEM
 
     penaltyMixedGlmnet pen;
     noSmoothPenalty<tuningParametersMixedGlmnet> smoothPen;
+    
+    initializeMixedPenaltiesGlmnet(pen,
+                                   penalties);
 
     // optimize
 
@@ -293,6 +296,12 @@ namespace lessSEM
     proximalOperatorMixedPenalty proximalOperatorMixedPenalty_;
     penaltyMixedPenalty penalty_;
     penaltyRidge smoothPenalty_;
+    
+    
+    initializeMixedProximalOperators(proximalOperatorMixedPenalty_,
+                             penalties);
+    initializeMixedPenalties(penalty_, 
+                             penalties);
 
     // optimize
 
