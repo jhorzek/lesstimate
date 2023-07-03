@@ -4,7 +4,10 @@ cmake_minimum_required(VERSION 3.20.0)
 project(testDocumentation VERSION 1.0)
 
 # specify dependencies:
+find_package(LAPACK REQUIRED)
+find_package(BLAS REQUIRED)
 find_package(Armadillo REQUIRED)
+
 # including lesstimate
 set(lesstimate_DIR ${CMAKE_CURRENT_LIST_DIR}/include/lesstimate)
 find_package(lesstimate CONFIG REQUIRED)
@@ -21,4 +24,8 @@ add_executable(${PROJECT_NAME} "linear_regression.cpp")
 
 # include armadillo
 target_include_directories(${PROJECT_NAME} PRIVATE ${ARMADILLO_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${ARMADILLO_LIBRARIES} PRIVATE lesstimate::lesstimate)
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+                      LAPACK::LAPACK 
+                      BLAS::BLAS
+                      ${ARMADILLO_LIBRARIES} 
+                      lesstimate::lesstimate)
