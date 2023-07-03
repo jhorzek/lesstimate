@@ -1,5 +1,5 @@
 #include <armadillo>
-#include <include/lesstimate.h>
+#include "lesstimate.h"
 
 double sumSquaredError(
     arma::colvec b, // the parameter vector
