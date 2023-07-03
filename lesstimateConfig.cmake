@@ -8,9 +8,9 @@ if(TARGET lesstimate::lesstimate)
 endif()
 
 # specify dependencies:
-find_package(Armadillo REQUIRED)
-find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
+find_package(BLAS REQUIRED)
+find_package(Armadillo REQUIRED)
 
 # define library
 add_library(lesstimate::lesstimate 
@@ -29,7 +29,7 @@ target_include_directories(lesstimate::lesstimate INTERFACE ${CMAKE_CURRENT_LIST
 # include armadillo directory
 target_include_directories(lesstimate::lesstimate INTERFACE ${ARMADILLO_INCLUDE_DIRS})
 # and link to dependencies
-target_link_libraries(lesstimate::lesstimate INTERFACE ${ARMADILLO_LIBRARIES}  BLAS::BLAS LAPACK::LAPACK)
+target_link_libraries(lesstimate::lesstimate INTERFACE LAPACK::LAPACK BLAS::BLAS ${ARMADILLO_LIBRARIES})
 
 if(NOT DEFINED lesstimate_FIND_QUIETLY)
     message(STATUS "Found lesstimate in ${CMAKE_CURRENT_LIST_DIR}.")
