@@ -23,7 +23,7 @@ namespace lessSEM
      */
     virtual double getValue(const arma::rowvec &parameterValues,
                             const stringVector &parameterLabels,
-                            const T &tuningParameters);
+                            const T &tuningParameters) = 0;
     /**
      * @brief returns gradients of the penalty function
      *
@@ -34,7 +34,7 @@ namespace lessSEM
      */
     virtual arma::rowvec getGradients(const arma::rowvec &parameterValues,
                                       const stringVector &parameterLabels,
-                                      const T &tuningParameters);
+                                      const T &tuningParameters) = 0;
   };
 
   // define some smooth penalties:

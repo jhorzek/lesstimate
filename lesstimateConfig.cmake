@@ -7,21 +7,29 @@ if(TARGET lesstimate::lesstimate)
     return()
 endif()
 
+# specify dependencies:
 find_package(Armadillo REQUIRED)
+find_package(BLAS REQUIRED)
+find_package(LAPACK REQUIRED)
 
 # define library
-add_library(lesstimate::lesstimate INTERFACE IMPORTED)
+add_library(lesstimate::lesstimate 
+            INTERFACE
+            IMPORTED)
+
+include(GNUInstallDirs)
+
 # we want to use lesstimate without Rcpp -> set USE_R=0
 target_compile_definitions(lesstimate::lesstimate INTERFACE -DUSE_R=0)
-target_compile_features(lesstimate::lesstimate INTERFACE cxx_std_14)
+target_compile_features(lesstimate::lesstimate INTERFACE cxx_std_17)
 
-# include current directory
-target_include_directories(lesstimate::lesstimate INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+# include current include-directory of lesstimate. This allows users to just specify #include <lesstimate.h>
+target_include_directories(lesstimate::lesstimate INTERFACE ${CMAKE_CURRENT_LIST_DIR}/include)
 
-# include armadillo directory 
+# include armadillo directory
 target_include_directories(lesstimate::lesstimate INTERFACE ${ARMADILLO_INCLUDE_DIRS})
-# and link to armadillo
-target_link_libraries(lesstimate::lesstimate INTERFACE ${ARMADILLO_LIBRARIES})
+# and link to dependencies
+target_link_libraries(lesstimate::lesstimate INTERFACE ${ARMADILLO_LIBRARIES}  BLAS::BLAS LAPACK::LAPACK)
 
 if(NOT DEFINED lesstimate_FIND_QUIETLY)
     message(STATUS "Found lesstimate in ${CMAKE_CURRENT_LIST_DIR}.")

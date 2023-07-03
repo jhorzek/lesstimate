@@ -22,7 +22,7 @@ public:
    */
   virtual double getValue(const arma::rowvec& parameterValues,
                           const stringVector& parameterLabels,
-                          const T& tuningParameters);
+                          const T& tuningParameters) = 0;
 };
 }
 
