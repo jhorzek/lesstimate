@@ -51,7 +51,7 @@ public:
                              const arma::rowvec &gradientValues,
                              const stringVector &parameterLabels,
                              const double L,
-                             const tuningParametersMixedPenalty &tuningParameters);
+                             const tuningParametersMixedPenalty &tuningParameters) = 0;
 };
 
 class proximalOperatorMixedNone: public proximalOperatorMixedBase{
@@ -208,7 +208,7 @@ class proximalOperatorMixedPenalty: public proximalOperator<tuningParametersMixe
 public:
   std::vector<std::unique_ptr<proximalOperatorMixedBase>> proxOps;
   
-  virtual arma::rowvec getParameters(
+  arma::rowvec getParameters(
      const arma::rowvec &parameterValues,
      const arma::rowvec &gradientValues,
      const stringVector &parameterLabels,
@@ -264,7 +264,7 @@ public:
    */
   virtual double getValue(const arma::rowvec &parameterValues,
                   const stringVector &parameterLabels,
-                  const tuningParametersMixedPenalty &tuningParameters);
+                  const tuningParametersMixedPenalty &tuningParameters) = 0;
 };
 
 class penaltyMixedNone: public penaltyMixedPenaltyBase{

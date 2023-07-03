@@ -49,7 +49,7 @@ namespace lessSEM
      */
     virtual double getValue(const arma::rowvec &parameterValues,
                             const stringVector &parameterLabels,
-                            const tuningParametersMixedGlmnet &tuningParameters);
+                            const tuningParametersMixedGlmnet &tuningParameters) = 0;
     
     /**
      * @brief computes the step direction for a single parameter j in the inner
@@ -69,7 +69,7 @@ namespace lessSEM
         const arma::rowvec &gradient,
         const arma::rowvec &stepDirection,
         const arma::mat &Hessian,
-        const tuningParametersMixedGlmnet &tuningParameters);
+        const tuningParametersMixedGlmnet &tuningParameters) = 0;
     
     
     /**
