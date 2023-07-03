@@ -36,7 +36,7 @@ The following code demonstrates the use of **lesstimate** with regularized linea
 
 ```
 #include <armadillo>
-#include "lesstimate.h"
+#include <lesstimate.h>
 
 // The model must inherit from less::model and override the fit and gradients function.
 class linearRegressionModel : public less::model
