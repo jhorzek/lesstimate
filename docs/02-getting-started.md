@@ -116,7 +116,7 @@ implements our linear regression using the functions defined above.
 === "C++"
     We recommend setting up **lesstimate** with CMake. You will find an example [here](https://github.com/jhorzek/lesstimateTemplateCpp).
     ```
-    #include "lesstimate.h"
+    #include <lesstimate.h>
     ```
 
 ```
