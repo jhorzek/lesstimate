@@ -37,6 +37,9 @@ namespace lessSEM
     {
       arma::rowvec gradients(parameterValues.n_elem);
       gradients.fill(arma::fill::zeros);
+      // define stepSize used in numerically approximated gradients:
+      double stepSize = 1e-5;
+      
       for (unsigned int i = 0; i < parameterValues.n_elem; i++)
       {
 
@@ -55,11 +58,9 @@ namespace lessSEM
         // compute gradient
         gradients(i) /= 2.0 * stepSize;
       }
-      return(gradients);
+      return (gradients);
     }
   };
 
-  // define stepSize used in numerically approximated gradients:
-  double stepSize = 1e-5;
 }
 #endif
