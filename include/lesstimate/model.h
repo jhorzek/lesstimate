@@ -35,9 +35,9 @@ namespace lessSEM
     virtual arma::rowvec gradients(arma::rowvec parameterValues,
                                    stringVector parameterLabels)
     {
-      arma::rowvec gradients(paramterValues.n_elem);
-      gradients.fill(arma::darum::zeros);
-      for (unsigned int = 0; i < parameterValues.n_elem; i++)
+      arma::rowvec gradients(parameterValues.n_elem);
+      gradients.fill(arma::fill::zeros);
+      for (unsigned int i = 0; i < parameterValues.n_elem; i++)
       {
 
         // step forward
