@@ -71,6 +71,8 @@ namespace lessSEM
         override
     {
 
+      static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
+
       arma::rowvec u_k = parameterValues - gradientValues / L;
 
       arma::rowvec parameters_kp1(parameterValues.n_elem);
@@ -164,6 +166,8 @@ namespace lessSEM
                     const tuningParametersLSP &tuningParameters)
         override
     {
+
+      static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
 
       double penalty = 0.0;
 

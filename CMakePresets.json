@@ -49,7 +49,7 @@
       "name": "flags-linux",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fcf-protection=full -fstack-clash-protection -Wformat -Werror=format-security -Wdate-time -Wall",
+        "CMAKE_CXX_FLAGS": "-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fcf-protection=full -fstack-clash-protection -Wformat -Werror=format-security -Wdate-time -Wall -Wpedantic -Wextra",
         "CMAKE_EXE_LINKER_FLAGS": "-Wl,--allow-shlib-undefined,--as-needed,-z,noexecstack,-z,relro,-z,now",
         "CMAKE_SHARED_LINKER_FLAGS": "-Wl,--allow-shlib-undefined,--as-needed,-z,noexecstack,-z,relro,-z,now"
       }

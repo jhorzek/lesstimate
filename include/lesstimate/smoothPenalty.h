@@ -59,6 +59,9 @@ namespace lessSEM
                     const stringVector &parameterLabels,
                     const T &tuningParameters) override
     {
+      static_cast<void>(parameterValues); // is unused
+      static_cast<void>(parameterLabels); // is unused
+      static_cast<void>(tuningParameters); // is unused
       return (0.0);
     };
         /**
@@ -73,6 +76,8 @@ namespace lessSEM
                               const stringVector &parameterLabels,
                               const T &tuningParameters) override
     {
+      static_cast<void>(parameterLabels); // is unused
+      static_cast<void>(tuningParameters); // is unused
       arma::rowvec gradients(parameterValues.n_elem);
       gradients.fill(0.0);
       return (gradients);
@@ -113,6 +118,7 @@ namespace lessSEM
         override
     {
 
+      static_cast<void>(parameterLabels); // is unused, but necessary for the interface
       double penalty = 0.0;
       double lambda_i;
 
@@ -150,6 +156,7 @@ namespace lessSEM
                               const tuningParametersSmoothElasticNet &tuningParameters) override
     {
 
+      static_cast<void>(parameterLabels); // is unused, but necessary for the interface
       arma::rowvec gradients(parameterValues.n_elem);
       gradients.fill(0.0);
       double lambda_i;

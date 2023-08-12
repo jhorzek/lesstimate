@@ -36,6 +36,8 @@ namespace lessSEM
             override
         {
 
+            static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
+
             double penalty = 0.0;
             double lambda_i;
 

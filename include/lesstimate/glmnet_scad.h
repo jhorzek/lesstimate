@@ -53,6 +53,8 @@ namespace lessSEM
             override
         {
 
+            static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
+
             double penalty = 0.0;
 
             for (unsigned int p = 0; p < parameterValues.n_elem; p++)
@@ -268,6 +270,10 @@ namespace lessSEM
                                      const arma::rowvec &gradients,
                                      const tuningParametersScadGlmnet &tuningParameters)
         {
+
+            static_cast<void>(parameterValues); // is unused, but necessary for the interface to be consistent
+            static_cast<void>(gradients); // is unused, but necessary for the interface to be consistent
+            static_cast<void>(tuningParameters); // is unused, but necessary for the interface to be consistent
             error("Subgradients not yet implemented for scad penalty. Use different convergence criterion.");
         }
     };

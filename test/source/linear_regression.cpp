@@ -63,6 +63,7 @@ public:
     {
         // NOTE: In sumSquaredError we assumed that b was a column-vector. We
         //  have to transpose b to make things work
+        static_cast<void>(labels); // is unused
         return (sumSquaredError(b.t(), y, X));
     }
 
@@ -108,6 +109,7 @@ public:
 
     double fit(arma::rowvec b, less::stringVector labels) override
     {
+        static_cast<void>(labels); // currently not used; for later use
         // NOTE: In sumSquaredError we assumed that b was a column-vector. We
         //  have to transpose b to make things work
         return (sumSquaredError(b.t(), y, X));
@@ -115,6 +117,7 @@ public:
 
     arma::rowvec gradients(arma::rowvec b, less::stringVector labels) override
     {
+        static_cast<void>(labels); // is unused
         // NOTE: In sumSquaredErrorGradients we assumed that b was a column-vector. We
         //  have to transpose b to make things work
         return (sumSquaredErrorGradients(b.t(), y, X));

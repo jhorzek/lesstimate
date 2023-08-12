@@ -216,9 +216,9 @@ namespace lessSEM
     /**
      * @brief returns the number of elements in a stringVector
      *
-     * @return const int
+     * @return int
      */
-    const int size() const
+    int size() const
     {
       return (values.size());
     }
@@ -229,6 +229,16 @@ namespace lessSEM
      * @return int
      */
     int length()
+    {
+      return (values.size());
+    }
+
+    /**
+     * @brief returns the number of elements in a stringVector
+     *
+     * @return int
+     */
+    int length() const
     {
       return (values.size());
     }
@@ -421,8 +431,10 @@ namespace lessSEM
    * @param replace should elements be replaced (i.e., can elements be drawn multiple times)
    * @return numericVector
    */
-  inline numericVector sample(numericVector vec, int nSamples, bool replace)
+  inline numericVector sample(numericVector vec, unsigned int nSamples, bool replace)
   {
+    if(replace)
+      error("replace = true currently not supported");
     arma::rowvec values = vec.values;
     std::vector<std::string> labels = vec.par_names.values;
     arma::rowvec positions(vec.length());
@@ -430,7 +442,7 @@ namespace lessSEM
       positions(i) = i;
 
     positions = arma::shuffle(positions);
-    for (unsigned int i = 0; i < positions.n_elem; i++)
+    for (unsigned int i = 0; i < nSamples; i++)
     {
       vec.values(i) = values(positions(i));
       vec.par_names.values.at(i) = labels.at(i);
