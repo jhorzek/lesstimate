@@ -191,7 +191,7 @@ namespace lessSEM
 
       static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
 
-      double penalty = 0.0;
+      double penaltyValue = 0.0;
 
       for (unsigned int p = 0; p < parameterValues.n_elem; p++)
       {
@@ -201,12 +201,12 @@ namespace lessSEM
           continue;
 
         // mcp penalty value:
-        penalty += mcpPenalty(parameterValues.at(p),
+        penaltyValue += mcpPenalty(parameterValues.at(p),
                               tuningParameters.lambda,
                               tuningParameters.theta);
       }
 
-      return penalty;
+      return penaltyValue;
     }
   };
 

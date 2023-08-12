@@ -52,7 +52,7 @@ namespace lessSEM
 
             static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
 
-            double penalty = 0.0;
+            double penaltyValue = 0.0;
             double lambda_i;
             double theta = tuningParameters.theta;
 
@@ -65,11 +65,11 @@ namespace lessSEM
                 lambda_i = tuningParameters.lambda *
                            tuningParameters.weights.at(p);
 
-                penalty += lambda_i * std::min(std::abs(parameterValues.at(p)),
+                penaltyValue += lambda_i * std::min(std::abs(parameterValues.at(p)),
                                                theta);
             }
 
-            return penalty;
+            return penaltyValue;
         }
 
         /**

@@ -55,7 +55,7 @@ namespace lessSEM
 
             static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
 
-            double penalty = 0.0;
+            double penaltyValue = 0.0;
 
             for (unsigned int p = 0; p < parameterValues.n_elem; p++)
             {
@@ -71,19 +71,19 @@ namespace lessSEM
                 if (absPar <= lambda)
                 {
                     // reduces to lasso penalty
-                    penalty += (lambda * absPar);
+                    penaltyValue += (lambda * absPar);
                 }
                 else if ((lambda < absPar) && (absPar <= lambda * theta))
                 {
                     // reduces to a smooth penalty
-                    penalty += ((-std::pow(parameterValues.at(p), 2) +
+                    penaltyValue += ((-std::pow(parameterValues.at(p), 2) +
                                  2.0 * theta * lambda * absPar - std::pow(lambda, 2)) /
                                 (2.0 * (theta - 1.0)));
                 }
                 else if (absPar > (lambda * theta))
                 {
                     // reduces to a constant penalty
-                    penalty += (((theta + 1.0) * std::pow(lambda, 2)) / 2.0);
+                    penaltyValue += (((theta + 1.0) * std::pow(lambda, 2)) / 2.0);
                 }
                 else
                 {
@@ -92,7 +92,7 @@ namespace lessSEM
                 }
             }
 
-            return penalty;
+            return penaltyValue;
         }
 
         /**

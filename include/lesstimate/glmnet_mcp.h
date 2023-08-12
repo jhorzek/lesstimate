@@ -56,7 +56,7 @@ namespace lessSEM
 
       static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
 
-      double penalty = 0.0;
+      double penaltyValue = 0.0;
       double lambda_i;
       double theta = tuningParameters.theta;
       double absPar;
@@ -74,12 +74,12 @@ namespace lessSEM
 
         if (absPar <= (lambda_i * theta))
         {
-          penalty += lambda_i * absPar - std::pow(absPar, 2) / (2.0 * theta);
+          penaltyValue += lambda_i * absPar - std::pow(absPar, 2) / (2.0 * theta);
         }
         else if (absPar > (lambda_i * theta))
         {
 
-          penalty += theta * std::pow(lambda_i, 2) / 2.0;
+          penaltyValue += theta * std::pow(lambda_i, 2) / 2.0;
         }
         else
         {
@@ -87,7 +87,7 @@ namespace lessSEM
         }
       }
 
-      return penalty;
+      return penaltyValue;
     }
 
     /**
