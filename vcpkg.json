@@ -1,8 +1,27 @@
 {
   "name": "lesstimate",
-  "version-string": "0.1.0",
+  "version-semver": "0.1.0",
   "description": "lesstimate (lesstimate estimates sparse estimates) Provides optimizers for regularized models such as regularized linear regression or regularized structural equation models.",
   "dependencies": [
-    "armadillo"
-  ]
+    {
+      "name": "armadillo"
+    },
+    {
+      "name": "fmt",
+      "version>=": "10.0.0"
+    }
+  ],
+  "default-features": [],
+  "features": {
+    "test": {
+      "description": "Dependencies for testing",
+      "dependencies": [
+        {
+          "name": "catch2",
+          "version>=": "3.3.2#1"
+        }
+      ]
+    }
+  },
+  "builtin-baseline": "9055f88ba53a99f51e3c733fe9c79703dc23d57d"
 }

@@ -128,7 +128,16 @@ namespace lessSEM
     std::cout << "WARNING: " + warningMessage;
   }
 }
-#define error throw std::invalid_argument
+
+class CustomException: public std::invalid_argument {
+public:
+    using std::invalid_argument::invalid_argument;
+};
+
+template <typename... Args>
+[[noreturn]] void error(Args&&... args) {
+    throw CustomException(std::forward<Args>(args)...);
+}
 
 // NA
 #define NA_REAL arma::datum::nan
@@ -299,7 +308,7 @@ namespace lessSEM
     {
       values = vec;
       par_names.values.resize(values.n_elem);
-      for (int i = 0; i < values.n_elem; i++)
+      for (unsigned long long int i = 0; i < values.n_elem; i++)
         par_names.values.at(i) = "";
     }
 
