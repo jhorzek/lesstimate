@@ -1,3 +1,5 @@
+# This file was generated with cmake-init by friendlyanon at https://github.com/friendlyanon/cmake-init
+
 cmake_minimum_required(VERSION 3.14)
 
 foreach(var IN ITEMS PROJECT_BINARY_DIR PROJECT_SOURCE_DIR)

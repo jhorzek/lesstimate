@@ -1,3 +1,5 @@
+# This file was generated with cmake-init by friendlyanon at https://github.com/friendlyanon/cmake-init
+
 cmake_minimum_required(VERSION 3.14)
 
 project(lesstimateTests LANGUAGES CXX)

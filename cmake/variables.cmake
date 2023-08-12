@@ -1,3 +1,5 @@
+# This file was generated with cmake-init by friendlyanon at https://github.com/friendlyanon/cmake-init
+
 # ---- Developer mode ----
 
 # Developer mode enables targets and code paths in the CMake scripts that are

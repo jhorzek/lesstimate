@@ -1,3 +1,5 @@
+# This file was generated with cmake-init by friendlyanon at https://github.com/friendlyanon/cmake-init
+
 # ---- Variables ----
 
 # We use variables separate from what CTest uses, because those have

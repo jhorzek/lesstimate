@@ -1,3 +1,5 @@
+# This file was generated with cmake-init by friendlyanon at https://github.com/friendlyanon/cmake-init
+
 set_property(GLOBAL PROPERTY USE_FOLDERS YES)
 
 # Call this function at the end of a directory scope to assign a folder to

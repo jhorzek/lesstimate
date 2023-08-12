@@ -1,3 +1,5 @@
+# This file was generated with cmake-init by friendlyanon at https://github.com/friendlyanon/cmake-init
+
 # ---- Dependencies ----
 
 set(extract_timestamps "")

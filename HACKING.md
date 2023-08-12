@@ -1,3 +1,5 @@
+> This file was generated with cmake-init by friendlyanon at https://github.com/friendlyanon/cmake-init
+
 # Hacking
 
 Here is some wisdom to help you build and test this project as a developer and

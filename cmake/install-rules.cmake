@@ -1,3 +1,5 @@
+# This file was generated with cmake-init by friendlyanon at https://github.com/friendlyanon/cmake-init
+
 if(PROJECT_IS_TOP_LEVEL)
   set(
       CMAKE_INSTALL_INCLUDEDIR "include/lesstimate-${PROJECT_VERSION}"

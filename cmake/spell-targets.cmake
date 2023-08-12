@@ -1,3 +1,5 @@
+# This file was generated with cmake-init by friendlyanon at https://github.com/friendlyanon/cmake-init
+
 set(SPELL_COMMAND codespell CACHE STRING "Spell checker to use")
 
 add_custom_target(
