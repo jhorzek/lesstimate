@@ -32,7 +32,7 @@ We also provide a [template for using **lesstimate** in R](https://github.com/jh
 
 ## Example
 
-The following code demonstrates the use of **lesstimate** with regularized linear regressions. A longer step-by-step introduction including installation of **lesstimate** is provided in the [documentation](https://jhorzek.github.io/lesstimate/).
+The following code demonstrates the use of **lesstimate** with regularized linear regressions. A longer step-by-step introduction including installation of **lesstimate** is provided in the [documentation](https://jhorzek.github.io/lesstimate/). The cmake infrastructure was created with [cmake-init](https://github.com/friendlyanon/cmake-init).
 
 ```
 #include <armadillo>

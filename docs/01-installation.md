@@ -60,7 +60,7 @@ Open the DESCRIPTION file of your package and add `Rcpp` and `RcppArmadillo` to 
 
 For C++, you will need the **armadillo**(https://arma.sourceforge.net/) - library (Sanderson et al., 2016). This library is also available
 using the package manager Conan or vcpkg. You will have to include lesstimate in your
-C++ library Cmake file.
+C++ library Cmake file. The cmake infrastructure was created with [cmake-init](https://github.com/friendlyanon/cmake-init).
 
 # References
 
