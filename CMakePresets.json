@@ -29,13 +29,6 @@
       }
     },
     {
-      "name": "cppcheck",
-      "hidden": true,
-      "cacheVariables": {
-        "CMAKE_CXX_CPPCHECK": "cppcheck;--inline-suppr"
-      }
-    },
-    {
       "name": "ci-std",
       "description": "This preset makes sure the project actually builds with at least the specified standard",
       "hidden": true,
@@ -106,7 +99,7 @@
     },
     {
       "name": "ci-ubuntu",
-      "inherits": ["ci-build", "ci-linux", "vcpkg", "cppcheck", "dev-mode"]
+      "inherits": ["ci-build", "ci-linux", "vcpkg", "dev-mode"]
     },
     {
       "name": "ci-windows",
