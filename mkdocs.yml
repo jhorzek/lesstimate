@@ -1,0 +1,37 @@
+site_name: lesstimate
+
+repo_url: https://github.com/jhorzek/lesstimate
+
+nav:
+    - Home: 'index.md'
+    - 'Getting Started':
+        - 'Installation': '01-installation.md'
+        - 'Regularizing models': '02-getting-started.md'
+        - 'Optimizer design': '03-The Optimizer Design.md'
+    - 'Code Documentation':
+        - 'Model': '04-Model.md'
+        - 'lesstimate types': '05-lesstimate_types.md'
+        - 'penalty types': '06-Penalty type.md'
+        - 'GLMNET optimizer': '07-GLMNET.md'
+        - 'ISTA optimizer': '08-ISTA.md'
+        - 'fitResults class': '09-fitResults.md'
+        - 'BFGS optimizer': '10-BFGS.md'
+
+theme:
+  name: material
+  logo: lesstimate_logo.png
+  palette:
+    scheme: slate
+  
+extra_javascript:
+  - javascripts/katex.js 
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.js  
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/contrib/auto-render.min.js
+
+extra_css:
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.css
+
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true 
