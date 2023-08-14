@@ -23,8 +23,7 @@ include(Catch)
 
 # ---- Tests ----
 
-add_executable(lesstimate_test source/lesstimate_test.cpp
-               source/linear_regression.cpp)
+add_executable(lesstimate_test source/lesstimate_test.cpp)
                  
 target_link_libraries(
     lesstimate_test PRIVATE
