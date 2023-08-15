@@ -18,6 +18,9 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
+        include:
+          - runs-on: macos-latest
+            compiler: gcc
 
     runs-on: ${{ matrix.os }}
 
@@ -33,12 +36,7 @@ jobs:
       run: |
         Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
         Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
-        
-    - name: Install Fortran
-      if: matrix.os == 'macos-latest'
-      run: |
-        brew install gcc
-        
+                
     - name: Configure
       shell: pwsh
       run: cmake "--preset=ci-$("${{ matrix.os }}".split("-")[0])"
