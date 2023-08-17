@@ -29,6 +29,9 @@ jobs:
       run: |
         Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
         Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
+        # put mingw compiler on path
+        Add-Content "$env:GITHUB_ENV" 'C:\msys64\mingw64\bin'
+        g++ --version
 
     - name: Configure
       shell: pwsh
