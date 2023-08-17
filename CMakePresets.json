@@ -22,13 +22,6 @@
       }
     },
     {
-      "name": "vcpkg-win64-static",
-      "hidden": true,
-      "cacheVariables": {
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
-      }
-    },
-    {
       "name": "ci-std",
       "description": "This preset makes sure the project actually builds with at least the specified standard",
       "hidden": true,
@@ -56,11 +49,12 @@
     },
     {
       "name": "flags-windows",
-      "description": "Note that all the flags after /W4 are required for MSVC to conform to the language standard",
+      "description": "Using gcc in windows",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "/sdl /guard:cf /utf-8 /diagnostics:caret /W4 /Za /w3",
-        "CMAKE_EXE_LINKER_FLAGS": "/machine:x64 /guard:cf"
+        "CMAKE_CXX_FLAGS": "-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3 -fstack-protector-strong -fcf-protection=full -fstack-clash-protection -Wformat -Werror=format-security -Wdate-time -Wall -Wpedantic -Wextra -Wshadow",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
       }
     },
     {
@@ -84,8 +78,7 @@
     {
       "name": "ci-win64",
       "inherits": ["flags-windows", "ci-std"],
-      "generator": "Visual Studio 17 2022",
-      "architecture": "x64",
+      "generator": "MinGW Makefiles",
       "hidden": true
     },
     {
@@ -103,7 +96,7 @@
     },
     {
       "name": "ci-windows",
-      "inherits": ["ci-build", "ci-win64", "dev-mode", "vcpkg", "vcpkg-win64-static"]
+      "inherits": ["ci-build", "ci-win64", "dev-mode", "vcpkg"]
     }
   ]
 }

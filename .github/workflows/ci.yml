@@ -9,9 +9,6 @@ on:
     branches:
     - main
 
-env:
-  VCPKG_COMMIT: "9055f88ba53a99f51e3c733fe9c79703dc23d57d"
-
 jobs:
   test:
 
@@ -26,7 +23,6 @@ jobs:
 
     - name: Install vcpkg
       uses: friendlyanon/setup-vcpkg@v1
-      with: { committish: "${{ env.VCPKG_COMMIT }}" }
 
     - name: Setup MultiToolTask
       if: matrix.os == 'windows-latest'
