@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -33,17 +33,6 @@ jobs:
       run: |
         Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
         Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
-
-    - name: install LAPACK and BLAS - linux
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-       apt-get update
-       apt-get install -y libopenblas-dev && liblapack-dev && libarpack2-dev && libsuperlu-dev
-
-    - name: install LAPACK and BLAS - macos
-      if: matrix.os == 'macos-latest'
-      run: |
-       brew install openblas
 
     - name: Configure
       shell: pwsh
