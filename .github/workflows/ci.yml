@@ -18,9 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        include:
-          - runs-on: macos-latest
-            compiler: gcc
+        compiler: [gcc]
 
     runs-on: ${{ matrix.os }}
 
@@ -39,14 +37,26 @@ jobs:
                 
     - name: Configure
       shell: pwsh
+      env:
+        CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.compiler }}
       run: cmake "--preset=ci-$("${{ matrix.os }}".split("-")[0])"
 
     - name: Build
+      env:
+        CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.compiler }}
       run: cmake --build build --config Release -j 2
 
     - name: Install
+      env:
+        CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.compiler }}
       run: cmake --install build --config Release --prefix prefix
 
     - name: Test
       working-directory: build
+      env:
+        CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.compiler }}
       run: ctest --output-on-failure --no-tests=error -C Release -j 2
