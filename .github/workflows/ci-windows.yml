@@ -1,0 +1,64 @@
+name: Continuous Integration - Windows
+
+on:
+  push:
+    branches:
+    - main
+
+  pull_request:
+    branches:
+    - main
+
+env:
+  VCPKG_COMMIT: "9055f88ba53a99f51e3c733fe9c79703dc23d57d"
+
+jobs:
+  test:
+
+    strategy:
+      matrix:
+        os: [windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install vcpkg
+      uses: friendlyanon/setup-vcpkg@v1
+      with: { committish: "${{ env.VCPKG_COMMIT }}" }
+
+    - name: Setup MultiToolTask
+      run: |
+        Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
+        Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
+        # put mingw compiler on path
+        echo "${{ 'C:/msys64/mingw64/bin' }}" >> $GITHUB_PATH
+        gcc --version
+        g++ --version
+        
+    - name: Configure
+      shell: pwsh
+      run: cmake "--preset=ci-$("${{ matrix.os }}".split("-")[0])"
+      env:
+        CC:   gcc
+        CXX:  g++
+        
+    - name: Build
+      run: cmake --build build --config Release -j 2
+      env:
+        CC:   gcc
+        CXX:  g++
+
+    - name: Install
+      run: cmake --install build --config Release --prefix prefix
+      env:
+        CC:   gcc
+        CXX:  g++
+        
+    - name: Test
+      working-directory: build
+      run: ctest --output-on-failure --no-tests=error -C Release -j 2
+      env:
+        CC:   gcc
+        CXX:  g++
