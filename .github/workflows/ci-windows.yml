@@ -44,20 +44,20 @@ jobs:
         CXX:  g++
         
     - name: Build
-      run: cmake -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++ --build build --config Release
+      run: cmake --build build --config Release -G "MinGW Makefiles"
       env:
         CC:   gcc
         CXX:  g++
 
     - name: Install
-      run: cmake -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++ --install build --config Release --prefix prefix
+      run: cmake --install build --config Release --prefix prefix -G "MinGW Makefiles"
       env:
         CC:   gcc
         CXX:  g++
         
     - name: Test
       working-directory: build
-      run: ctest -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++ --output-on-failure --no-tests=error -C Release 
+      run: ctest --output-on-failure --no-tests=error -C Release -G "MinGW Makefiles"
       env:
         CC:   gcc
         CXX:  g++
