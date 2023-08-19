@@ -45,20 +45,20 @@ jobs:
         CXX:  g++
         
     - name: Build
-      run: cmake --build build --config Release -j 2
+      run: cmake --build build --config Release -j 2 -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++
       env:
         CC:   gcc
         CXX:  g++
 
     - name: Install
-      run: cmake --install build --config Release --prefix prefix
+      run: cmake --install build --config Release --prefix prefix -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++
       env:
         CC:   gcc
         CXX:  g++
         
     - name: Test
       working-directory: build
-      run: ctest --output-on-failure --no-tests=error -C Release -j 2
+      run: ctest --output-on-failure --no-tests=error -C Release -j 2 -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++
       env:
         CC:   gcc
         CXX:  g++
