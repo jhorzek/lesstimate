@@ -44,20 +44,20 @@ jobs:
         CXX:  g++
         
     - name: Build
-      run: cmake --build build --config Release -DCMAKE_C_COMPILER=C:/msys64/mingw64/bin/gcc -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++
+      run: cmake -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++ --build build --config Release
       env:
         CC:   gcc
         CXX:  g++
 
     - name: Install
-      run: cmake --install build --config Release --prefix prefix -DCMAKE_C_COMPILER=C:/msys64/mingw64/bin/gcc -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++
+      run: cmake -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++ --install build --config Release --prefix prefix
       env:
         CC:   gcc
         CXX:  g++
         
     - name: Test
       working-directory: build
-      run: ctest --output-on-failure --no-tests=error -C Release -DCMAKE_C_COMPILER=C:/msys64/mingw64/bin/gcc -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++ 
+      run: ctest -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++ --output-on-failure --no-tests=error -C Release 
       env:
         CC:   gcc
         CXX:  g++
