@@ -28,11 +28,10 @@ jobs:
       uses: friendlyanon/setup-vcpkg@v1
       with: { committish: "${{ env.VCPKG_COMMIT }}" }
 
-    - name: Setup MultiToolTask
+    - name: Setup mingw
       run: |
-        Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
-        Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
         # put mingw compiler on path
+        ls C:/msys64/mingw64/bin
         echo "${{ 'C:/msys64/mingw64/bin' }}" >> $GITHUB_PATH
         gcc --version
         g++ --version
@@ -45,20 +44,20 @@ jobs:
         CXX:  g++
         
     - name: Build
-      run: cmake --build build --config Release -j 2 -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++
+      run: cmake --build build --config Release -j 2 -DCMAKE_C_COMPILER='C:/msys64/mingw64/bin/gcc' -DCMAKE_CXX_COMPILER='C:/msys64/mingw64/bin/g++'
       env:
         CC:   gcc
         CXX:  g++
 
     - name: Install
-      run: cmake --install build --config Release --prefix prefix -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++
+      run: cmake --install build --config Release --prefix prefix -DCMAKE_C_COMPILER='C:/msys64/mingw64/bin/gcc' -DCMAKE_CXX_COMPILER='C:/msys64/mingw64/bin/g++'
       env:
         CC:   gcc
         CXX:  g++
         
     - name: Test
       working-directory: build
-      run: ctest --output-on-failure --no-tests=error -C Release -j 2 -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++
+      run: ctest --output-on-failure --no-tests=error -C Release -j 2 -DCMAKE_C_COMPILER='C:/msys64/mingw64/bin/gcc' -DCMAKE_CXX_COMPILER='C:/msys64/mingw64/bin/g++'
       env:
         CC:   gcc
         CXX:  g++
