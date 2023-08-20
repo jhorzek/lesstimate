@@ -28,10 +28,12 @@ jobs:
       uses: friendlyanon/setup-vcpkg@v1
       with: { committish: "${{ env.VCPKG_COMMIT }}" }
 
+    - name: list mingw
+      run: |
+        dir C:/msys64/mingw64/bin
     - name: Setup mingw
       run: |
         # put mingw compiler on path
-        ls C:/msys64/mingw64/bin
         echo "${{ 'C:/msys64/mingw64/bin' }}" >> $GITHUB_PATH
     - name: Check compiler
       run: |
