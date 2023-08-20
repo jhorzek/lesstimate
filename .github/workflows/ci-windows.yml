@@ -36,8 +36,13 @@ jobs:
     #    # put mingw compiler on path
     #    # https://gist.github.com/scivision/1de4fd6abea9ba6b2d87dc1e86b5d2ce
     #    run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-    - name: Check compiler
+    - name: Upgrade mingw compiler
       run: |
+        g++ --version
+        gfortran --version
+        choco upgrade -y mingw
+        g++ --version
+        gfortran --version
         which g++
         which gcc
         which cmake
