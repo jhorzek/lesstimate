@@ -33,10 +33,15 @@ jobs:
         # put mingw compiler on path
         ls C:/msys64/mingw64/bin
         echo "${{ 'C:/msys64/mingw64/bin' }}" >> $GITHUB_PATH
+    - name: Check compiler
+      run: |
         which g++
         which gcc
         which cmake
         which gfortran
+      env:
+        CC:   gcc
+        CXX:  g++ 
         
         
     - name: Configure
