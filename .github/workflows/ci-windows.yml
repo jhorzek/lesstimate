@@ -28,23 +28,23 @@ jobs:
       uses: friendlyanon/setup-vcpkg@v1
       with: { committish: "${{ env.VCPKG_COMMIT }}" }
 
-    - name: list mingw
-      run: |
-        dir C:/msys64/mingw64/bin
-    - name: Setup mingw
-      run: |
-        # put mingw compiler on path
-        # https://gist.github.com/scivision/1de4fd6abea9ba6b2d87dc1e86b5d2ce
-        run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+    #- name: list mingw
+    #  run: |
+    #    dir C:/msys64/mingw64/bin
+    #- name: Setup mingw
+    #  run: |
+    #    # put mingw compiler on path
+    #    # https://gist.github.com/scivision/1de4fd6abea9ba6b2d87dc1e86b5d2ce
+    #    run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
     - name: Check compiler
       run: |
         which g++
         which gcc
         which cmake
         which gfortran
-      env:
-        CC:   gcc
-        CXX:  g++ 
+      #env:
+      #  CC:   gcc
+      #  CXX:  g++ 
         
         
     - name: Configure
