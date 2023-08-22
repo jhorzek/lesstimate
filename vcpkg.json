@@ -4,7 +4,8 @@
   "description": "lesstimate (lesstimate estimates sparse estimates) Provides optimizers for regularized models such as regularized linear regression or regularized structural equation models.",
   "dependencies": [
     {
-      "name": "armadillo"
+      "name": "armadillo",
+      "version>=": "12.4.0" 
     },
     {
       "name": "fmt"
