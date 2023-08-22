@@ -11,6 +11,7 @@
       "name": "fmt"
     }
   ],
+  "builtin-baseline": "9055f88ba53a99f51e3c733fe9c79703dc23d57d",
   "default-features": [],
   "features": {
     "test": {
@@ -21,6 +22,5 @@
         }
       ]
     }
-  },
-  { "builtin-baseline": "9055f88ba53a99f51e3c733fe9c79703dc23d57d" }
+  }
 }
