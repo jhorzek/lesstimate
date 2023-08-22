@@ -21,6 +21,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    steps:
     - name: list mingw
       run: |
         dir C:/msys64/mingw64/bin
@@ -33,7 +34,6 @@ jobs:
         CC:   gcc
         CXX:  g++
 
-    steps:
     - uses: actions/checkout@v3
     - name: Install vcpkg
       uses: friendlyanon/setup-vcpkg@v1
