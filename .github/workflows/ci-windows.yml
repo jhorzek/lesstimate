@@ -23,60 +23,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-
-    - name: Upgrade mingw compiler
-      run: |
-        g++ --version
-        gfortran --version
-        choco upgrade -y mingw
-        g++ --version
-        gfortran --version
-        which g++
-        which gcc
-        which cmake
-        which gfortran
-
     - name: Install vcpkg
       uses: friendlyanon/setup-vcpkg@v1
       with: { committish: "${{ env.VCPKG_COMMIT }}" }
-
-    #- name: list mingw
-    #  run: |
-    #    dir C:/msys64/mingw64/bin
-    #- name: Setup mingw
-    #  run: |
-    #    # put mingw compiler on path
-    #    # https://gist.github.com/scivision/1de4fd6abea9ba6b2d87dc1e86b5d2ce
-    #    run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-      #env:
-      #  CC:   gcc
-      #  CXX:  g++ 
-        
         
     - name: Configure
       shell: pwsh
       run: cmake "--preset=ci-$("${{ matrix.os }}".split("-")[0])"
-      env:
-        CC:   gcc
-        CXX:  g++
         
     - name: Build
       run: |
         cmake -G "MinGW Makefiles" -B build -DCMAKE_BUILD_TYPE=Release
         cmake --build build
-      env:
-        CC:   gcc
-        CXX:  g++
 
     - name: Install
       run: cmake --install build --config Release --prefix prefix
-      env:
-        CC:   gcc
-        CXX:  g++
         
     - name: Test
       working-directory: build
       run: ctest --output-on-failure --no-tests=error -C Release
-      env:
-        CC:   gcc
-        CXX:  g++
