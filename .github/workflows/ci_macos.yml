@@ -1,0 +1,35 @@
+name: Continuous Integration - macOS
+
+on:
+  push:
+    branches:
+    - main
+
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  test:
+
+    runs-on: macos-latest
+
+    steps:
+    - name: put fortran on path
+      run: |
+        # create symlink; from https://github.com/modflowpy/install-gfortran-action/blob/main/action.yml
+        sudo ln -fs /usr/local/bin/gfortran-12 /usr/local/bin/gfortran
+    - uses: actions/checkout@v3
+      with:
+        repository: 'jhorzek/test_lesstimate'
+    - name: create build dir
+      run: mkdir build
+    - name: run cmake
+      run: |
+        cd build 
+        cmake ..
+        cmake --build .
+    
+    - name: run tests
+      run: |
+        ./lesstimate_test
