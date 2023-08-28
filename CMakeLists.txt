@@ -42,4 +42,4 @@ target_compile_definitions(lesstimate_lesstimate INTERFACE -DUSE_R=0)
 target_compile_features(lesstimate_lesstimate INTERFACE cxx_std_17)
 
 target_link_libraries(lesstimate_lesstimate INTERFACE 
-                      armadillo::armadillo)
+                      armadillo)
