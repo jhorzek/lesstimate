@@ -22,6 +22,10 @@ jobs:
     - uses: actions/checkout@v3
       with:
         repository: 'jhorzek/test_lesstimate'
+    - name: replace lesstimate version
+      run: |
+        sed -i 's/LESSTIMATE_VERSION/{{$GITHUB_SHA}}/g' CMakeLists.txt
+        cat CMakeLists.txt
     - name: create build dir
       run: mkdir build
     - name: run cmake
@@ -29,7 +33,7 @@ jobs:
         cd build 
         cmake ..
         cmake --build .
-    
+        ls
     - name: run tests
       run: |
         ./lesstimate_test
