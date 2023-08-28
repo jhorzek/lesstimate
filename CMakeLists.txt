@@ -1,8 +1,6 @@
-# This file was generated with cmake-init by friendlyanon at https://github.com/friendlyanon/cmake-init
+# This file was partially generated with cmake-init by friendlyanon at https://github.com/friendlyanon/cmake-init
 
-cmake_minimum_required(VERSION 3.14)
-
-include(cmake/prelude.cmake)
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 project(
     lesstimate
@@ -12,16 +10,16 @@ project(
     LANGUAGES NONE
 )
 
-# specify dependencies:
-# NOTE: The order of importing dependencies is important.
-# Armadillo needs BLAS needs LAPACK
-find_package(fmt REQUIRED)
-find_package(LAPACK REQUIRED)
-find_package(BLAS REQUIRED)
-find_package(Armadillo REQUIRED)
 
-include(cmake/project-is-top-level.cmake)
-include(cmake/variables.cmake)
+# add dependencies
+# First: add CPM to download dependencies if necessary
+include(cmake/CPM.cmake)
+# add armadillo
+CPMAddPackage(
+	URL "https://sourceforge.net/projects/arma/files/armadillo-12.6.3.tar.xz"
+	NAME armadillo
+	VERSION 12.6.3
+)
 
 # ---- Declare library ----
 
@@ -44,26 +42,4 @@ target_compile_definitions(lesstimate_lesstimate INTERFACE -DUSE_R=0)
 target_compile_features(lesstimate_lesstimate INTERFACE cxx_std_17)
 
 target_link_libraries(lesstimate_lesstimate INTERFACE 
-                      fmt::fmt 
-                      LAPACK::LAPACK
-                      BLAS::BLAS
-                      ${ARMADILLO_LIBRARIES})
-
-# ---- Install rules ----
-
-if(NOT CMAKE_SKIP_INSTALL_RULES)
-  include(cmake/install-rules.cmake)
-endif()
-
-# ---- Developer mode ----
-
-if(NOT lesstimate_DEVELOPER_MODE)
-  return()
-elseif(NOT PROJECT_IS_TOP_LEVEL)
-  message(
-      AUTHOR_WARNING
-      "Developer mode is intended for developers of lesstimate"
-  )
-endif()
-
-include(cmake/dev-mode.cmake)
+                      armadillo::armadillo)
