@@ -24,7 +24,7 @@ jobs:
         repository: 'jhorzek/test_lesstimate'
     - name: replace lesstimate version
       run: |
-        sed -i "s/LESSTIMATE_VERSION/{{$GITHUB_SHA}}/g" CMakeLists.txt
+        sed -i "s/LESSTIMATE_VERSION/$GITHUB_SHA/g" CMakeLists.txt
         cat CMakeLists.txt
     - name: create build dir
       run: mkdir build
