@@ -1,0 +1,33 @@
+name: Continuous Integration - Ubuntu
+
+on:
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  test-windows:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: install LAPACK and BLAS
+      run: |
+        pacman -S mingw-w64-x86_64-lapack
+        pacman -S mingw-w64-x86_64-openblas
+    - uses: actions/checkout@v3
+      with:
+        repository: 'jhorzek/test_lesstimate'
+    - name: replace lesstimate version
+      run: |
+        sed -i "s/LESSTIMATE_VERSION/${{ github.event.pull_request.head.sha }}/g" CMakeLists.txt
+        cat CMakeLists.txt
+    - name: create build dir
+      run: mkdir build
+    - name: run cmake
+      run: |
+        cd build 
+        cmake .. --preset=windows
+        cmake --build .
+        ls
+        ./lesstimate_test
