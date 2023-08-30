@@ -48,7 +48,9 @@ namespace lessSEM
         override
     {
 
-      double penalty = 0.0;
+      static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
+
+      double penaltyValue = 0.0;
 
       for (unsigned int p = 0; p < parameterValues.n_elem; p++)
       {
@@ -59,10 +61,10 @@ namespace lessSEM
         double lambda = tuningParameters.weights.at(p) * tuningParameters.lambda;
         double theta = tuningParameters.theta;
 
-        penalty += lambda * std::log(1.0 + std::abs(parameterValues.at(p)) / theta);
+        penaltyValue += lambda * std::log(1.0 + std::abs(parameterValues.at(p)) / theta);
       }
 
-      return penalty;
+      return penaltyValue;
     }
 
     /**
@@ -247,6 +249,9 @@ namespace lessSEM
                                  const arma::rowvec &gradients,
                                  const tuningParametersLspGlmnet &tuningParameters)
     {
+      static_cast<void>(parameterValues); // is unused
+      static_cast<void>(gradients); // is unused
+      static_cast<void>(tuningParameters); // is unused
       error("Subgradients not yet implemented for lsp penalty. Use different convergence criterion.");
     }
   };

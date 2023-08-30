@@ -36,7 +36,9 @@ namespace lessSEM
             override
         {
 
-            double penalty = 0.0;
+            static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
+
+            double penaltyValue = 0.0;
             double lambda_i;
 
             for (unsigned int p = 0; p < parameterValues.n_elem; p++)
@@ -46,10 +48,10 @@ namespace lessSEM
                            tuningParameters.lambda.at(p) *
                            tuningParameters.weights.at(p);
 
-                penalty += lambda_i * std::abs(parameterValues.at(p));
+                penaltyValue += lambda_i * std::abs(parameterValues.at(p));
             }
 
-            return penalty;
+            return penaltyValue;
         }
 
         /**

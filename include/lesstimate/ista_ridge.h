@@ -37,6 +37,8 @@ namespace lessSEM
                     const stringVector &parameterLabels,
                     const tuningParametersEnet &tuningParameters) override
     {
+
+      static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
       // if ridge is not used:
       if (tuningParameters.alpha == 1)
         return (0.0);
@@ -71,6 +73,8 @@ namespace lessSEM
                               const tuningParametersEnet &tuningParameters) override
     {
 
+      static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
+      
       arma::rowvec gradients(parameterValues.n_elem);
       gradients.fill(0.0);
       // if ridge is not used:

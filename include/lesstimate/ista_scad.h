@@ -101,6 +101,8 @@ namespace lessSEM
         override
     {
 
+      static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
+
       arma::rowvec u_k = parameterValues - gradientValues / L;
 
       arma::rowvec parameters_kp1(parameterValues.n_elem);
@@ -217,7 +219,9 @@ namespace lessSEM
         override
     {
 
-      double penalty = 0.0;
+      static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
+
+      double penaltyValue = 0.0;
 
       for (unsigned int p = 0; p < parameterValues.n_elem; p++)
       {
@@ -226,12 +230,12 @@ namespace lessSEM
           continue;
 
         // scad penalty value:
-        penalty += scadPenalty(parameterValues.at(p),
+        penaltyValue += scadPenalty(parameterValues.at(p),
                                tuningParameters.lambda,
                                tuningParameters.theta);
       }
 
-      return penalty;
+      return penaltyValue;
     }
   };
 

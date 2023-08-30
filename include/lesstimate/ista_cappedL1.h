@@ -50,6 +50,8 @@ namespace lessSEM
                                const tuningParametersCappedL1 &tuningParameters)
         override
     {
+      
+      static_cast<void>(parameterLabels); // is unused, but necessary for the interface
 
       // step in descending direction with step size (1/L):
       arma::rowvec u_k = parameterValues - gradientValues / L;
@@ -136,7 +138,9 @@ namespace lessSEM
         override
     {
 
-      double penalty = 0.0;
+      static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
+
+      double penaltyValue = 0.0;
       double lambda_i;
 
       for (unsigned int p = 0; p < parameterValues.n_elem; p++)
@@ -146,11 +150,11 @@ namespace lessSEM
                    tuningParameters.lambda *
                    tuningParameters.weights.at(p);
 
-        penalty += lambda_i * std::min(std::abs(parameterValues.at(p)),
-                                       tuningParameters.theta);
+        penaltyValue += lambda_i * std::min(std::abs(parameterValues.at(p)),
+                                            tuningParameters.theta);
       }
 
-      return penalty;
+      return penaltyValue;
     }
   };
 

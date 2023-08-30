@@ -1,0 +1,34 @@
+name: Continuous Integration - Ubuntu
+
+on:
+  push:
+    branches:
+    - main
+
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  test-ubuntu:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: 'jhorzek/test_lesstimate'
+    - name: replace lesstimate version
+      run: |
+        sed -i "s/LESSTIMATE_VERSION/${{ github.event.pull_request.head.sha }}/g" CMakeLists.txt
+        cat CMakeLists.txt
+    - name: create build dir
+      run: mkdir build
+    - name: run cmake
+      run: |
+        cd build 
+        cmake .. --preset=linux
+        cmake --build .
+        ls
+        ./lesstimate_test
+

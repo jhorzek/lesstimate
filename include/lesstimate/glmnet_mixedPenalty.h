@@ -84,6 +84,10 @@ namespace lessSEM
                                  const arma::rowvec &gradients,
                                  const tuningParametersMixedGlmnet &tuningParameters)
     {
+
+      static_cast<void>(parameterValues); // is unused
+      static_cast<void>(gradients); // is unused
+      static_cast<void>(tuningParameters); // is unused
       error("Subgradients are not yet implemented for mixedPenalty");
     }
     
@@ -115,6 +119,9 @@ namespace lessSEM
     double getValue(const arma::rowvec &parameterValues,
                     const stringVector &parameterLabels,
                     const tuningParametersMixedGlmnet &tuningParameters) override {
+                      static_cast<void>(parameterValues); // is unused
+                      static_cast<void>(parameterLabels); // is unused
+                      static_cast<void>(tuningParameters); // is unused
                       return(0.0);
                     }
     
@@ -125,6 +132,9 @@ namespace lessSEM
         const arma::rowvec &stepDirection,
         const arma::mat &Hessian,
         const tuningParametersMixedGlmnet &tuningParameters) override{
+
+          static_cast<void>(parameters_kMinus1); // is unused, but necessary for the interface to be consistent
+          static_cast<void>(tuningParameters); // is unused, but necessary for the interface to be consistent
           
           arma::colvec hessianXdirection = Hessian * arma::trans(stepDirection);
           double hessianXdirection_j = arma::as_scalar(hessianXdirection.row(whichPar));
@@ -396,6 +406,9 @@ namespace lessSEM
                                  const arma::rowvec &gradients,
                                  const tuningParametersMixedGlmnet &tuningParameters)
     {
+      static_cast<void>(parameterValues); // is unused
+      static_cast<void>(gradients); // is unused
+      static_cast<void>(tuningParameters); // is unused
       error("Subgradients are not yet implemented for mixedPenalty");
     }
     
