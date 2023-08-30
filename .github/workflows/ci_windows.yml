@@ -1,3 +1,6 @@
+# This workflow uses msys to compile the package. The workflow is adapted from
+# RandomX at https://github.com/tevador/RandomX/blob/master/.github/workflows/c-cpp.yml
+
 name: Continuous Integration - Windows
 
 on:
@@ -7,30 +10,44 @@ on:
 
 jobs:
   test-windows:
-
     runs-on: windows-latest
-
+    # copied from https://github.com/tevador/RandomX/blob/master/.github/workflows/c-cpp.yml
+    strategy:
+     matrix:
+      config:
+       - {c: "gcc", cxx: "g++"}
+    defaults:
+      run:
+        shell: msys2 {0}
     steps:
-    #- name: install LAPACK and BLAS
-    #  uses: msys2/setup-msys2@v2
-    #  with:
-    #    update: true
-    #    install: >-
-    #      mingw-w64-x86_64-lapack
-    #      mingw-w64-x86_64-openblas
+    
+    - name: install LAPACK and BLAS
+      uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          mingw-w64-x86_64-toolchain 
+          mingw-w64-x86_64-cmake 
+          make
+          mingw-w64-x86_64-lapack
+          mingw-w64-x86_64-openblas
+          
     - uses: actions/checkout@v3
       with:
         repository: 'jhorzek/test_lesstimate'
+        
     - name: replace lesstimate version
       run: |
         sed -i "s/LESSTIMATE_VERSION/${{ github.event.pull_request.head.sha }}/g" CMakeLists.txt
         cat CMakeLists.txt
+        
     - name: create build dir
       run: mkdir build
     - name: run cmake
       run: |
         cd build 
-        cmake .. --preset=windows
+        # copied from https://github.com/tevador/RandomX/blob/master/.github/workflows/c-cpp.yml
+        cmake .. --preset=windows -DCMAKE_C_COMPILER=${{ matrix.config.c }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
         cmake --build .
         ls
-        start lesstimate_test.exe
+        lesstimate_test.exe
