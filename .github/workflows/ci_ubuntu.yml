@@ -27,7 +27,7 @@ jobs:
     - name: run cmake
       run: |
         cd build 
-        cmake ..
+        cmake .. --preset=linux
         cmake --build .
         ls
         ./lesstimate_test

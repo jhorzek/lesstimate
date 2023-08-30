@@ -31,7 +31,7 @@ jobs:
     - name: run cmake
       run: |
         cd build 
-        cmake ..
+        cmake .. --preset=macos
         cmake --build .
         ls 
         ./lesstimate_test
