@@ -11,13 +11,13 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: install LAPACK and BLAS
-      uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: >-
-          mingw-w64-x86_64-lapack
-          mingw-w64-x86_64-openblas
+    #- name: install LAPACK and BLAS
+    #  uses: msys2/setup-msys2@v2
+    #  with:
+    #    update: true
+    #    install: >-
+    #      mingw-w64-x86_64-lapack
+    #      mingw-w64-x86_64-openblas
     - uses: actions/checkout@v3
       with:
         repository: 'jhorzek/test_lesstimate'
@@ -33,4 +33,4 @@ jobs:
         cmake .. --preset=windows
         cmake --build .
         ls
-        ./lesstimate_test
+        start lesstimate_test.exe
