@@ -12,11 +12,12 @@ jobs:
 
     steps:
     - name: install LAPACK and BLAS
-      run: |
-        # https://www.scivision.dev/github-actions-windows-msys2-path/
-        echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-        pacman -S mingw-w64-x86_64-lapack
-        pacman -S mingw-w64-x86_64-openblas
+      uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          mingw-w64-x86_64-lapack
+          mingw-w64-x86_64-openblas
     - uses: actions/checkout@v3
       with:
         repository: 'jhorzek/test_lesstimate'
