@@ -61,6 +61,8 @@ public:
                              const stringVector &parameterLabels,
                              const double L,
                              const tuningParametersMixedPenalty &tuningParameters) override{
+                              static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
+                              static_cast<void>(tuningParameters); // is unused, but necessary for the interface to be consistent
                                arma::rowvec u_k = parameterValues - gradientValues / L;
                                return(u_k);
                              }
@@ -272,6 +274,9 @@ public:
   double getValue(const arma::rowvec &parameterValues,
                         const stringVector &parameterLabels,
                         const tuningParametersMixedPenalty &tuningParameters) override{
+                          static_cast<void>(parameterValues); // is unused, but necessary for the interface to be consistent
+                          static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
+                          static_cast<void>(tuningParameters); // is unused, but necessary for the interface to be consistent
                                return(0.0);
                              }
 };

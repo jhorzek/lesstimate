@@ -32,13 +32,13 @@ We also provide a [template for using **lesstimate** in R](https://github.com/jh
 
 ## Example
 
-The following code demonstrates the use of **lesstimate** with regularized linear regressions. A longer step-by-step introduction including installation of **lesstimate** is provided in the [documentation](https://jhorzek.github.io/lesstimate/).
+The following code demonstrates the use of **lesstimate** with regularized linear regressions. A longer step-by-step introduction including installation of **lesstimate** is provided in the [documentation](https://jhorzek.github.io/lesstimate/). The cmake infrastructure was created with [cmake-init](https://github.com/friendlyanon/cmake-init).
 
 ```
 #include <armadillo>
 #include <lesstimate.h>
 
-// The model must inherit from less::model and override the fit and gradients function.
+// The model must inherit from less::model and override the fit and (optionally) the gradients function.
 class linearRegressionModel : public less::model
 {
 public:
@@ -47,13 +47,6 @@ public:
         // compute sum of squared errors
         arma::mat sse = (arma::trans(y - X * b.t()) * (y - X * b.t())) / (2.0 * y.n_elem);
         return (sse(0, 0));
-    }
-
-    arma::rowvec gradients(arma::rowvec b, less::stringVector labels) override
-    {
-        // compute gradients of sum of squared errors
-        arma::rowvec grad = (arma::trans(-2.0 * X.t() * y + 2.0 * X.t() * X * b.t())) * (.5 / y.n_rows);
-        return (grad);
     }
 
     // linear regression requires dependent variables y and design matrix X:

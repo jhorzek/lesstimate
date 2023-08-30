@@ -130,6 +130,9 @@ namespace lessSEM
                                   const double breakInner,
                                   const int verbose)
   {
+
+    static_cast<void>(verbose); // currently not used; for later use
+    
     arma::rowvec stepDirection = parameters_kMinus1;
     stepDirection.fill(0.0);
     arma::rowvec z = parameters_kMinus1;
@@ -237,6 +240,8 @@ namespace lessSEM
       const int maxIterLine,
       const int verbose)
   {
+
+    static_cast<void>(verbose); // currently not used; for later use
 
     arma::rowvec gradients_k(gradients_kMinus1.n_rows);
     gradients_k.fill(arma::datum::nan);

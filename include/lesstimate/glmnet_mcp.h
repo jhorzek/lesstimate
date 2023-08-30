@@ -54,7 +54,9 @@ namespace lessSEM
         override
     {
 
-      double penalty = 0.0;
+      static_cast<void>(parameterLabels); // is unused, but necessary for the interface to be consistent
+
+      double penaltyValue = 0.0;
       double lambda_i;
       double theta = tuningParameters.theta;
       double absPar;
@@ -72,12 +74,12 @@ namespace lessSEM
 
         if (absPar <= (lambda_i * theta))
         {
-          penalty += lambda_i * absPar - std::pow(absPar, 2) / (2.0 * theta);
+          penaltyValue += lambda_i * absPar - std::pow(absPar, 2) / (2.0 * theta);
         }
         else if (absPar > (lambda_i * theta))
         {
 
-          penalty += theta * std::pow(lambda_i, 2) / 2.0;
+          penaltyValue += theta * std::pow(lambda_i, 2) / 2.0;
         }
         else
         {
@@ -85,7 +87,7 @@ namespace lessSEM
         }
       }
 
-      return penalty;
+      return penaltyValue;
     }
 
     /**
@@ -312,6 +314,9 @@ namespace lessSEM
                                  const arma::rowvec &gradients,
                                  const tuningParametersMcpGlmnet &tuningParameters)
     {
+      static_cast<void>(parameterValues); // is unused
+      static_cast<void>(gradients); // is unused
+      static_cast<void>(tuningParameters); // is unused
       error("Subgradients not yet implemented for mcp penalty. Use different convergence criterion.");
     }
   };
