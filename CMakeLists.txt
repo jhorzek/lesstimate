@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 project(
     lesstimate
-    VERSION 0.1.0
+    VERSION 0.2.0
     DESCRIPTION "Optimize your models with lasso, scad, mcp, and other penalty functions"
     HOMEPAGE_URL "https://jhorzek.github.io/lesstimate/"
     LANGUAGES NONE
