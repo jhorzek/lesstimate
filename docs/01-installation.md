@@ -56,11 +56,12 @@ Open the DESCRIPTION file of your package and add `Rcpp` and `RcppArmadillo` to 
 
 ## Using lesstimate in your C++ package
 
-> We provide a [template using **lesstimate** with C++](https://github.com/jhorzek/lesstimateTemplateCpp). All procedures outlined in the following are already implemented in this template.
+> We provide a [template using **lesstimate** with C++](https://github.com/jhorzek/lesstimateTemplateCpp). All procedures outlined in the following are already implemented in this template. We 
+highly recommend that you use this template as a starting point.
 
-For C++, you will need the **armadillo**(https://arma.sourceforge.net/) - library (Sanderson et al., 2016). This library is also available
-using the package manager Conan or vcpkg. You will have to include lesstimate in your
-C++ library Cmake file. The cmake infrastructure was created with [cmake-init](https://github.com/friendlyanon/cmake-init).
+For C++, you will need the **armadillo**(https://arma.sourceforge.net/) - library (Sanderson et al., 2016). **lesstimate** uses the [**cpm.Cmake**](https://github.com/cpm-cmake/CPM.cmake)
+package manager to handle its dependencies. However, not all dependencies will be installed automatically. **armadillo** requires **BLAS** and **LAPACK**, both of which have to be installed on
+the system. Instructions to install dependencies of **armadillo** are provided in the [documentation of the package](https://arma.sourceforge.net/download.html). 
 
 # References
 

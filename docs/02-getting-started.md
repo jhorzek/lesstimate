@@ -14,8 +14,7 @@ you will find a variable called `USE_R`. If this variable is set to 1 (default),
 is setup to be used from R. If `USE_R` is set to zero, the library no longer relies on the R packages
 **Rcpp** (Eddelbuettel et al., 2011) or **RcppArmadillo** (Eddelbuettel et al., 2014). The library can now be used in 
 C++ projects as long as the [**armadillo**](https://arma.sourceforge.net/) (Sanderson et al., 2016)
-library is installed. These settings are implemented in the [lesstimateConfig.cmake](https://github.com/jhorzek/lesstimate/blob/b952a8509f388f2284450414bc781a9114c98243/lesstimateConfig.cmake)-file included
-in the project.
+library is installed. 
 
 ## Interfacing to **lesstimate**
 
