@@ -50,4 +50,4 @@ jobs:
         cmake .. --preset=windows -DCMAKE_C_COMPILER=${{ matrix.config.c }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
         cmake --build .
         ls
-        lesstimate_test.exe
+        start lesstimate_test.exe
