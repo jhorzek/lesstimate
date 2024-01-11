@@ -47,6 +47,9 @@ namespace lessSEM
  */
 class proximalOperatorMixedBase {
 public:
+  virtual ~proximalOperatorMixedBase() = default;
+
+
   virtual arma::rowvec getParameters(const arma::rowvec &parameterValues,
                              const arma::rowvec &gradientValues,
                              const stringVector &parameterLabels,

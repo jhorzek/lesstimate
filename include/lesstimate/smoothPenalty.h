@@ -13,6 +13,8 @@ namespace lessSEM
   class smoothPenalty
   {
   public:
+
+  virtual ~smoothPenalty() = default;
     /**
      * @brief Get the value of the penalty function
      *
