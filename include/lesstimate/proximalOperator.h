@@ -11,6 +11,7 @@ namespace lessSEM{
 template<class T>
 class proximalOperator{
 public:
+virtual ~proximalOperator() = default;
 /**
  * @brief return the parameters after updating with the proximal operator
  * 

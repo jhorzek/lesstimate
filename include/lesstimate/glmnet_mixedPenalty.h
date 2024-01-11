@@ -38,6 +38,8 @@ namespace lessSEM
   */
   class penaltyMixedGlmnetBase{
   public:
+
+    virtual ~penaltyMixedGlmnetBase() = default;
     
     /**
      * @brief Get the value of the penalty function

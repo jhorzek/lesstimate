@@ -13,6 +13,9 @@ namespace lessSEM
   class model
   {
   public:
+
+  virtual ~model() = default;
+
     /**
      * @brief fit method  with arguments parameterValues (arma::rowvec) and parameterLabels (stringVector; see common_headers.h)
      * specifying the parameter values and the labels of the paramters. The function should return the fit value (double).

@@ -12,6 +12,9 @@ namespace lessSEM{
 template<class T>
 class penalty{
 public:
+  
+  virtual ~penalty() = default;
+
   /**
    * @brief return the value of the penalty function
    * 
