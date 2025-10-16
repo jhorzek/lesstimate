@@ -303,7 +303,7 @@ namespace lessSEM
                                       parameterLabels,
                                       tuningParameters);
 
-      if (!arma::is_finite(fit_k))
+      if (!std::isfinite(fit_k))
       {
         // skip to next iteration and try a smaller step size
         continue;
@@ -343,7 +343,7 @@ namespace lessSEM
         gradients_k = model_.gradients(parameters_k,
                                        parameterLabels);
 
-        if (!arma::is_finite(gradients_k))
+        if (!(gradients_k.is_finite()))
         {
           // go to next iteration and test smaller step size
           continue;

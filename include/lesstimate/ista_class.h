@@ -303,7 +303,7 @@ namespace lessSEM
         fit_k = (1.0 / control_.sampleSize) * model_.fit(parameters_k, parameterLabels) +
                 smoothPenalty_.getValue(parameters_k, parameterLabels, smoothTuningParameters); // ridge penalty part
 
-        if (!arma::is_finite(fit_k))
+        if (!std::isfinite(fit_k))
           continue;
 
         // fit_k is only part of the fit we are interested in. We also need
@@ -315,7 +315,7 @@ namespace lessSEM
         penalizedFit_k = fit_k +
                          penalty_k; // lasso part
 
-        if (!arma::is_finite(penalizedFit_k))
+        if (!std::isfinite(penalizedFit_k))
           continue;
 
         // to test the convergence criterion, we offer different criteria
@@ -366,7 +366,7 @@ namespace lessSEM
 
           // if any of the gradients is non-finite, we can skip to a
           // smaller step size
-          if (!arma::is_finite(gradients_k))
+          if (!(gradients_k.is_finite()))
             continue;
 
           // if everything worked out fine, we break the inner iteration

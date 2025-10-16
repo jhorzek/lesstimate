@@ -279,7 +279,7 @@ namespace lessSEM
       for (unsigned int i = 0; i < 3; i++)
       {
 
-        if (!arma::is_finite(z[i]))
+        if (!std::isfinite(z[i]))
           continue;
 
         fitValue[i] = this->subproblemValue(
