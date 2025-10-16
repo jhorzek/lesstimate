@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 project(
     lesstimate
-    VERSION 0.2.0
+    VERSION 0.2.1
     DESCRIPTION "Optimize your models with lasso, scad, mcp, and other penalty functions"
     HOMEPAGE_URL "https://jhorzek.github.io/lesstimate/"
     LANGUAGES NONE
@@ -16,9 +16,9 @@ project(
 include(cmake/CPM.cmake)
 # add armadillo
 CPMAddPackage(
-	URL "https://sourceforge.net/projects/arma/files/armadillo-12.6.3.tar.xz"
+	URL "https://sourceforge.net/projects/arma/files/armadillo-15.0.3.tar.xz"
 	NAME armadillo
-	VERSION 12.6.3
+	VERSION 15.0.3
 )
 
 # ---- Declare library ----
