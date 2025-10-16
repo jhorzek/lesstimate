@@ -68,7 +68,7 @@ namespace lessSEM
                 (Hessian_kMinus1 * arma::trans(d) * d * Hessian_kMinus1) / dHd(0, 0) +
                 ySquared / yTimesD(0, 0);
 
-    if (!arma::is_finite(Hessian_k))
+    if (!Hessian_k.is_finite())
     {
       if (verbose)
         warn("Non-finite Hessian. Returning previous Hessian");

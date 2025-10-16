@@ -213,7 +213,7 @@ namespace lessSEM
       for (unsigned int i = 0; i < 5; i++)
       {
 
-        if (!arma::is_finite(z[i]))
+        if (!std::isfinite(z[i]))
         {
           continue;
         }

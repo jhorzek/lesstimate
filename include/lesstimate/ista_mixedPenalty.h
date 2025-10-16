@@ -267,6 +267,8 @@ public:
    * @param tuningParameters values of the tuning parmameters
    * @return double
    */
+  virtual ~penaltyMixedPenaltyBase() = default;
+  
   virtual double getValue(const arma::rowvec &parameterValues,
                   const stringVector &parameterLabels,
                   const tuningParametersMixedPenalty &tuningParameters) = 0;
