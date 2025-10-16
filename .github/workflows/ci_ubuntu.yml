@@ -20,7 +20,7 @@ jobs:
         cat CMakeLists.txt
     - name: install dependencies
       run: |
-        sudo apt-get install cmake, libopenblas-dev, liblapack-dev, libarpack2-dev, libsuperlu-dev
+        sudo apt-get install cmake libopenblas-dev liblapack-dev libarpack2-dev libsuperlu-dev
     - name: create build dir
       run: mkdir build
     - name: run cmake
