@@ -24,8 +24,8 @@ namespace lessSEM
      * @param parameterLabels stringVector with parameterLabels
      * @return double
      */
-    virtual double fit(arma::rowvec parameterValues,
-                       stringVector parameterLabels) = 0;
+    virtual double fit(const arma::rowvec& parameterValues,
+                       const stringVector& parameterLabels) = 0;
 
     /**
      * @brief gradients method with arguments parameterValues(arma::rowvec) and parameterLabels(stringVector; see common_headers.h) * specifying the parameter values and the labels of the paramters. The function should return the gradients(arma::rowvec).
@@ -35,28 +35,32 @@ namespace lessSEM
      * @param parameterLabels stringVector with parameterLabels
      * @return arma::rowvec gradients
      */
-    virtual arma::rowvec gradients(arma::rowvec parameterValues,
-                                   stringVector parameterLabels)
+    virtual arma::rowvec gradients(const arma::rowvec& parameterValues,
+                                   const stringVector& parameterLabels)
     {
-      arma::rowvec gradients(parameterValues.n_elem);
+      // The default central-difference implementation mutates the parameter
+      // vector to apply +/- stepSize. With a const reference interface, take a
+      // local copy here; the caller's value is left untouched.
+      arma::rowvec perturbedParameters = parameterValues;
+      arma::rowvec gradients(perturbedParameters.n_elem);
       gradients.fill(arma::fill::zeros);
       // define stepSize used in numerically approximated gradients:
       double stepSize = 1e-5;
       
-      for (unsigned int i = 0; i < parameterValues.n_elem; i++)
+      for (unsigned int i = 0; i < perturbedParameters.n_elem; i++)
       {
 
         // step forward
-        parameterValues(i) += stepSize;
-        gradients(i) = fit(parameterValues,
+        perturbedParameters(i) += stepSize;
+        gradients(i) = fit(perturbedParameters,
                            parameterLabels);
 
         // step backward
-        parameterValues(i) -= 2.0 * stepSize;
-        gradients(i) -= fit(parameterValues,
+        perturbedParameters(i) -= 2.0 * stepSize;
+        gradients(i) -= fit(perturbedParameters,
                             parameterLabels);
         // reset
-        parameterValues(i) += stepSize;
+        perturbedParameters(i) += stepSize;
 
         // compute gradient
         gradients(i) /= 2.0 * stepSize;
