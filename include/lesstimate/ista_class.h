@@ -213,12 +213,11 @@ namespace lessSEM
     arma::mat quadr, parchTimeGrad;
     numericVector randomNumber; // for stochastic Barzilai Borwein
 
-    // prepare fit elements
+// prepare fit elements
     double fit_k = (1.0 / control_.sampleSize) * model_.fit(startingValues, parameterLabels) +
-                   smoothPenalty_.getValue(parameters_k, parameterLabels, smoothTuningParameters), // ridge penalty part
-        fit_kMinus1 = (1.0 / control_.sampleSize) * model_.fit(startingValues, parameterLabels) +
-                      smoothPenalty_.getValue(parameters_kMinus1, parameterLabels, smoothTuningParameters), // ridge penalty part,
-        penalty_k = 0.0;
+                   smoothPenalty_.getValue(parameters_k, parameterLabels, smoothTuningParameters),
+         fit_kMinus1 = fit_k,
+         penalty_k = 0.0;
     double penalizedFit_k, penalizedFit_kMinus1;
     arma::rowvec gradients_k, gradients_kMinus1, gradient_y_k;
 
@@ -235,14 +234,12 @@ namespace lessSEM
 
     // prepare gradient elements
     // NOTE: We combine the gradients of the smooth functions (the log-Likelihood)
-    // of the model and the smooth penalty function (e.g., ridge)
+    // of the model and the smooth penalty function (e.g., ridge).
     gradients_k = (1.0 / control_.sampleSize) * model_.gradients(parameters_k, parameterLabels) +
                   smoothPenalty_.getGradients(parameters_k, parameterLabels, smoothTuningParameters); // ridge part
-    gradients_kMinus1 = (1.0 / control_.sampleSize) * model_.gradients(parameters_kMinus1, parameterLabels) +
-                        smoothPenalty_.getGradients(parameters_kMinus1, parameterLabels, smoothTuningParameters); // ridge part
+    gradients_kMinus1 = gradients_k;
     // for acceleration:
-    gradient_y_k = (1.0 / control_.sampleSize) * model_.gradients(parameters_kMinus1, parameterLabels) +
-                   smoothPenalty_.getGradients(parameters_kMinus1, parameterLabels, smoothTuningParameters); // ridge part
+    gradient_y_k = gradients_k;
 
     // breaking flags
     bool breakInner = false, // if true, the inner iteration is exited
@@ -389,11 +386,16 @@ namespace lessSEM
         continue;
       }
 
-      gradients_k = (1.0 / control_.sampleSize) * model_.gradients(parameters_k,
-                                                                   parameterLabels) +
-                    smoothPenalty_.getGradients(parameters_k,
-                                                parameterLabels,
-                                                smoothTuningParameters); // ridge part
+      // gradients_k is already computed at parameters_k when the inner
+      // loop converged. We recompute only if the inner loop did not converge.
+      if (!breakInner)
+      {
+        gradients_k = (1.0 / control_.sampleSize) * model_.gradients(parameters_k,
+                                                                     parameterLabels) +
+                      smoothPenalty_.getGradients(parameters_k,
+                                                  parameterLabels,
+                                                  smoothTuningParameters); // ridge part
+      }
 
       fits(outer_iteration + 1) = penalizedFit_k;
 

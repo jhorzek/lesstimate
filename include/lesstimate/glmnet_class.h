@@ -238,7 +238,15 @@ namespace lessSEM
       const double sigma,
       const double gamma,
       const int maxIterLine,
-      const int verbose)
+      const int verbose,
+      // The line search needs to compute the fit and the gradients. Because
+      // the next optimization step also needs those, we can save them here and 
+      // make them available to the caller by reference.
+      // The additional flag acceptedOut tells the caller if the line search
+      // created a non-acceptable step.
+      double &fitAcceptedOut,
+      arma::rowvec &modelGradientsAcceptedOut,
+      bool &acceptedOut)
   {
 
     static_cast<void>(verbose); // currently not used; for later use
@@ -252,6 +260,10 @@ namespace lessSEM
     double fit_k; // new fit value of differentiable part
     double p_k;   // new penalty value
     double f_k;   // new combined fit
+
+    // signal to the caller that no accepted step is available yet
+    acceptedOut = false;
+    fitAcceptedOut = arma::datum::nan;
 
     // get penalized M2LL for step size 0:
 
@@ -348,6 +360,10 @@ namespace lessSEM
           // go to next iteration and test smaller step size
           continue;
         }
+        // Update the fit / gradient and acceptOut flag for the caller
+        fitAcceptedOut = fit_k;
+        modelGradientsAcceptedOut = gradients_k;
+        acceptedOut = true;
         // else
         break;
       }
@@ -403,17 +419,15 @@ namespace lessSEM
     arma::rowvec direction(startingValues.n_elem);
 
     // prepare fit elements
-    // fit of the smooth part of the fit function
-    double fit_k = model_.fit(parameters_k,
-                              parameterLabels) +
-                   smoothPenalty_.getValue(parameters_k,
-                                           parameterLabels,
-                                           tuningParameters);
-    double fit_kMinus1 = model_.fit(parameters_kMinus1,
-                                    parameterLabels) +
-                         smoothPenalty_.getValue(parameters_kMinus1,
-                                                 parameterLabels,
-                                                 tuningParameters);
+    // fit of the smooth part of the fit function. At this part
+    // fit_k and fit_kMinus1 are identical.
+    double fit_starting = model_.fit(startingValues,
+                                     parameterLabels) +
+                          smoothPenalty_.getValue(startingValues,
+                                                  parameterLabels,
+                                                  tuningParameters);
+    double fit_k = fit_starting;
+    double fit_kMinus1 = fit_starting;
     // add non-differentiable part
     double penalizedFit_k = fit_k +
                             penalty_.getValue(parameters_k,
@@ -432,17 +446,15 @@ namespace lessSEM
 
     // prepare gradient elements
     // NOTE: We combine the gradients of the smooth functions (the log-Likelihood)
-    // of the model and the smooth penalty function (e.g., ridge)
+    // of the model and the smooth penalty function (e.g., ridge). As above,
+    // parameters_k and parameters_kMinus1 are both equal to startingValues, so the
+    // model gradient and smooth penalty gradient only have to be evaluated once.
     arma::rowvec gradients_k = model_.gradients(parameters_k,
                                                 parameterLabels) +
                                smoothPenalty_.getGradients(parameters_k,
                                                            parameterLabels,
                                                            tuningParameters); // ridge part
-    arma::rowvec gradients_kMinus1 = model_.gradients(parameters_kMinus1,
-                                                      parameterLabels) +
-                                     smoothPenalty_.getGradients(parameters_kMinus1,
-                                                                 parameterLabels,
-                                                                 tuningParameters); // ridge part
+    arma::rowvec gradients_kMinus1 = gradients_k;
 
     // prepare Hessian elements
     arma::mat Hessian_k(startingValues.n_elem, startingValues.n_elem, arma::fill::zeros),
@@ -472,12 +484,6 @@ namespace lessSEM
       Rcpp::checkUserInterrupt();
 #endif
 
-      // the gradients will be used by the inner iteration to compute the new
-      // parameters
-      gradients_kMinus1 = model_.gradients(parameters_kMinus1, parameterLabels) +
-                          smoothPenalty_.getGradients(parameters_kMinus1, parameterLabels, tuningParameters); // ridge part
-
-      // find step direction
       direction = glmnetInner(parameters_kMinus1,
                               gradients_kMinus1,
                               Hessian_kMinus1,
@@ -487,7 +493,13 @@ namespace lessSEM
                               control_.breakInner,
                               control_.verbose);
 
-      // find length of step in direction
+      // find length of step in direction. The line search already evaluates the
+      // smooth fit and the (model-only) gradients at the accepted step; we reuse
+      // them below instead of re-evaluating.
+      double fit_ls;
+      arma::rowvec modelGradients_ls(gradients_kMinus1.n_elem);
+      modelGradients_ls.fill(arma::datum::nan);
+      bool ls_accepted = false;
       parameters_k = glmnetLineSearch(model_,
                                       penalty_,
                                       smoothPenalty_,
@@ -504,20 +516,36 @@ namespace lessSEM
                                       control_.sigma,
                                       control_.gamma,
                                       control_.maxIterLine,
-                                      control_.verbose);
+                                      control_.verbose,
+                                      fit_ls,
+                                      modelGradients_ls,
+                                      ls_accepted);
 
-      // get gradients of differentiable part
-      gradients_k = model_.gradients(parameters_k,
-                                     parameterLabels) +
-                    smoothPenalty_.getGradients(parameters_k,
-                                                parameterLabels,
-                                                tuningParameters);
-      // fit of the smooth part of the fit function
-      fit_k = model_.fit(parameters_k,
-                         parameterLabels) +
-              smoothPenalty_.getValue(parameters_k,
-                                      parameterLabels,
-                                      tuningParameters);
+      if (ls_accepted)
+      {
+        // reuse the fit and the model-only gradients from the accepted line
+        // search step (the smooth penalty parts are added here)
+        gradients_k = modelGradients_ls +
+                      smoothPenalty_.getGradients(parameters_k,
+                                                  parameterLabels,
+                                                  tuningParameters);
+        fit_k = fit_ls;
+      }
+      else
+      {
+        // line search did not accept a step: fall back to a fresh evaluation at
+        // the returned parameters_k
+        gradients_k = model_.gradients(parameters_k,
+                                        parameterLabels) +
+                      smoothPenalty_.getGradients(parameters_k,
+                                                  parameterLabels,
+                                                  tuningParameters);
+        fit_k = model_.fit(parameters_k,
+                           parameterLabels) +
+                smoothPenalty_.getValue(parameters_k,
+                                        parameterLabels,
+                                        tuningParameters);
+      }
       // add non-differentiable part
       penalizedFit_k = fit_k +
                        penalty_.getValue(parameters_k,
